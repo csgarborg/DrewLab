@@ -47,7 +47,7 @@ hVideoSource = vision.VideoFileReader(filenameAVI, ...
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
 hTM = vision.TemplateMatcher('ROIInputPort', true, ...
-                            'BestMatchNeighborhoodOutputPort', true, 'Metric', 'Sum of squared differences');
+                            'BestMatchNeighborhoodOutputPort', true);
                         
 %%
 % Create a System object to display the original video and the stabilized
