@@ -18,13 +18,13 @@
 % output to be of intensity only video.
 
 % Input video file which needs to be stabilized.
-filename = 'F:\18-12-19_PaperExpMult\181219_015.TIF';
-filenameAVI = 'F:\18-12-19_PaperExpMult\181219_015_data.avi';
+filename = 'F:\18-12-19_PaperExpMult\181219_014.TIF';
+filenameAVI = 'F:\18-12-19_PaperExpMult\181219_014_data.avi';
 
-if ~exist('F:\18-12-19_PaperExpMult\181219_015_data.avi','file')
-    tifLength = length(imfinfo('F:\18-12-19_PaperExpMult\181219_015.TIF'));
+if ~exist('F:\18-12-19_PaperExpMult\181219_014_data.avi','file')
+    tifLength = length(imfinfo('F:\18-12-19_PaperExpMult\181219_014.TIF'));
     cmap = gray(256);
-    aviObject = VideoWriter('F:\18-12-19_PaperExpMult\181219_015_data.avi','Uncompressed AVI');
+    aviObject = VideoWriter('F:\18-12-19_PaperExpMult\181219_014_data.avi','Uncompressed AVI');
     open(aviObject);
     for ctr = 1:tifLength
 %         iFrame = clock;
@@ -59,8 +59,8 @@ hVideoOut.Position(3:4) = [650 350];
 
 %%
 % Here we initialize some variables used in the processing loop.
-pos.template_orig = [225 100]; % [x y] upper left corner
-pos.template_size = [25 50];   % [width height]
+pos.template_orig = [300 300]; % [x y] upper left corner
+pos.template_size = [70 70];   % [width height]
 pos.search_border = [5 5];   % max horizontal and vertical displacement
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
@@ -82,6 +82,9 @@ firstTime = true;
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
+n = 1;
+MoveDist = [];
+TargetPosition = [0,0];
 while ~isDone(hVideoSource)
     input = hVideoSource();
 
@@ -107,8 +110,11 @@ while ~isDone(hVideoSource)
 
     % Translate video frame to offset the camera motion
     Stabilized = imtranslate(input, Offset, 'linear');
-   
-    Target = Stabilized(TargetRowIndices, TargetColIndices);
+    
+    if n == 1
+        Target = Stabilized(TargetRowIndices, TargetColIndices);
+        n = 0;
+    end
 
     % Add black border for display
     Stabilized(:, BorderCols) = 0;
@@ -126,12 +132,38 @@ while ~isDone(hVideoSource)
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
+    
+    % Add pixel motion to data
+    MoveDist = [MoveDist;MotionVector];
+    TargetPosition = [TargetPosition;TargetPosition(end,:)+MotionVector];
 end
 
 %% Release
 % Here you call the release method on the objects to close any open files
 % and devices.
 release(hVideoSource);
+
+%% Output data
+
+% Get binary ball data to compare to frame movement data
+ballDataID = fopen('F:\18-12-19_PaperExpMult\181219_014.bin');
+ballData = fread(ballDataID);
+fclose(ballDataID);
+
+subplot(3,1,1)
+plot(1:size(MoveDist,1),MoveDist(:,1),'r')
+subplot(3,1,2)
+plot(1:size(MoveDist,1),MoveDist(:,2),'b')
+subplot(3,1,3)
+plot(1:size(ballData,1),ballData,'.k')
+
+figure(2)
+subplot(3,1,1)
+plot(1:size(TargetPosition,1),TargetPosition(:,1),'r')
+subplot(3,1,2)
+plot(1:size(TargetPosition,1),TargetPosition(:,2),'b')
+subplot(3,1,3)
+plot(1:size(ballData,1),ballData,'.k')
 
 %% Conclusion
 % Using the Computer Vision System Toolbox(TM) functionality from
