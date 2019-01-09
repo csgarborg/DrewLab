@@ -18,13 +18,13 @@
 % output to be of intensity only video.
 
 % Input video file which needs to be stabilized.
-filename = 'F:\18-12-19_PaperExpMult\181219_014.TIF';
-filenameAVI = 'F:\18-12-19_PaperExpMult\181219_014_data.avi';
+filename = 'F:\18-12-19_PaperExpMult\181219_013.TIF';
+filenameAVI = [filename(1:end-4) '_data.avi'];
 
-if ~exist('F:\18-12-19_PaperExpMult\181219_014_data.avi','file')
-    tifLength = length(imfinfo('F:\18-12-19_PaperExpMult\181219_014.TIF'));
+if ~exist(filenameAVI,'file')
+    tifLength = length(imfinfo(filename));
     cmap = gray(256);
-    aviObject = VideoWriter('F:\18-12-19_PaperExpMult\181219_014_data.avi','Uncompressed AVI');
+    aviObject = VideoWriter(filenameAVI,'Uncompressed AVI');
     open(aviObject);
     for ctr = 1:tifLength
 %         iFrame = clock;
@@ -60,7 +60,7 @@ hVideoOut.Position(3:4) = [650 350];
 %%
 % Here we initialize some variables used in the processing loop.
 pos.template_orig = [300 300]; % [x y] upper left corner
-pos.template_size = [70 70];   % [width height]
+pos.template_size = [30 30];   % [width height]
 pos.search_border = [5 5];   % max horizontal and vertical displacement
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
@@ -146,7 +146,7 @@ release(hVideoSource);
 %% Output data
 
 % Get binary ball data to compare to frame movement data
-ballDataID = fopen('F:\18-12-19_PaperExpMult\181219_014.bin');
+ballDataID = fopen([filename(1:end-3) 'bin']);
 ballData = fread(ballDataID);
 fclose(ballDataID);
 
