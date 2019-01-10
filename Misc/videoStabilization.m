@@ -18,27 +18,12 @@
 % output to be of intensity only video.
 
 % Input video file which needs to be stabilized.
-filename = 'F:\18-12-19_PaperExpMult\181219_013.TIF';
-filenameAVI = [filename(1:end-4) '_data.avi'];
+tifFileName = 'F:\18-12-19_PaperExpMult\181219_014.TIF';
+redoFilterTF = true;
 
-if ~exist(filenameAVI,'file')
-    tifLength = length(imfinfo(filename));
-    cmap = gray(256);
-    aviObject = VideoWriter(filenameAVI,'Uncompressed AVI');
-    open(aviObject);
-    for ctr = 1:tifLength
-%         iFrame = clock;
-        I = imread(filename,ctr);
-        I8 = im2uint8(I);
-%         F = im2frame(I,cmap);
-        writeVideo(aviObject,I8);
-%         elapsed = etime(clock, iFrame);
-%         pause(5 - elapsed);
-    end
-    close(aviObject);
-end
+aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF);
 
-hVideoSource = vision.VideoFileReader(filenameAVI, ...
+hVideoSource = vision.VideoFileReader(aviFileName, ...
                                       'ImageColorSpace', 'Intensity',...
                                       'VideoOutputDataType', 'double');
 
@@ -146,7 +131,7 @@ release(hVideoSource);
 %% Output data
 
 % Get binary ball data to compare to frame movement data
-ballDataID = fopen([filename(1:end-3) 'bin']);
+ballDataID = fopen([tifFileName(1:end-3) 'bin']);
 ballData = fread(ballDataID);
 fclose(ballDataID);
 

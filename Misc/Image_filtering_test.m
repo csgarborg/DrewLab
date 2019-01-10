@@ -1,8 +1,9 @@
-cd('C:\Users\wdh130\Documents\MATLAB\Spencer')
+% cd('C:\Users\wdh130\Documents\MATLAB\Spencer')
+close all
 clear
 clc
 
-fname = '181219_014.tif';
+fname = 'F:\18-12-19_PaperExpMult\181219_013.TIF';
 info = imfinfo(fname);
 num_images = numel(info);
 num_images = 300;
@@ -16,10 +17,10 @@ B = cell2mat(A);
 B = double(reshape(B,512,512,num_images));
 
 fs = 30;
-[y1 d1] = lowpass(squeeze(B(250,250,:)),100,fs);
-
-figure
-pspectrum(y1,fs)
+% [y1 d1] = lowpass(squeeze(B(250,250,:)),100,fs);
+% 
+% figure
+% pspectrum(y1,fs)
 
 
 y1 = squeeze(B(350,350,:));
