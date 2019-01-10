@@ -3,6 +3,10 @@
 
 %   Copyright 2006-2014 The MathWorks, Inc.
 
+clc;
+close;
+clear all
+
 %% Introduction
 % In this example we first define the target to track. In this case, it is the
 % back of a car and the license plate. We also establish a dynamic search
@@ -21,7 +25,7 @@
 tifFileName = 'F:\18-12-19_PaperExpMult\181219_014.TIF';
 redoFilterTF = true;
 
-aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF);
+aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,[1500 1900]);
 
 hVideoSource = vision.VideoFileReader(aviFileName, ...
                                       'ImageColorSpace', 'Intensity',...
@@ -44,8 +48,8 @@ hVideoOut.Position(3:4) = [650 350];
 
 %%
 % Here we initialize some variables used in the processing loop.
-pos.template_orig = [300 300]; % [x y] upper left corner
-pos.template_size = [30 30];   % [width height]
+pos.template_orig = [310 315]; % [x y] upper left corner
+pos.template_size = [50 50];   % [width height]
 pos.search_border = [5 5];   % max horizontal and vertical displacement
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
