@@ -182,7 +182,14 @@ grid on
 % plot(1:size(ballData,1),ballData,'.k')
 
 figure(3)
-plot(TargetPosition(:,1),TargetPosition(:,2));
+k = convhull(TargetPosition(:,1),TargetPosition(:,2));
+plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k.');
+maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
+maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
+axis([-maxX maxX -maxY maxY])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
 
 %% Conclusion
 % Using the Computer Vision System Toolbox(TM) functionality from
