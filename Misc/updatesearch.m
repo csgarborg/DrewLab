@@ -9,11 +9,11 @@ function [Offset, SearchRegion] = updatesearch(sz, MotionVector, SearchRegion, O
 
   inbounds = all([(SearchTopLeft >= [1 1]) (SearchBottomRight <= fliplr(sz))]);
 
-  if inbounds
+%   if inbounds
       Mv_out = MotionVector;
-  else
-      Mv_out = [0 0];
-  end
+%   else
+%       Mv_out = [0 0];
+%   end
 
   Offset = Offset - Mv_out;
   SearchRegion = SearchRegion + Mv_out;

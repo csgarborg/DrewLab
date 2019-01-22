@@ -37,7 +37,6 @@ end
 if ~exist('framesVec','var')
     tifLength = length(imfinfo(tifFileName));
     framesVec = [1 tifLength];
-% tifLength = 100;
 else
     tifLength = framesVec(2) - framesVec(1) + 1;
 end
@@ -48,26 +47,28 @@ for k = framesVec(1):framesVec(2)
 end
 
 imageStackMat = cell2mat(imageStack);
-imageStackMat = double(reshape(imageStackMat,512,512,tifLength));
+imageStackMat = double(reshape(imageStackMat,148,512,tifLength));
 
 %% Create filter
 
-lpFilt = designfilt('lowpassiir','FilterOrder',8, ...
-         'PassbandFrequency',5,'PassbandRipple',0.2, ...
-         'SampleRate',30);
-     
+% lpFilt = designfilt('lowpassiir','FilterOrder',3, ...
+%          'PassbandFrequency',2,'PassbandRipple',0.2, ...
+%          'SampleRate',30);
+%      
 %% Filter images
 
-filteredData = zeros(512,512,tifLength);
-f = waitbar(0,'Filtering');
-for xx = 1:512
-    waitbar(round(xx/512,2),f,'Filtering');
-    for yy = 1:512
-        singlePixelData = squeeze(imageStackMat(xx,yy,:));
-        filteredData(xx,yy,:) = filter(lpFilt,singlePixelData);
-    end
-end
-close(f)
+% filteredData = zeros(512,512,tifLength);
+% f = waitbar(0,'Filtering');
+% for xx = 1:512
+%     waitbar(round(xx/512,2),f,'Filtering');
+%     for yy = 1:512
+%         singlePixelData = squeeze(imageStackMat(xx,yy,:));
+%         filteredData(xx,yy,:) = filter(lpFilt,singlePixelData);
+%     end
+% end
+% close(f)
+
+filteredData = imageStackMat;
 
 %% Create AVI file frame by frame
 

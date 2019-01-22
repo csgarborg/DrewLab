@@ -3,10 +3,6 @@
 
 %   Copyright 2006-2014 The MathWorks, Inc.
 
-clc;
-close all;
-clear;
-
 %% Introduction
 % In this example we first define the target to track. In this case, it is the
 % back of a car and the license plate. We also establish a dynamic search
@@ -22,12 +18,27 @@ clear;
 % output to be of intensity only video.
 
 % Input video file which needs to be stabilized.
-tifFileName = 'F:\19-01-18_PaperExp\190118_006.TIF';
-redoFilterTF = false;
+filename = 'F:\18-12-19_PaperExpMult\181219_015.TIF';
+filenameAVI = 'F:\18-12-19_PaperExpMult\181219_015_data.avi';
 
-aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,[275 775]);
+if ~exist('F:\18-12-19_PaperExpMult\181219_015_data.avi','file')
+    tifLength = length(imfinfo('F:\18-12-19_PaperExpMult\181219_015.TIF'));
+    cmap = gray(256);
+    aviObject = VideoWriter('F:\18-12-19_PaperExpMult\181219_015_data.avi','Uncompressed AVI');
+    open(aviObject);
+    for ctr = 1:tifLength
+%         iFrame = clock;
+        I = imread(filename,ctr);
+        I8 = im2uint8(I);
+%         F = im2frame(I,cmap);
+        writeVideo(aviObject,I8);
+%         elapsed = etime(clock, iFrame);
+%         pause(5 - elapsed);
+    end
+    close(aviObject);
+end
 
-hVideoSource = vision.VideoFileReader(aviFileName, ...
+hVideoSource = vision.VideoFileReader(filenameAVI, ...
                                       'ImageColorSpace', 'Intensity',...
                                       'VideoOutputDataType', 'double');
 
@@ -36,21 +47,21 @@ hVideoSource = vision.VideoFileReader(aviFileName, ...
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
 hTM = vision.TemplateMatcher('ROIInputPort', true, ...
-                            'BestMatchNeighborhoodOutputPort', true);
+                            'BestMatchNeighborhoodOutputPort', true, 'Metric', 'Sum of squared differences');
                         
 %%
 % Create a System object to display the original video and the stabilized
 % video.
 hVideoOut = vision.VideoPlayer('Name', 'Video Stabilization');
 hVideoOut.Position(1) = round(0.4*hVideoOut.Position(1));
-hVideoOut.Position(2) = round(.5*(hVideoOut.Position(2)));
-hVideoOut.Position(3:4) = [1050 550];
+hVideoOut.Position(2) = round(1.5*(hVideoOut.Position(2)));
+hVideoOut.Position(3:4) = [650 350];
 
 %%
 % Here we initialize some variables used in the processing loop.
-pos.template_orig = [175 60]; % [x y] upper left corner
-pos.template_size = [125 50];   % [width height]
-pos.search_border = [15 15];   % max horizontal and vertical displacement
+pos.template_orig = [225 100]; % [x y] upper left corner
+pos.template_size = [25 50];   % [width height]
+pos.search_border = [5 5];   % max horizontal and vertical displacement
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
 fileInfo = info(hVideoSource);
@@ -71,9 +82,6 @@ firstTime = true;
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
-n = 1;
-MoveDist = [];
-TargetPosition = [0,0];
 while ~isDone(hVideoSource)
     input = hVideoSource();
 
@@ -99,11 +107,8 @@ while ~isDone(hVideoSource)
 
     % Translate video frame to offset the camera motion
     Stabilized = imtranslate(input, Offset, 'linear');
-    
-    if n == 1
-        Target = Stabilized(TargetRowIndices, TargetColIndices);
-        n = 0;
-    end
+   
+    Target = Stabilized(TargetRowIndices, TargetColIndices);
 
     % Add black border for display
     Stabilized(:, BorderCols) = 0;
@@ -121,50 +126,12 @@ while ~isDone(hVideoSource)
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
-    
-    % Add pixel motion to data
-    MoveDist = [MoveDist;MotionVector];
-    TargetPosition = [TargetPosition;TargetPosition(end,:)+MotionVector];
 end
 
 %% Release
 % Here you call the release method on the objects to close any open files
 % and devices.
 release(hVideoSource);
-
-%% Output data
-
-% Get binary ball data to compare to frame movement data
-% ballDataID = fopen([tifFileName(1:end-3) 'bin']);
-% ballData = fread(ballDataID);
-% fclose(ballDataID);
-
-subplot(2,1,1)
-plot(1:size(MoveDist,1),MoveDist(:,1),'r')
-title('Object Movement Between Frames')
-xlabel('Frame')
-ylabel('Pixels (x)')
-subplot(2,1,2)
-plot(1:size(MoveDist,1),MoveDist(:,2),'b')
-title('Object Movement Between Frames')
-xlabel('Frame')
-ylabel('Pixels (y)')
-% subplot(3,1,3)
-% plot(1:size(ballData,1),ballData,'.k')
-
-figure(2)
-subplot(2,1,1)
-plot(1:size(TargetPosition,1),TargetPosition(:,1),'r')
-title('Object Position per Frame')
-xlabel('Frame')
-ylabel('Position (Pixels) (x)')
-subplot(2,1,2)
-plot(1:size(TargetPosition,1),TargetPosition(:,2),'b')
-title('Object Position per Frame')
-xlabel('Frame')
-ylabel('Position (Pixels) (y)')
-% subplot(3,1,3)
-% plot(1:size(ballData,1),ballData,'.k')
 
 %% Conclusion
 % Using the Computer Vision System Toolbox(TM) functionality from
