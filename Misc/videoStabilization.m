@@ -46,19 +46,30 @@ hVideoOut.Position(1) = round(0.4*hVideoOut.Position(1));
 hVideoOut.Position(2) = round(.5*(hVideoOut.Position(2)));
 hVideoOut.Position(3:4) = [1050 550];
 
-%%
-% Here we initialize some variables used in the processing loop.
-pos.template_orig = [175 60]; % [x y] upper left corner
-pos.template_size = [125 50];   % [width height]
-pos.search_border = [15 15];   % max horizontal and vertical displacement
+%% Here we initialize some variables used in the processing loop.
+% Get target window
+imshow(imread(tifFileName, 275));
+[inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
+close(gcf);
+pos.template_orig = [inputCoordTargetX(1) inputCoordTargetY(1)]; % [x y] upper left corner
+pos.template_size = [inputCoordTargetX(2) inputCoordTargetY(2)] - [inputCoordTargetX(1) inputCoordTargetY(1)];   % [width height]
+
+% Get search window
+imshow(imread(tifFileName, 275));
+rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
+[inputCoordSearchX,inputCoordSearchY] = getpts(gcf);
+close(gcf);
+pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputCoordSearchY(1) - inputCoordTargetY(1))];   % max horizontal and vertical displacement
+
+% Calculate important parameters
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
 fileInfo = info(hVideoSource);
 W = fileInfo.VideoSize(1); % Width in pixels
 H = fileInfo.VideoSize(2); % Height in pixels
+sz = fileInfo.VideoSize;
 BorderCols = [1:pos.search_border(1)+4 W-pos.search_border(1)+4:W];
 BorderRows = [1:pos.search_border(2)+4 H-pos.search_border(2)+4:H];
-sz = fileInfo.VideoSize;
 TargetRowIndices = ...
   pos.template_orig(2)-1:pos.template_orig(2)+pos.template_size(2)-2;
 TargetColIndices = ...
@@ -117,7 +128,7 @@ while ~isDone(hVideoSource)
                         'Color', 'white');
     % Display the offset (displacement) values on the input image
     txt = sprintf('(%+05.1f,%+05.1f)', Offset);
-    input = insertText(input(:,:,1),[191 215],txt,'FontSize',16, ...
+    input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
@@ -144,11 +155,13 @@ plot(1:size(MoveDist,1),MoveDist(:,1),'r')
 title('Object Movement Between Frames')
 xlabel('Frame')
 ylabel('Pixels (x)')
+grid on
 subplot(2,1,2)
 plot(1:size(MoveDist,1),MoveDist(:,2),'b')
 title('Object Movement Between Frames')
 xlabel('Frame')
 ylabel('Pixels (y)')
+grid on
 % subplot(3,1,3)
 % plot(1:size(ballData,1),ballData,'.k')
 
@@ -158,13 +171,18 @@ plot(1:size(TargetPosition,1),TargetPosition(:,1),'r')
 title('Object Position per Frame')
 xlabel('Frame')
 ylabel('Position (Pixels) (x)')
+grid on
 subplot(2,1,2)
 plot(1:size(TargetPosition,1),TargetPosition(:,2),'b')
 title('Object Position per Frame')
 xlabel('Frame')
 ylabel('Position (Pixels) (y)')
+grid on
 % subplot(3,1,3)
 % plot(1:size(ballData,1),ballData,'.k')
+
+figure(3)
+plot(TargetPosition(:,1),TargetPosition(:,2));
 
 %% Conclusion
 % Using the Computer Vision System Toolbox(TM) functionality from
