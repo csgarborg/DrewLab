@@ -1,44 +1,75 @@
-%% Video Stabilization
-% This example shows how to remove the effect of camera motion from a video stream.
-
-%   Copyright 2006-2014 The MathWorks, Inc.
-
-clc;
-close all;
-clear;
-
-%% Introduction
-% In this example we first define the target to track. In this case, it is the
-% back of a car and the license plate. We also establish a dynamic search
-% region, whose position is determined by the last known target location.
-% We then search for the target only within this search region, which
-% reduces the number of computations required to find the target. In each
-% subsequent video frame, we determine how much the target has moved
-% relative to the previous frame. We use this information to remove
-% unwanted translational camera motions and generate a stabilized video. 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FUNCTION NAME:    motionTracking2P
+%
+% FUNCTION:         motionTracking2P(tifFileName,redoFilterTF,tifFrameBounds)
+%
+% DESCRIPTION:      Processes a tif file and extracts movement data based
+%                   on user inputs
+%
+% INPUT:
+%
+% VARIABLES:
+%
+% OUTPUT:
+%
+% FUNCTIONS USED:
+%
+% LIBARIES USED:
+%
+% NOTES:
+%
+% WRITTEN BY:       Spencer Garborg 1/22/19
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,tifFrameBounds)
 %% Initialization
-% Create a System object(TM) to read video from a multimedia file. We set the
-% output to be of intensity only video.
+close all;
 
 % Input video file which needs to be stabilized.
-tifFileName = 'F:\19-01-18_PaperExp\190118_006.TIF';
-redoFilterTF = false;
+if exist('tifFrameBounds','var')
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,tifFrameBounds);
+else
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF);
+    tifFrameBounds = [1 length(imfinfo(tifFileName))];
+end  
 
-aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,[275 775]);
+% Get calibration values
+if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat','file')
+    load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
+else
+    disp('No calibration file found')
+    return
+end
+fns = fieldnames(calibrationValues);
+if ~isempty(fns)
+    if ~any(strcmp(['file_' calibrationFileString],fns))
+        disp('No matching calibration values found')
+        return
+    end
+    calibrationFileString = ['file_' calibrationFileString];
+else
+    disp('No calibration values found');
+    return
+end
 
+% Get file name
+[tokens,~] = regexpi(tifFileName,'\\([^\\]*).TIF','tokens','match');
+fileName = tokens{1}{1};
+
+% Create a System object(TM) to read video from a multimedia file. We set the
+% output to be of intensity only video.
 hVideoSource = vision.VideoFileReader(aviFileName, ...
                                       'ImageColorSpace', 'Intensity',...
                                       'VideoOutputDataType', 'double');
 
-%%
+%% Create template
 % Create a template matcher System object to compute the location of the
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
 hTM = vision.TemplateMatcher('ROIInputPort', true, ...
                             'BestMatchNeighborhoodOutputPort', true);
                         
-%%
+%% Create motion tracking output display
 % Create a System object to display the original video and the stabilized
 % video.
 hVideoOut = vision.VideoPlayer('Name', 'Video Stabilization');
@@ -46,16 +77,18 @@ hVideoOut.Position(1) = round(0.4*hVideoOut.Position(1));
 hVideoOut.Position(2) = round(.5*(hVideoOut.Position(2)));
 hVideoOut.Position(3:4) = [1050 550];
 
-%% Here we initialize some variables used in the processing loop.
+%% Initialize variables for processing loop
 % Get target window
-imshow(imread(tifFileName, 275));
+imshow(imread(tifFileName, tifFrameBounds(1)));
+title('Select upper left, then lower right target corners and press enter');
 [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
 close(gcf);
 pos.template_orig = [inputCoordTargetX(1) inputCoordTargetY(1)]; % [x y] upper left corner
 pos.template_size = [inputCoordTargetX(2) inputCoordTargetY(2)] - [inputCoordTargetX(1) inputCoordTargetY(1)];   % [width height]
 
 % Get search window
-imshow(imread(tifFileName, 275));
+imshow(imread(tifFileName, tifFrameBounds(1)));
+title('Select upper left search area corner (target box pictured) and press enter');
 rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
 [inputCoordSearchX,inputCoordSearchY] = getpts(gcf);
 close(gcf);
@@ -65,8 +98,8 @@ pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputC
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
 fileInfo = info(hVideoSource);
-W = fileInfo.VideoSize(1); % Width in pixels
-H = fileInfo.VideoSize(2); % Height in pixels
+W = fileInfo.VideoSize(1); % Width of video in pixels
+H = fileInfo.VideoSize(2); % Height of video in pixels
 sz = fileInfo.VideoSize;
 BorderCols = [1:pos.search_border(1)+4 W-pos.search_border(1)+4:W];
 BorderRows = [1:pos.search_border(2)+4 H-pos.search_border(2)+4:H];
@@ -78,13 +111,15 @@ SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
 Target = zeros(18,22);
 firstTime = true;
+n = 1;
+MoveDist = [];
+TargetPosition = [0,0];
+pixelsPerMicron = calibrationValues.(calibrationFileString).pixelsPerMicron;
+micronsPerPixel = calibrationValues.(calibrationFileString).micronsPerPixel;
 
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
-n = 1;
-MoveDist = [];
-TargetPosition = [0,0];
 while ~isDone(hVideoSource)
     input = hVideoSource();
 
@@ -134,9 +169,15 @@ while ~isDone(hVideoSource)
     hVideoOut([input(:,:,1) Stabilized]);
     
     % Add pixel motion to data
-    MoveDist = [MoveDist;MotionVector];
-    TargetPosition = [TargetPosition;TargetPosition(end,:)+MotionVector];
+    MoveDist = [MoveDist;MotionVector*micronsPerPixel];
+    TargetPosition = [TargetPosition;TargetPosition(end,:)+(MotionVector*micronsPerPixel)];
 end
+
+if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
+    load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
+end
+
+fns = fieldnames(calibrationValues);
 
 %% Release
 % Here you call the release method on the objects to close any open files
@@ -154,13 +195,13 @@ subplot(2,1,1)
 plot(1:size(MoveDist,1),MoveDist(:,1),'r')
 title('Object Movement Between Frames')
 xlabel('Frame')
-ylabel('Pixels (x)')
+ylabel('X Movement (\mum)')
 grid on
 subplot(2,1,2)
 plot(1:size(MoveDist,1),MoveDist(:,2),'b')
 title('Object Movement Between Frames')
 xlabel('Frame')
-ylabel('Pixels (y)')
+ylabel('Y Movement (\mum)')
 grid on
 % subplot(3,1,3)
 % plot(1:size(ballData,1),ballData,'.k')
@@ -170,33 +211,28 @@ subplot(2,1,1)
 plot(1:size(TargetPosition,1),TargetPosition(:,1),'r')
 title('Object Position per Frame')
 xlabel('Frame')
-ylabel('Position (Pixels) (x)')
+ylabel('X Position (\mum)')
 grid on
 subplot(2,1,2)
 plot(1:size(TargetPosition,1),TargetPosition(:,2),'b')
 title('Object Position per Frame')
 xlabel('Frame')
-ylabel('Position (Pixels) (y)')
+ylabel('Y Position (\mum)')
 grid on
 % subplot(3,1,3)
 % plot(1:size(ballData,1),ballData,'.k')
 
 figure(3)
 k = convhull(TargetPosition(:,1),TargetPosition(:,2));
-plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k.');
+plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k');
 maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
 maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
 axis([-maxX maxX -maxY maxY])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
-
-%% Conclusion
-% Using the Computer Vision System Toolbox(TM) functionality from
-% MATLAB(R) command line it is easy to implement complex systems like video
-% stabilization.
-
-%% Appendix
-% The following helper function is used in this example.
-%
-% * <matlab:edit('updatesearch.m') updatesearch.m>
+release(ax)
+title('Position of Target Object')
+xlabel('\mum')
+ylabel('\mum')
+end
