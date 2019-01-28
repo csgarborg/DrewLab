@@ -149,6 +149,7 @@ while ~isDone(hVideoSource)
     hVideoOut([input(:,:,1) Stabilized]);
     
     % Add pixel motion to data
+    MotionVector(2) = -MotionVector(2);
     MoveDist = [MoveDist;MotionVector];
     TargetPosition = [TargetPosition;TargetPosition(end,:)+MotionVector];
 end
