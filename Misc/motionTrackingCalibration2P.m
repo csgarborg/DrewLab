@@ -21,18 +21,19 @@
 % WRITTEN BY:       Spencer Garborg 1/23/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTrackingCalibration2P(tifFileName,redoFilterTF,tifFrameBounds,micronJumpVal)
+function motionTrackingCalibration2P(tifFileName,redoFilterTF,micronJumpVal,medFiltTF,tifFrameBounds)
 %% Initialization
 close all;
 
 % Input video file which needs to be stabilized.
 if exist('tifFrameBounds','var')
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,tifFrameBounds);
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,tifFrameBounds);
 else
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF);
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF);
     tifFrameBounds = [1 length(imfinfo(tifFileName))];
 end
 
+% Get file name
 [tokens,~] = regexpi(tifFileName,'\\([^\\]*).TIF','tokens','match');
 fileName = tokens{1}{1};
 

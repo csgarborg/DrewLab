@@ -23,7 +23,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,framesVec)
+function aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,framesVec)
 %% Check to see if overwriting AVI file or using 
 
 aviFileName = [tifFileName(1:end-4) '_filtered.avi'];
@@ -43,11 +43,16 @@ end
 
 imageStack = cell(1,tifLength);
 for k = framesVec(1):framesVec(2)
-    imageStack{1,k-framesVec(1)+1} = imread(tifFileName, k);
+    if medFiltTF
+        imageStack{1,k-framesVec(1)+1} = medfilt2(imread(tifFileName, k));
+    else
+        imageStack{1,k-framesVec(1)+1} = imread(tifFileName, k);
+    end
 end
 
+[H,W] = size(imageStack{1,1});
 imageStackMat = cell2mat(imageStack);
-imageStackMat = double(reshape(imageStackMat,148,512,tifLength));
+imageStackMat = double(reshape(imageStackMat,H,W,tifLength));
 
 %% Create filter
 

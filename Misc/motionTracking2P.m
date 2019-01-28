@@ -21,15 +21,15 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,tifFrameBounds)
+function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,medFiltTF,tifFrameBounds)
 %% Initialization
 close all;
 
 % Input video file which needs to be stabilized.
 if exist('tifFrameBounds','var')
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,tifFrameBounds);
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,tifFrameBounds);
 else
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF);
+    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF);
     tifFrameBounds = [1 length(imfinfo(tifFileName))];
 end  
 
@@ -114,7 +114,6 @@ firstTime = true;
 n = 1;
 MoveDist = [];
 TargetPosition = [0,0];
-pixelsPerMicron = calibrationValues.(calibrationFileString).pixelsPerMicron;
 micronsPerPixel = calibrationValues.(calibrationFileString).micronsPerPixel;
 
 %% Stream Processing Loop
@@ -177,8 +176,6 @@ if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
     load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
 end
 
-fns = fieldnames(calibrationValues);
-
 %% Release
 % Here you call the release method on the objects to close any open files
 % and devices.
@@ -227,12 +224,25 @@ k = convhull(TargetPosition(:,1),TargetPosition(:,2));
 plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k');
 maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
 maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
+axis equal square
 axis([-maxX maxX -maxY maxY])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
-release(ax)
 title('Position of Target Object')
 xlabel('\mum')
 ylabel('\mum')
+
+% Write data values to .mat file structure
+movementData.fileName = fileName;
+movementData.MoveDist = MoveDist;
+movementData.TargetPosition = TargetPosition;
+movementData.calibrationFileString = calibrationFileString;
+movementData.micronsPerPixel = micronsPerPixel;
+movementData.frames = tifFrameBounds;
+movementData.imageSize = sz;
+movementData.medFiltTF = medFiltTF;
+movementData.pos = pos;
+
+save([tifFileName(1:end-4) '_processed.mat'],'movementData');
 end
