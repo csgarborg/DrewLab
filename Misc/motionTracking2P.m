@@ -188,51 +188,6 @@ release(hVideoSource);
 % ballData = fread(ballDataID);
 % fclose(ballDataID);
 
-subplot(2,1,1)
-plot(1:size(MoveDist,1),MoveDist(:,1),'r')
-title('Object Movement Between Frames')
-xlabel('Frame')
-ylabel('X Movement (\mum)')
-grid on
-subplot(2,1,2)
-plot(1:size(MoveDist,1),MoveDist(:,2),'b')
-title('Object Movement Between Frames')
-xlabel('Frame')
-ylabel('Y Movement (\mum)')
-grid on
-% subplot(3,1,3)
-% plot(1:size(ballData,1),ballData,'.k')
-
-figure(2)
-subplot(2,1,1)
-plot(1:size(TargetPosition,1),TargetPosition(:,1),'r')
-title('Object Position per Frame')
-xlabel('Frame')
-ylabel('X Position (\mum)')
-grid on
-subplot(2,1,2)
-plot(1:size(TargetPosition,1),TargetPosition(:,2),'b')
-title('Object Position per Frame')
-xlabel('Frame')
-ylabel('Y Position (\mum)')
-grid on
-% subplot(3,1,3)
-% plot(1:size(ballData,1),ballData,'.k')
-
-figure(3)
-k = convhull(TargetPosition(:,1),TargetPosition(:,2));
-plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k');
-maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
-maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
-axis equal square
-axis([-maxX maxX -maxY maxY])
-ax = gca;
-ax.XAxisLocation = 'origin';
-ax.YAxisLocation = 'origin';
-title('Position of Target Object')
-xlabel('\mum')
-ylabel('\mum')
-
 % Write data values to .mat file structure
 movementData.fileName = fileName;
 movementData.MoveDist = MoveDist;
@@ -244,5 +199,9 @@ movementData.imageSize = sz;
 movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
 
-save([tifFileName(1:end-4) '_processed.mat'],'movementData');
+matFileName = [tifFileName(1:end-4) '_processed.mat'];
+save(matFileName,'movementData');
+
+% Plot data
+plotMotionTracking(matFileName);
 end

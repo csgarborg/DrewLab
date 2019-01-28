@@ -265,8 +265,12 @@ k = convhull(TargetPosition(:,1),TargetPosition(:,2));
 plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k.');
 maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
 maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
+axis equal square
 axis([-maxX maxX -maxY maxY])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
+title('Position of Target Object')
+xlabel('pixels')
+ylabel('pixels')
 end
