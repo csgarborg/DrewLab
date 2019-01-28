@@ -79,7 +79,12 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-imshow(imread(tifFileName, tifFrameBounds(1)));
+if medFiltTF
+    initialImage = medfilt2(imread(tifFileName, tifFrameBounds(1)));
+else
+    initialImage = imread(tifFileName, tifFrameBounds(1));
+end
+imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
 [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
 close(gcf);
@@ -87,7 +92,7 @@ pos.template_orig = [inputCoordTargetX(1) inputCoordTargetY(1)]; % [x y] upper l
 pos.template_size = [inputCoordTargetX(2) inputCoordTargetY(2)] - [inputCoordTargetX(1) inputCoordTargetY(1)];   % [width height]
 
 % Get search window
-imshow(imread(tifFileName, tifFrameBounds(1)));
+imshow(initialImage);
 title('Select upper left search area corner (target box pictured) and press enter');
 rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
 [inputCoordSearchX,inputCoordSearchY] = getpts(gcf);

@@ -60,7 +60,12 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-imshow(imread(tifFileName, tifFrameBounds(1)));
+if medFiltTF
+    initialImage = medfilt2(imread(tifFileName, tifFrameBounds(1)));
+else
+    initialImage = imread(tifFileName, tifFrameBounds(1));
+end
+imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
 [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
 close(gcf);
