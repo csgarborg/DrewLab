@@ -69,16 +69,20 @@ imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
 [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
 close(gcf);
+inputCoordTargetX = round(inputCoordTargetX);
+inputCoordTargetY = round(inputCoordTargetY);
 pos.template_orig = [inputCoordTargetX(1) inputCoordTargetY(1)]; % [x y] upper left corner
 pos.template_size = [inputCoordTargetX(2) inputCoordTargetY(2)] - [inputCoordTargetX(1) inputCoordTargetY(1)];   % [width height]
 
 % Get search window
-% imshow(imread(tifFileName, tifFrameBounds(1)));
-% title('Select upper left search area corner (target box pictured)');
-% rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
-% [inputCoordSearchX,inputCoordSearchY] = getpts(gcf);
-% close(gcf);
-% pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputCoordSearchY(1) - inputCoordTargetY(1))];   % max horizontal and vertical displacement
+imshow(initialImage);
+title('Select upper left search area corner (target box pictured) and press enter');
+rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
+[inputCoordSearchX,inputCoordSearchY] = getpts(gcf);
+close(gcf);
+inputCoordSearchX = round(inputCoordSearchX);
+inputCoordSearchY = round(inputCoordSearchY);
+pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputCoordSearchY(1) - inputCoordTargetY(1))];   % max horizontal and vertical displacement
 
 % Calculate important parameters
 pos.template_center = floor((pos.template_size-1)/2);
@@ -87,7 +91,7 @@ fileInfo = info(hVideoSource);
 W = fileInfo.VideoSize(1); % Width of video in pixels
 H = fileInfo.VideoSize(2); % Height of video in pixels
 sz = fileInfo.VideoSize;
-pos.search_border = [W-10 H-10];
+% pos.search_border = [W-10 H-10];
 BorderCols = [1:pos.search_border(1)+4 W-pos.search_border(1)+4:W];
 BorderRows = [1:pos.search_border(2)+4 H-pos.search_border(2)+4:H];
 TargetRowIndices = ...
@@ -132,7 +136,7 @@ while ~isDone(hVideoSource)
     Stabilized = imtranslate(input, Offset, 'linear');
     
     if n == 1
-        Target = Stabilized(TargetRowIndices, TargetColIndices);
+        Target = Stabilized(round(TargetRowIndices), round(TargetColIndices));
         n = 0;
     end
 
@@ -175,13 +179,13 @@ subplot(2,1,1)
 plot(1:size(MoveDist,1),MoveDist(:,1),'r')
 title('Object Movement Between Frames')
 xlabel('Frame')
-ylabel('Pixels (x)')
+ylabel('X Movement (Pixels)')
 grid on
 subplot(2,1,2)
 plot(1:size(MoveDist,1),MoveDist(:,2),'b')
 title('Object Movement Between Frames')
 xlabel('Frame')
-ylabel('Pixels (y)')
+ylabel('Y Movement (Pixels)')
 grid on
 % subplot(3,1,3)
 % plot(1:size(ballData,1),ballData,'.k')
@@ -204,7 +208,7 @@ while cont
     hold off
     title('Object Position per Frame')
     xlabel('Frame')
-    ylabel('Position (Pixels) (x)')
+    ylabel('X Position (Pixels)')
     axis([-10 ceil(size(TargetPosition,1)/10)*10 floor(min(TargetPosition(:,1))/10)*10 ceil(max(TargetPosition(:,1))/10)*10])
     grid on
     subplot(2,1,2)
@@ -222,7 +226,7 @@ while cont
     hold off
     title('Object Position per Frame')
     xlabel('Frame')
-    ylabel('Position (Pixels) (y)')
+    ylabel('Y Position (Pixels)')
     axis([-10 ceil(size(TargetPosition,1)/10)*10 floor(min(TargetPosition(:,2))/10)*10 ceil(max(TargetPosition(:,2))/10)*10])
     grid on
     selectedCoord = ginput(1);
@@ -268,7 +272,7 @@ save('C:\Workspace\Code\DrewLab\calibrationValues.mat','calibrationValues');
 
 figure(3)
 k = convhull(TargetPosition(:,1),TargetPosition(:,2));
-plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k.');
+plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k');
 maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
 maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
 axis equal square

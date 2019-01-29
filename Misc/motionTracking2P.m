@@ -88,6 +88,8 @@ imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
 [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
 close(gcf);
+inputCoordTargetX = round(inputCoordTargetX);
+inputCoordTargetY = round(inputCoordTargetY);
 pos.template_orig = [inputCoordTargetX(1) inputCoordTargetY(1)]; % [x y] upper left corner
 pos.template_size = [inputCoordTargetX(2) inputCoordTargetY(2)] - [inputCoordTargetX(1) inputCoordTargetY(1)];   % [width height]
 
@@ -97,6 +99,8 @@ title('Select upper left search area corner (target box pictured) and press ente
 rectangle('Position',[pos.template_orig(1) pos.template_orig(2) pos.template_size(1) pos.template_size(2)],'EdgeColor','w');
 [inputCoordSearchX,inputCoordSearchY] = getpts(gcf);
 close(gcf);
+inputCoordSearchX = round(inputCoordSearchX);
+inputCoordSearchY = round(inputCoordSearchY);
 pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputCoordSearchY(1) - inputCoordTargetY(1))];   % max horizontal and vertical displacement
 
 % Calculate important parameters
