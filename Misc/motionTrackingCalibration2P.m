@@ -273,14 +273,13 @@ save('C:\Workspace\Code\DrewLab\calibrationValues.mat','calibrationValues');
 figure(3)
 k = convhull(TargetPosition(:,1),TargetPosition(:,2));
 plot(TargetPosition(k,1),TargetPosition(k,2),'b',TargetPosition(:,1),TargetPosition(:,2),'k');
-maxX = ceil(max(abs(TargetPosition(:,1)))/10)*10;
-maxY = ceil(max(abs(TargetPosition(:,2)))/10)*10;
+maxVal = ceil(max(max(abs(TargetPosition)))/10)*10;
 axis equal square
-axis([-maxX maxX -maxY maxY])
+axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
 title('Position of Target Object')
-xlabel('pixels')
-ylabel('pixels')
+xlabel('Pixels')
+ylabel('Pixels')
 end

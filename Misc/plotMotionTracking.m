@@ -60,10 +60,9 @@ grid on
 figure(3)
 k = convhull(movementData.TargetPosition(:,1),movementData.TargetPosition(:,2));
 plot(movementData.TargetPosition(k,1),movementData.TargetPosition(k,2),'b',movementData.TargetPosition(:,1),movementData.TargetPosition(:,2),'k');
-maxX = ceil(max(abs(movementData.TargetPosition(:,1)))/10)*10;
-maxY = ceil(max(abs(movementData.TargetPosition(:,2)))/10)*10;
+maxVal = ceil(max(max(abs(movementData.TargetPosition)))/10)*10;
 axis equal square
-axis([-maxX maxX -maxY maxY])
+axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
