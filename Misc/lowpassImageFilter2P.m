@@ -84,9 +84,9 @@ end
 aviObject = VideoWriter(aviFileName,'Uncompressed AVI');
 open(aviObject);
  
-f = waitbar(0,'Creating AVI file');
+f = waitbar(0,'Creating input AVI file');
 for k = 1:tifLength
-    waitbar(round(k/tifLength,2),f,'Creating AVI file');
+    waitbar(round(k/tifLength,2),f,'Creating input AVI file');
 %     imagesc(filteredData(:,:,k));
 %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
     writeVideo(aviObject,mat2gray(filteredData(:,:,k)));

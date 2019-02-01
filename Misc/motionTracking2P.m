@@ -21,7 +21,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,medFiltTF,tifFrameBounds)
+function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,medFiltTF,saveOutputVideoTF,framesPerSecond,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -120,10 +120,15 @@ SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
 Target = zeros(18,22);
 firstTime = true;
+firstTimeTarget = true;
 n = 1;
-MoveDist = [];
-TargetPosition = [0,0];
+moveDist = [];
+velocity = [];
+targetPosition = [0,0];
 micronsPerPixel = calibrationValues.(calibrationFileString).micronsPerPixel;
+secondsPerFrame = 1/framesPerSecond;
+tifLength = tifFrameBounds(2)-tifFrameBounds(1)+1;
+imageStack = cell(1,tifLength);
 
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
@@ -134,7 +139,7 @@ while ~isDone(hVideoSource)
     % Find location of Target in the input video frame
     if firstTime
       Idx = int32(pos.template_center_pos);
-      MotionVector = [0 0];
+      motionVector = [0 0];
       firstTime = false;
     else
       IdxPrev = Idx;
@@ -143,20 +148,20 @@ while ~isDone(hVideoSource)
       ROI = [SearchRegion, pos.template_size+2*pos.search_border];
       Idx = hTM(input,Target,ROI);
       
-      MotionVector = double(Idx-IdxPrev);
+      motionVector = double(Idx-IdxPrev);
     end
 
-%     [Offset, SearchRegion] = updatesearch(sz, MotionVector, ...
+%     [Offset, SearchRegion] = updatesearch(sz, motionVector, ...
 %         SearchRegion, Offset, pos);
-    [Offset] = updatesearch(sz, MotionVector, ...
+    [Offset] = updatesearch(sz, motionVector, ...
         SearchRegion, Offset, pos);
 
     % Translate video frame to offset the camera motion
     Stabilized = imtranslate(input, Offset, 'linear');
     
-    if n == 1
+    if firstTimeTarget
         Target = Stabilized(TargetRowIndices, TargetColIndices);
-        n = 0;
+        firstTimeTarget = false;
     end
 
     % Add black border for display
@@ -176,10 +181,17 @@ while ~isDone(hVideoSource)
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
     
+    % Save output video to variable
+    if saveOutputVideoTF
+        imageStack{1,n} = [input(:,:,1) Stabilized];
+        n = n + 1;
+    end
+    
     % Add pixel motion to data
-    MotionVector(2) = -MotionVector(2);
-    MoveDist = [MoveDist;MotionVector*micronsPerPixel];
-    TargetPosition = [TargetPosition;TargetPosition(end,:)+(MotionVector*micronsPerPixel)];
+    motionVector(2) = -motionVector(2);
+    moveDist = [moveDist;motionVector*micronsPerPixel];
+    velocity = [velocity;sqrt((motionVector(1)*micronsPerPixel)^2+(motionVector(2)*micronsPerPixel)^2)/secondsPerFrame];
+    targetPosition = [targetPosition;targetPosition(end,:)+(motionVector*micronsPerPixel)];
 end
 
 if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
@@ -193,21 +205,48 @@ release(hVideoSource);
 
 %% Output data
 
+% Save output video to AVI file
+if saveOutputVideoTF
+    [HOut,WOut] = size(imageStack{1,1});
+    imageStackMat = cell2mat(imageStack);
+    imageStackMat = double(reshape(imageStackMat,HOut,WOut,tifLength));
+    aviFileNameOutput = [tifFileName(1:end-4) '_output.avi'];
+    if exist(aviFileNameOutput,'file')
+        delete(aviFileNameOutput)
+    end
+    aviObject = VideoWriter(aviFileNameOutput,'Uncompressed AVI');
+    aviObject.FrameRate = 10;
+    open(aviObject);
+    f = waitbar(0,'Creating output AVI file');
+    for k = 1:tifLength
+        waitbar(round(k/tifLength,2),f,'Creating output AVI file');
+        %     imagesc(filteredData(:,:,k));
+        %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
+        writeVideo(aviObject,imageStackMat(:,:,k));
+    end
+    close(f)
+    close(aviObject);
+end
+
 % Get binary ball data to compare to frame movement data
-% ballDataID = fopen([tifFileName(1:end-3) 'bin']);
-% ballData = fread(ballDataID);
-% fclose(ballDataID);
+secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
+ballData = load([tifFileName(1:end-3) 'txt']);
+ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
+ballData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
 
 % Write data values to .mat file structure
 movementData.fileName = fileName;
-movementData.MoveDist = MoveDist;
-movementData.TargetPosition = TargetPosition;
+movementData.moveDist = moveDist;
+movementData.velocity = velocity;
+movementData.targetPosition = targetPosition;
 movementData.calibrationFileString = calibrationFileString;
 movementData.micronsPerPixel = micronsPerPixel;
 movementData.frames = tifFrameBounds;
 movementData.imageSize = sz;
 movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
+movementData.ballData = ballData;
+movementData.secondsPerFrame = secondsPerFrame;
 
 matFileName = [tifFileName(1:end-4) '_processed.mat'];
 save(matFileName,'movementData');

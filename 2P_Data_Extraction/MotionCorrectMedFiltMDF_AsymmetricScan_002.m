@@ -9,14 +9,14 @@ if exist('temporal_filter_size','var')==0
     temporal_filter_size=input('How many frames for median filter?');
 end
 if exist('ChunkSize','var')==0
-    ChunkSize=9288; %number of frames to be exported to memory at same time
+    ChunkSize=5000; %number of frames to be exported to memory at same time
 end
 if exist('Analog_Channel_Num','var')==0
-    Analog_Channel_Num=3;
+    Analog_Channel_Num=1;
 end
 
 if exist('PixelOffset','var')==0
-     PixelOffset=4;
+     PixelOffset=0;
 end
 thepath=cd;
 TheFile=[thepath '\' fname];
