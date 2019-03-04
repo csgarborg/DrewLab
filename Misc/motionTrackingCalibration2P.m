@@ -21,7 +21,7 @@
 % WRITTEN BY:       Spencer Garborg 1/23/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTrackingCalibration2P(tifFileName,redoFilterTF,micronJumpVal,medFiltTF,saveOutputVideoTF,framesPerSecond,tifFrameBounds)
+function motionTrackingCalibration2P(tifFileName,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,micronJumpVal,framesPerSecond,objMag,digMag,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -30,7 +30,7 @@ if exist('tifFrameBounds','var')
     aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,tifFrameBounds);
 else
     aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF);
-    tifFrameBounds = [1 length(imfinfo(tifFileName))];
+    tifFrameBounds = [2 length(imfinfo(tifFileName))];
 end
 
 % Get file name
@@ -47,6 +47,8 @@ hVideoSource = vision.VideoFileReader(aviFileName, ...
 % Create a template matcher System object to compute the location of the
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
+% hTM = vision.TemplateMatcher('ROIInputPort', true, ...
+%                             'BestMatchNeighborhoodOutputPort', true, 'SearchMethod', 'Three-step');
 hTM = vision.TemplateMatcher('ROIInputPort', true, ...
                             'BestMatchNeighborhoodOutputPort', true);
                         
@@ -102,8 +104,9 @@ SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
 Target = zeros(18,22);
 firstTime = true;
-firstTimeTarget = true;
 n = 1;
+targetNum = 0;
+targetSum = zeros(length(TargetRowIndices),length(TargetColIndices));
 moveDist = [];
 velocity = [];
 targetPosition = [0,0];
@@ -132,17 +135,21 @@ while ~isDone(hVideoSource)
       motionVector = double(Idx-IdxPrev);
     end
 
-%     [Offset, SearchRegion] = updatesearch(sz, motionVector, ...
-%         SearchRegion, Offset, pos);
-    [Offset] = updatesearch(sz, motionVector, ...
-        SearchRegion, Offset, pos);
+    if updateSearchTF
+        [Offset, SearchRegion] = updatesearch(sz, motionVector, ...
+            SearchRegion, Offset, pos);
+    else
+        [Offset] = updatesearch(sz, motionVector, ...
+            SearchRegion, Offset, pos);
+    end
 
     % Translate video frame to offset the camera motion
     Stabilized = imtranslate(input, Offset, 'linear');
     
-    if firstTimeTarget
-        Target = Stabilized(round(TargetRowIndices), round(TargetColIndices));
-        firstTimeTarget = false;
+    targetNum = targetNum + 1;
+    if targetNum <= 10
+        targetSum = targetSum + Stabilized(round(TargetRowIndices), round(TargetColIndices));
+        Target = targetSum ./ targetNum;
     end
 
     % Add black border for display
@@ -211,48 +218,49 @@ ballData = load([tifFileName(1:end-3) 'txt']);
 ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
 ballData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
 
-figure('Color','White')
+% Generate plots
+subtitle = [num2str(framesPerSecond) ' Frames/s, ' num2str(secondsPerFrame*(diff(tifFrameBounds)+1)) ' Seconds, ' num2str(micronJumpVal) ' ' char(181) 'm Jumps, ' num2str(objMag*digMag) 'x Magnification (' num2str(objMag) 'x Objective, ' num2str(digMag) 'x Digital)'];
+h(1) = figure('Color','White');
 subplot(3,1,1)
 plot(1:size(moveDist,1),moveDist(:,1),'r')
-title('Object Movement Between Frames')
+title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
 xlabel('Frame')
 ylabel('X Movement (Pixels)')
 grid on
-axis([1 size(moveDist,1) floor(min(moveDist(:,1))/10)*10 ceil(max(moveDist(:,1))/10)*10])
+axis([1 size(moveDist,1) floor(min([moveDist(:,1);moveDist(:,2)])/10)*10 ceil(max([moveDist(:,1);moveDist(:,2)])/10)*10])
 subplot(3,1,2)
 plot(1:size(moveDist,1),moveDist(:,2),'b')
-title('Object Movement Between Frames')
 xlabel('Frame')
 ylabel('Y Movement (Pixels)')
 grid on
-axis([1 size(moveDist,1) floor(min(moveDist(:,2))/10)*10 ceil(max(moveDist(:,2))/10)*10])
+axis([1 size(moveDist,1) floor(min([moveDist(:,1);moveDist(:,2)])/10)*10 ceil(max([moveDist(:,1);moveDist(:,2)])/10)*10])
 subplot(3,1,3)
 plot(ballData(:,1),ballData(:,2),'k')
-title('Ball Movement')
+title('\fontsize{20pt}\bf{Ball Movement}')
 xlabel('Time (s)')
 ylabel('Movement')
 grid on
-axis([min(ballData(:,1)) max(ballData(:,1)) -1 1])
+axis([min(ballData(:,1)) max(ballData(:,1)) -1 ceil(max(ballData(:,2)))])
 
-figure('Color','White')
+h(2) = figure('Color','White');
 subplot(2,1,1)
 plot(1:length(velocity),velocity,'r')
-title('Object Velocity Between Frames')
+title(['\fontsize{20pt}\bf{Object Velocity Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
 xlabel('Frame')
 ylabel('Velocity (Pixels/s)')
 grid on
-axis([1 size(velocity,1) floor(min(velocity(:,1))/10)*10 ceil(max(velocity(:,1))/10)*10])
+axis([1 size(velocity,1) 0 ceil(max(velocity(:,1))/10)*10])
 subplot(2,1,2)
 plot(ballData(:,1),ballData(:,2),'k')
-title('Ball Movement')
+title('\fontsize{20pt}\bf{Ball Movement}')
 xlabel('Time (s)')
 ylabel('Movement')
 grid on
-axis([min(ballData(:,1)) max(ballData(:,1)) -1 1])
+axis([min(ballData(:,1)) max(ballData(:,1)) -1 ceil(max(ballData(:,2)))])
 
 frameSelection = [];
 cont = true;
-figure('Color','White','Name','Select frame starts and stops, select behind line to erase, press enter when finished','NumberTitle','off');
+h(3) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, press enter when finished','NumberTitle','off');
 while cont
     subplot(3,1,1)
     plot(1:size(targetPosition,1),targetPosition(:,1),'r')
@@ -267,10 +275,10 @@ while cont
         line([frameSelection(n) frameSelection(n)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','r','LineStyle','--');
     end
     hold off
-    title('Object Position per Frame')
+    title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
     xlabel('Frame')
     ylabel('X Position (Pixels)')
-    axis([1 ceil(size(targetPosition,1)/10)*10 floor(min(targetPosition(:,1))/10)*10 ceil(max(targetPosition(:,1))/10)*10])
+    axis([1 ceil(size(targetPosition,1)/10)*10 floor(min([targetPosition(:,1);targetPosition(:,2)])/10)*10 ceil(max([targetPosition(:,1);targetPosition(:,2)])/10)*10])
     grid on
     
     subplot(3,1,2)
@@ -286,19 +294,18 @@ while cont
         line([frameSelection(n) frameSelection(n)],[min(targetPosition(:,2)) max(targetPosition(:,2))],'Color','r','LineStyle','--');
     end
     hold off
-    title('Object Position per Frame')
     xlabel('Frame')
     ylabel('Y Position (Pixels)')
-    axis([1 ceil(size(targetPosition,1)/10)*10 floor(min(targetPosition(:,2))/10)*10 ceil(max(targetPosition(:,2))/10)*10])
+    axis([1 ceil(size(targetPosition,1)/10)*10 floor(min([targetPosition(:,1);targetPosition(:,2)])/10)*10 ceil(max([targetPosition(:,1);targetPosition(:,2)])/10)*10])
     grid on
     
     subplot(3,1,3)
     plot(ballData(:,1),ballData(:,2),'k')
-    title('Ball Movement')
+    title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('Movement')
     grid on
-    axis([min(ballData(:,1)) max(ballData(:,1)) -1 1])
+    axis([min(ballData(:,1)) max(ballData(:,1)) -1 ceil(max(ballData(:,2)))])
     
     selectedCoord = ginput(1);
     
@@ -311,45 +318,73 @@ while cont
     end
 end
 
-if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
-    load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
-end
-
 avgPixelPos = [];
 if length(frameSelection) < 4
     disp('Could not generate calibration values because too few points were selected')
+    return
 else
     if length(frameSelection)/2 ~= floor(length(frameSelection)/2)
         frameSelection = frameSelection(1:end-1);
     end
     for n = 1:length(frameSelection)/2
-        avgPixelPos(n,:) = [mean(targetPosition([frameSelection(n*2-1),frameSelection(n*2)],1)), mean(targetPosition([frameSelection(n*2-1),frameSelection(n*2)],2))];
+        avgPixelPos(n,:) = [mean(targetPosition(frameSelection(n*2-1):frameSelection(n*2),1)), mean(targetPosition(frameSelection(n*2-1):frameSelection(n*2),2))];
     end
     for n = 1:size(avgPixelPos,1)-1
         pixelDiff(n) = sqrt(((avgPixelPos(n+1,1)-avgPixelPos(n,1))^2) + ((avgPixelPos(n+1,2)-avgPixelPos(n,2))^2));
+        pixelDiffPos(n,:) = [mean([avgPixelPos(n+1,1), avgPixelPos(n,1)]), mean([avgPixelPos(n+1,2), avgPixelPos(n,2)])];
     end
-    avgPixelDiff = mean(pixelDiff);
-    
-    calibrationValues.(['file_' fileName]).pixelDiff = pixelDiff;
-    calibrationValues.(['file_' fileName]).avgPixelDiff = avgPixelDiff;
-    calibrationValues.(['file_' fileName]).micronJumpVal = micronJumpVal;
-    calibrationValues.(['file_' fileName]).pixelsPerMicron = avgPixelDiff/micronJumpVal;
-    calibrationValues.(['file_' fileName]).micronsPerPixel = micronJumpVal/avgPixelDiff;
-    calibrationValues.(['file_' fileName]).frames = tifFrameBounds;
-    
-    save('C:\Workspace\Code\DrewLab\calibrationValues.mat','calibrationValues');
 end
 
-figure('Color','White')
+h(4) = figure('Color','White');
 k = convhull(targetPosition(:,1),targetPosition(:,2));
 plot(targetPosition(k,1),targetPosition(k,2),'b',targetPosition(:,1),targetPosition(:,2),'k');
+hold on
+scatter(pixelDiffPos(:,1),pixelDiffPos(:,2),50,pixelDiff,'filled');
+colorbar;
+hold off
 maxVal = ceil(max(max(abs(targetPosition)))/10)*10;
 axis equal square
 axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
-title('Position of Target Object')
+title(['\fontsize{20pt}\bf{Position of Target Object}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
 xlabel('Pixels')
 ylabel('Pixels')
+
+% h(5) = figure('Color','White');
+% [uxy,~,idx] = unique([targetPosition(:,1),targetPosition(:,2)],'rows');
+% szscale = histc(idx,unique(idx));
+% [x1,y1] = meshgrid(-maxVal:.05:maxVal,-maxVal:.05:maxVal);
+% z1 = griddata(uxy(:,1),uxy(:,2),szscale,x1,y1);
+% pcolor(x1,y1,log(sqrt(z1)))
+% shading interp
+% axis equal square
+% axis([-maxVal maxVal -maxVal maxVal])
+% ax = gca;
+% ax.XAxisLocation = 'origin';
+% ax.YAxisLocation = 'origin';
+% title(['\fontsize{20pt}\bf{Position of Target Object}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+% xlabel('Pixels')
+% ylabel('Pixels')
+
+% Save figures to single .fig file
+savefig(h,[tifFileName(1:end-4) '_calibrationPlots.fig']);
+
+% Save calibration values
+if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
+    load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
+end
+
+if length(frameSelection) >= 4
+    calibrationValues.(['file_' fileName]).pixelDiff = pixelDiff;
+    calibrationValues.(['file_' fileName]).avgPixelDiff = mean(pixelDiff);
+    calibrationValues.(['file_' fileName]).micronJumpVal = micronJumpVal;
+    calibrationValues.(['file_' fileName]).pixelsPerMicron = mean(pixelDiff)/micronJumpVal;
+    calibrationValues.(['file_' fileName]).micronsPerPixel = micronJumpVal/mean(pixelDiff);
+    calibrationValues.(['file_' fileName]).frames = tifFrameBounds;
+    calibrationValues.(['file_' fileName]).pixelDiffPos = pixelDiffPos;
+    
+    save('C:\Workspace\Code\DrewLab\calibrationValues.mat','calibrationValues');
+end
 end

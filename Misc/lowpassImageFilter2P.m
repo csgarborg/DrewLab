@@ -35,20 +35,27 @@ end
 %% Convert TIF image stack to matrix
 
 if ~exist('framesVec','var')
-    tifLength = length(imfinfo(tifFileName));
-    framesVec = [1 tifLength];
+    tifLength = length(imfinfo(tifFileName)) - 1;
+    framesVec = [2 tifLength+1];
 else
     tifLength = framesVec(2) - framesVec(1) + 1;
 end
 
 imageStack = cell(1,tifLength);
-for k = framesVec(1):framesVec(2)
-    if medFiltTF
+if medFiltTF
+    f = waitbar(0,'Compiling and Filtering Images');
+    for k = framesVec(1):framesVec(2)
         imageStack{1,k-framesVec(1)+1} = medfilt2(imread(tifFileName, k));
-    else
+        waitbar(round(k/tifLength,2),f,'Compiling and Filtering Images');
+    end
+else
+    f = waitbar(0,'Compiling Unfiltered Images');
+    for k = framesVec(1):framesVec(2)
         imageStack{1,k-framesVec(1)+1} = imread(tifFileName, k);
+        waitbar(round(k/tifLength,2),f,'Compiling Unfiltered Images');
     end
 end
+close(f)
 
 [H,W] = size(imageStack{1,1});
 imageStackMat = cell2mat(imageStack);

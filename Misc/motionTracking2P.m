@@ -21,7 +21,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,redoFilterTF,calibrationFileString,medFiltTF,saveOutputVideoTF,framesPerSecond,tifFrameBounds)
+function motionTracking2P(tifFileName,calibrationFileString,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,framesPerSecond,objMag,digMag,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -30,7 +30,7 @@ if exist('tifFrameBounds','var')
     aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,tifFrameBounds);
 else
     aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF);
-    tifFrameBounds = [1 length(imfinfo(tifFileName))];
+    tifFrameBounds = [2 length(imfinfo(tifFileName))];
 end  
 
 % Get calibration values
@@ -66,6 +66,8 @@ hVideoSource = vision.VideoFileReader(aviFileName, ...
 % Create a template matcher System object to compute the location of the
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
+% hTM = vision.TemplateMatcher('ROIInputPort', true, ...
+%                             'BestMatchNeighborhoodOutputPort', true, 'SearchMethod', 'Three-step');
 hTM = vision.TemplateMatcher('ROIInputPort', true, ...
                             'BestMatchNeighborhoodOutputPort', true);
                         
@@ -120,8 +122,9 @@ SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
 Target = zeros(18,22);
 firstTime = true;
-firstTimeTarget = true;
 n = 1;
+targetNum = 0;
+targetSum = zeros(length(TargetRowIndices),length(TargetColIndices));
 moveDist = [];
 velocity = [];
 targetPosition = [0,0];
@@ -151,17 +154,21 @@ while ~isDone(hVideoSource)
       motionVector = double(Idx-IdxPrev);
     end
 
-%     [Offset, SearchRegion] = updatesearch(sz, motionVector, ...
-%         SearchRegion, Offset, pos);
-    [Offset] = updatesearch(sz, motionVector, ...
-        SearchRegion, Offset, pos);
+    if updateSearchTF
+        [Offset, SearchRegion] = updatesearch(sz, motionVector, ...
+            SearchRegion, Offset, pos);
+    else
+        [Offset] = updatesearch(sz, motionVector, ...
+            SearchRegion, Offset, pos);
+    end
 
     % Translate video frame to offset the camera motion
     Stabilized = imtranslate(input, Offset, 'linear');
     
-    if firstTimeTarget
-        Target = Stabilized(TargetRowIndices, TargetColIndices);
-        firstTimeTarget = false;
+    targetNum = targetNum + 1;
+    if targetNum <= 10
+        targetSum = targetSum + Stabilized(round(TargetRowIndices), round(TargetColIndices));
+        Target = targetSum ./ targetNum;
     end
 
     % Add black border for display
@@ -175,7 +182,7 @@ while ~isDone(hVideoSource)
     input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
                         'Color', 'white');
     % Display the offset (displacement) values on the input image
-    txt = sprintf('(%+05.1f,%+05.1f)', Offset);
+    txt = sprintf(['(%+05.1f' char(181) 'm,%+05.1f' char(181) 'm)'], Offset*micronsPerPixel);
     input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
@@ -247,6 +254,8 @@ movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
 movementData.ballData = ballData;
 movementData.secondsPerFrame = secondsPerFrame;
+movementData.objMag = objMag;
+movementData.digMag = digMag;
 
 matFileName = [tifFileName(1:end-4) '_processed.mat'];
 save(matFileName,'movementData');
