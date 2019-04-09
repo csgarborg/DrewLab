@@ -1,14 +1,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUNCTION NAME:    motionTracking2P
 %
-% FUNCTION:         motionTracking2P(tifFileName,redoFilterTF,tifFrameBounds)
+% FUNCTION:         motionTracking2P(tifFileName,calibrationFileString,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
 %
 % DESCRIPTION:      Processes a tif file and extracts movement data based
 %                   on user inputs
 %
-% INPUT:
+% INPUT:            tif must be extracted from MDF file and have the same name as ball data text file (also extracted from MDF file as ANSI encoding (8-bit))
 %
-% VARIABLES:
+% VARIABLES:        tifFileName: (string) complete path to tif data file
+%                   calibrationFileString: (string) the filename of the tif file that was processed through the calibration code to be used for this file (ex. 190315_001)
+%                   redoFilterTF: (logical) select false when data have already been filtered and output AVI created but want to reprocess without redoing the filter
+%                   updateSearchTF: (logical) false if the searched ROI should remain in the same selected place for tracking or true if should update every frame based on target location
+%                   medFiltTF: (logical) true if spatial median filter should be applied to the image data
+%                   saveOutputVideoTF: (logical) true if tracking output video should be saved to AVI file
+%                   threeStepTF: (logical) true if speed of tracking code is more important than accuracy - not every point of the cross-correlation is calculated and position of target is narrowed down quickly
+%                   compiledTifTF: (logical) true if tif file is larger than 4 GB and had to be stitched together in ImageJ from multiple seperate tif files
+%                   targetAvgNum: (double) number of targets to average together at the beginning of the tif to get final target used to match and track object
+%                   framesPerSecond: (double) frames per second value
+%                   objMag: (double) objective magnification value
+%                   digMag: (double) digital magnification value (in MSCAN)
+%                   turnabout: (double) turnabout value in MSCAN (affects calibration of image)
+%                   commentString: (string, NOT REQUIRED) include any notes about this run to be displayed on the output plots
+%                   tifFrameBounds: (1x2 double array, NOT REQUIRED) start and stop frames to process of the tif, default is 2nd frame to the end to avoid occasional distortion in first image
 %
 % OUTPUT:
 %
@@ -21,17 +35,23 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,calibrationFileString,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,framesPerSecond,objMag,digMag,tifFrameBounds)
+function motionTracking2P(tifFileName,calibrationFileString,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
 % Input video file which needs to be stabilized.
-if exist('tifFrameBounds','var')
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,tifFrameBounds);
+if compiledTifTF
+    [imStack,tifLength] = imread_big(tifFileName);
 else
-    aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF);
-    tifFrameBounds = [2 length(imfinfo(tifFileName))];
-end  
+    tifLength = length(imfinfo(tifFileName));
+end
+
+if exist('tifFrameBounds','var')
+    aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF,tifFrameBounds);
+else
+    aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF);
+    tifFrameBounds = [2 tifLength];
+end
 
 % Get calibration values
 if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat','file')
@@ -58,18 +78,17 @@ fileName = tokens{1}{1};
 
 % Create a System object(TM) to read video from a multimedia file. We set the
 % output to be of intensity only video.
-hVideoSource = vision.VideoFileReader(aviFileName, ...
-                                      'ImageColorSpace', 'Intensity',...
-                                      'VideoOutputDataType', 'double');
+hVideoSource = vision.VideoFileReader(aviFileName, 'ImageColorSpace', 'Intensity', 'VideoOutputDataType', 'double');
 
 %% Create template
 % Create a template matcher System object to compute the location of the
 % best match of the target in the video frame. We use this location to find
 % translation between successive video frames.
-% hTM = vision.TemplateMatcher('ROIInputPort', true, ...
-%                             'BestMatchNeighborhoodOutputPort', true, 'SearchMethod', 'Three-step');
-hTM = vision.TemplateMatcher('ROIInputPort', true, ...
-                            'BestMatchNeighborhoodOutputPort', true);
+if threeStepTF
+    hTM = vision.TemplateMatcher('ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true, 'SearchMethod', 'Three-step');
+else
+    hTM = vision.TemplateMatcher('ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true);
+end
                         
 %% Create motion tracking output display
 % Create a System object to display the original video and the stabilized
@@ -81,10 +100,18 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-if medFiltTF
-    initialImage = medfilt2(imread(tifFileName, tifFrameBounds(1)));
+if compiledTifTF
+    if medFiltTF
+        initialImage = medfilt2(imStack(:,:,tifFrameBounds(1)));
+    else
+        initialImage = imStack(:,:,tifFrameBounds(1));
+    end
 else
-    initialImage = imread(tifFileName, tifFrameBounds(1));
+    if medFiltTF
+        initialImage = medfilt2(imread(tifFileName,tifFrameBounds(1)));
+    else
+        initialImage = imread(tifFileName,tifFrameBounds(1));
+    end
 end
 imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
@@ -127,11 +154,16 @@ targetNum = 0;
 targetSum = zeros(length(TargetRowIndices),length(TargetColIndices));
 moveDist = [];
 velocity = [];
-targetPosition = [0,0];
-micronsPerPixel = calibrationValues.(calibrationFileString).micronsPerPixel;
-secondsPerFrame = 1/framesPerSecond;
+surfaceCalibFitX = calibrationValues.(calibrationFileString).surfaceCalibFitX;
+surfaceCalibFitY = calibrationValues.(calibrationFileString).surfaceCalibFitY;
 tifLength = tifFrameBounds(2)-tifFrameBounds(1)+1;
 imageStack = cell(1,tifLength);
+midlineX = round(W/2);
+midlineY = round(H/2);
+secondsPerFrame = 1/framesPerSecond;
+if ~exist('commentString','var') || isempty(commentString)
+    commentString = 'No comments';
+end
 
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
@@ -143,7 +175,6 @@ while ~isDone(hVideoSource)
     if firstTime
       Idx = int32(pos.template_center_pos);
       motionVector = [0 0];
-      firstTime = false;
     else
       IdxPrev = Idx;
 % IdxPrev = int32(pos.template_center_pos);
@@ -166,7 +197,7 @@ while ~isDone(hVideoSource)
     Stabilized = imtranslate(input, Offset, 'linear');
     
     targetNum = targetNum + 1;
-    if targetNum <= 10
+    if targetNum <= targetAvgNum
         targetSum = targetSum + Stabilized(round(TargetRowIndices), round(TargetColIndices));
         Target = targetSum ./ targetNum;
     end
@@ -182,7 +213,7 @@ while ~isDone(hVideoSource)
     input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
                         'Color', 'white');
     % Display the offset (displacement) values on the input image
-    txt = sprintf(['(%+05.1f' char(181) 'm,%+05.1f' char(181) 'm)'], Offset*micronsPerPixel);
+    txt = sprintf('(%+05.1f pixels,%+05.1f pixels)', Offset);
     input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
@@ -195,15 +226,31 @@ while ~isDone(hVideoSource)
     end
     
     % Add pixel motion to data
-    motionVector(2) = -motionVector(2);
-    moveDist = [moveDist;motionVector*micronsPerPixel];
-    velocity = [velocity;sqrt((motionVector(1)*micronsPerPixel)^2+(motionVector(2)*micronsPerPixel)^2)/secondsPerFrame];
-    targetPosition = [targetPosition;targetPosition(end,:)+(motionVector*micronsPerPixel)];
+    if firstTime
+        targetPositionPixel = [double(Idx(1)), H-double(Idx(2))+1];
+        targetPosition = [0 0];
+        firstTime = false;
+    else
+        motionVector(2) = -motionVector(2);
+        targetPositionPixel = [targetPositionPixel;targetPositionPixel(end,:)+motionVector];
+    end
 end
 
-if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat')
-    load('C:\Workspace\Code\DrewLab\calibrationValues.mat');
+movementLength = size(targetPositionPixel,1);
+f = waitbar(0,'Calculating position from calibration');
+for n = 2:movementLength
+    % Get x movement
+    micronDistTraveledX = getDistFromImCentX(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2),targetPositionPixel(n,1),targetPositionPixel(n,2),midlineX,surfaceCalibFitX);
+    
+    % Get y movement
+    micronDistTraveledY = getDistFromImCentY(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2),targetPositionPixel(n,1),targetPositionPixel(n,2),midlineY,surfaceCalibFitY);
+    
+    moveDist(n-1,:) = [micronDistTraveledX,micronDistTraveledY];
+    velocity(n-1,1) = sqrt((micronDistTraveledX)^2+(micronDistTraveledY)^2)/secondsPerFrame;
+    targetPosition(n,:) = targetPosition(n-1,:)+[micronDistTraveledX,micronDistTraveledY];
+    waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from calibration');
 end
+close(f)
 
 %% Release
 % Here you call the release method on the objects to close any open files
@@ -247,7 +294,6 @@ movementData.moveDist = moveDist;
 movementData.velocity = velocity;
 movementData.targetPosition = targetPosition;
 movementData.calibrationFileString = calibrationFileString;
-movementData.micronsPerPixel = micronsPerPixel;
 movementData.frames = tifFrameBounds;
 movementData.imageSize = sz;
 movementData.medFiltTF = medFiltTF;
@@ -256,10 +302,94 @@ movementData.ballData = ballData;
 movementData.secondsPerFrame = secondsPerFrame;
 movementData.objMag = objMag;
 movementData.digMag = digMag;
+movementData.turnabout = turnabout;
+movementData.commentString = commentString;
 
 matFileName = [tifFileName(1:end-4) '_processed.mat'];
 save(matFileName,'movementData');
 
 % Plot data
 plotMotionTracking(matFileName);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Subfunctions
+function micronDistTraveledX = getDistFromImCentX(prevPixelLocX,prevPixelLocY,currPixelLocX,currPixelLocY,midlinePixelVal,calibSurf)
+
+% Get distance between midline and previous x value at certain y value from surface calibration
+prevCalibVec = [];
+if prevPixelLocX == midlinePixelVal % Dist is zero
+    prevMicronDistFromMid = 0;
+elseif prevPixelLocX < midlinePixelVal % Dist is negative from center of image
+    for x = prevPixelLocX:.1:midlinePixelVal
+        prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
+    end
+    prevMicronDistFromMid = -trapz(prevPixelLocX:.1:midlinePixelVal,prevCalibVec);
+else % Dist is positive from center of image
+    for x = midlinePixelVal:.1:prevPixelLocX
+        prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
+    end
+    prevMicronDistFromMid = trapz(midlinePixelVal:.1:prevPixelLocX,prevCalibVec);
+end
+
+% Get distance between midline and current x value at certain y value from surface calibration
+currCalibVec = [];
+if currPixelLocX == midlinePixelVal % Dist is zero
+    currMicronDistFromMid = 0;
+elseif currPixelLocX < midlinePixelVal % Dist is negative from center of image
+    for x = currPixelLocX:.1:midlinePixelVal
+        currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
+    end
+    currMicronDistFromMid = -trapz(currPixelLocX:.1:midlinePixelVal,currCalibVec);
+else % Dist is positive from center of image
+    for x = midlinePixelVal:.1:currPixelLocX
+        currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
+    end
+    currMicronDistFromMid = trapz(midlinePixelVal:.1:currPixelLocX,currCalibVec);
+end
+
+% Distance travelled in x is difference between two distances from midline
+micronDistTraveledX = currMicronDistFromMid - prevMicronDistFromMid;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function micronDistTraveledY = getDistFromImCentY(prevPixelLocX,prevPixelLocY,currPixelLocX,currPixelLocY,midlinePixelVal,calibSurf)
+
+% Get distance between midline and previous x value at certain y value from surface calibration
+prevCalibVec = [];
+if prevPixelLocY == midlinePixelVal % Dist is zero
+    prevMicronDistFromMid = 0;
+elseif prevPixelLocY < midlinePixelVal % Dist is negative from center of image
+    for y = prevPixelLocY:.1:midlinePixelVal
+        prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
+    end
+    prevMicronDistFromMid = -trapz(prevPixelLocY:.1:midlinePixelVal,prevCalibVec);
+else % Dist is positive from center of image
+    for y = midlinePixelVal:.1:prevPixelLocY
+        prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
+    end
+    prevMicronDistFromMid = trapz(midlinePixelVal:.1:prevPixelLocY,prevCalibVec);
+end
+
+% Get distance between midline and current x value at certain y value from surface calibration
+currCalibVec = [];
+if currPixelLocY == midlinePixelVal % Dist is zero
+    currMicronDistFromMid = 0;
+elseif currPixelLocY < midlinePixelVal % Dist is negative from center of image
+    for y = currPixelLocY:.1:midlinePixelVal
+        currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
+    end
+    currMicronDistFromMid = -trapz(currPixelLocY:.1:midlinePixelVal,currCalibVec);
+else % Dist is positive from center of image
+    for y = midlinePixelVal:.1:currPixelLocY
+        currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
+    end
+    currMicronDistFromMid = trapz(midlinePixelVal:.1:currPixelLocY,currCalibVec);
+end
+
+% Distance travelled in x is difference between two distances from midline
+micronDistTraveledY = currMicronDistFromMid - prevMicronDistFromMid;
 end

@@ -27,11 +27,11 @@ close all;
 load(matFileName);
 
 % Generate plots
-subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.micronsPerPixel) ' ' char(181) 'm/pixel, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital)'];
+subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
 h(1) = figure('Color','White');
 subplot(3,1,1)
 plot(1:size(movementData.moveDist,1),movementData.moveDist(:,1),'r')
-title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('Frame')
 ylabel('X Movement (\mum)')
 grid on
@@ -53,7 +53,7 @@ axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(ma
 h(2) = figure('Color','White');
 subplot(2,1,1)
 plot(1:length(movementData.velocity),movementData.velocity,'r')
-title(['\fontsize{20pt}\bf{Object Velocity Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Object Velocity Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('Frame')
 ylabel('Velocity (\mum/s)')
 grid on
@@ -69,7 +69,7 @@ axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(ma
 h(3) = figure('Color','White');
 subplot(3,1,1)
 plot(1:size(movementData.targetPosition,1),movementData.targetPosition(:,1),'r')
-title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('Frame')
 ylabel('X Position (\mum)')
 grid on
@@ -97,7 +97,7 @@ axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
-title(['\fontsize{20pt}\bf{Position of Target Object}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Position of Target Object}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('\mum')
 ylabel('\mum')
 
@@ -110,19 +110,19 @@ axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
-title(['\fontsize{20pt}\bf{Position of Target Object Histogram}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Position of Target Object Histogram}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('\mum')
 ylabel('\mum')
 
 h(6) = figure('Color','White');
 hist(movementData.targetPosition(:,1),500);
-title(['\fontsize{20pt}\bf{Position of Target Object Histogram (X)}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Position of Target Object Histogram (X)}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('\mum')
 ylabel('Number of Data Points')
 
 h(7) = figure('Color','White');
 hist(movementData.targetPosition(:,2),500);
-title(['\fontsize{20pt}\bf{Position of Target Object Histogram (Y)}' 10 '\fontsize{10pt}\rm{' subtitle '}'])
+title(['\fontsize{20pt}\bf{Position of Target Object Histogram (Y)}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
 xlabel('\mum')
 ylabel('Number of Data Points')
 

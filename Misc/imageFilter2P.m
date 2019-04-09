@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FUNCTION NAME:    lowpassImageFilter2P
+% FUNCTION NAME:    imageFilter2P
 %
-% FUNCTION:         lowpassImageFilter2P(tifFileName)
+% FUNCTION:         imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF,framesVec)
 %
 % DESCRIPTION:      Creates an AVI file of lowpass filtered images from a
 %                   TIF file from a 2P microscope to filter out pixel
@@ -23,7 +23,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function aviFileName = lowpassImageFilter2P(tifFileName,redoFilterTF,medFiltTF,framesVec)
+function aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF,framesVec)
 %% Check to see if overwriting AVI file or using 
 
 aviFileName = [tifFileName(1:end-4) '_filtered.avi'];
@@ -33,33 +33,54 @@ if exist(aviFileName,'file') && ~redoFilterTF
 end
 
 %% Convert TIF image stack to matrix
+if compiledTifTF
+    [imStack,tifLength] = imread_big(tifFileName);
+end
 
 if ~exist('framesVec','var')
-    tifLength = length(imfinfo(tifFileName)) - 1;
+    if compiledTifTF
+        tifLength = tifLength-1;
+    else
+        tifLength = length(imfinfo(tifFileName)) - 1;
+    end
     framesVec = [2 tifLength+1];
 else
     tifLength = framesVec(2) - framesVec(1) + 1;
 end
 
-imageStack = cell(1,tifLength);
+filteredData = cell(1,tifLength);
 if medFiltTF
     f = waitbar(0,'Compiling and Filtering Images');
-    for k = framesVec(1):framesVec(2)
-        imageStack{1,k-framesVec(1)+1} = medfilt2(imread(tifFileName, k));
-        waitbar(round(k/tifLength,2),f,'Compiling and Filtering Images');
+    if compiledTifTF
+        for k = framesVec(1):framesVec(2)
+            filteredData{1,k-framesVec(1)+1} = im2uint8(medfilt2(imStack(:,:,k)));
+            waitbar(round((k-framesVec(1))/tifLength,2),f,'Compiling and Filtering Images');
+        end
+    else
+        for k = framesVec(1):framesVec(2)
+            filteredData{1,k-framesVec(1)+1} = im2uint8(medfilt2(imread(tifFileName, k)));
+            waitbar(round((k-framesVec(1))/tifLength,2),f,'Compiling and Filtering Images');
+        end
     end
 else
     f = waitbar(0,'Compiling Unfiltered Images');
-    for k = framesVec(1):framesVec(2)
-        imageStack{1,k-framesVec(1)+1} = imread(tifFileName, k);
-        waitbar(round(k/tifLength,2),f,'Compiling Unfiltered Images');
+    if compiledTifTF
+        for k = framesVec(1):framesVec(2)
+            filteredData{1,k-framesVec(1)+1} = im2uint8(imStack(:,:,k));
+            waitbar(round((k-framesVec(1))/tifLength,2),f,'Compiling Unfiltered Images');
+        end
+    else
+        for k = framesVec(1):framesVec(2)
+            filteredData{1,k-framesVec(1)+1} = im2uint8(imread(tifFileName, k));
+            waitbar(round((k-framesVec(1))/tifLength,2),f,'Compiling Unfiltered Images');
+        end
     end
 end
 close(f)
 
-[H,W] = size(imageStack{1,1});
-imageStackMat = cell2mat(imageStack);
-imageStackMat = double(reshape(imageStackMat,H,W,tifLength));
+% [H,W] = size(imageStack{1,1});
+% imageStackMat = cell2mat(imageStack);
+% imageStackMat = double(reshape(imageStackMat,H,W,tifLength));
 
 %% Create filter
 
@@ -80,7 +101,7 @@ imageStackMat = double(reshape(imageStackMat,H,W,tifLength));
 % end
 % close(f)
 
-filteredData = imageStackMat;
+% filteredData = imageStackMat;
 
 %% Create AVI file frame by frame
 
@@ -96,7 +117,7 @@ for k = 1:tifLength
     waitbar(round(k/tifLength,2),f,'Creating input AVI file');
 %     imagesc(filteredData(:,:,k));
 %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
-    writeVideo(aviObject,mat2gray(filteredData(:,:,k)));
+    writeVideo(aviObject,filteredData{1,k});
 end
 close(f)
 close(aviObject);
