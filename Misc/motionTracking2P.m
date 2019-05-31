@@ -323,15 +323,15 @@ prevCalibVec = [];
 if prevPixelLocX == midlinePixelVal % Dist is zero
     prevMicronDistFromMid = 0;
 elseif prevPixelLocX < midlinePixelVal % Dist is negative from center of image
-    for x = prevPixelLocX:.1:midlinePixelVal
+    for x = prevPixelLocX:.5:midlinePixelVal
         prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
     end
-    prevMicronDistFromMid = -trapz(prevPixelLocX:.1:midlinePixelVal,prevCalibVec);
+    prevMicronDistFromMid = -trapz(prevPixelLocX:.5:midlinePixelVal,prevCalibVec);
 else % Dist is positive from center of image
-    for x = midlinePixelVal:.1:prevPixelLocX
+    for x = midlinePixelVal:.5:prevPixelLocX
         prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
     end
-    prevMicronDistFromMid = trapz(midlinePixelVal:.1:prevPixelLocX,prevCalibVec);
+    prevMicronDistFromMid = trapz(midlinePixelVal:.5:prevPixelLocX,prevCalibVec);
 end
 
 % Get distance between midline and current x value at certain y value from surface calibration
@@ -339,15 +339,15 @@ currCalibVec = [];
 if currPixelLocX == midlinePixelVal % Dist is zero
     currMicronDistFromMid = 0;
 elseif currPixelLocX < midlinePixelVal % Dist is negative from center of image
-    for x = currPixelLocX:.1:midlinePixelVal
+    for x = currPixelLocX:.5:midlinePixelVal
         currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
     end
-    currMicronDistFromMid = -trapz(currPixelLocX:.1:midlinePixelVal,currCalibVec);
+    currMicronDistFromMid = -trapz(currPixelLocX:.5:midlinePixelVal,currCalibVec);
 else % Dist is positive from center of image
-    for x = midlinePixelVal:.1:currPixelLocX
+    for x = midlinePixelVal:.5:currPixelLocX
         currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
     end
-    currMicronDistFromMid = trapz(midlinePixelVal:.1:currPixelLocX,currCalibVec);
+    currMicronDistFromMid = trapz(midlinePixelVal:.5:currPixelLocX,currCalibVec);
 end
 
 % Distance travelled in x is difference between two distances from midline
@@ -363,15 +363,15 @@ prevCalibVec = [];
 if prevPixelLocY == midlinePixelVal % Dist is zero
     prevMicronDistFromMid = 0;
 elseif prevPixelLocY < midlinePixelVal % Dist is negative from center of image
-    for y = prevPixelLocY:.1:midlinePixelVal
+    for y = prevPixelLocY:.5:midlinePixelVal
         prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
     end
-    prevMicronDistFromMid = -trapz(prevPixelLocY:.1:midlinePixelVal,prevCalibVec);
+    prevMicronDistFromMid = -trapz(prevPixelLocY:.5:midlinePixelVal,prevCalibVec);
 else % Dist is positive from center of image
-    for y = midlinePixelVal:.1:prevPixelLocY
+    for y = midlinePixelVal:.5:prevPixelLocY
         prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
     end
-    prevMicronDistFromMid = trapz(midlinePixelVal:.1:prevPixelLocY,prevCalibVec);
+    prevMicronDistFromMid = trapz(midlinePixelVal:.5:prevPixelLocY,prevCalibVec);
 end
 
 % Get distance between midline and current x value at certain y value from surface calibration
@@ -379,15 +379,15 @@ currCalibVec = [];
 if currPixelLocY == midlinePixelVal % Dist is zero
     currMicronDistFromMid = 0;
 elseif currPixelLocY < midlinePixelVal % Dist is negative from center of image
-    for y = currPixelLocY:.1:midlinePixelVal
+    for y = currPixelLocY:.5:midlinePixelVal
         currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
     end
-    currMicronDistFromMid = -trapz(currPixelLocY:.1:midlinePixelVal,currCalibVec);
+    currMicronDistFromMid = -trapz(currPixelLocY:.5:midlinePixelVal,currCalibVec);
 else % Dist is positive from center of image
-    for y = midlinePixelVal:.1:currPixelLocY
+    for y = midlinePixelVal:.5:currPixelLocY
         currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
     end
-    currMicronDistFromMid = trapz(midlinePixelVal:.1:currPixelLocY,currCalibVec);
+    currMicronDistFromMid = trapz(midlinePixelVal:.5:currPixelLocY,currCalibVec);
 end
 
 % Distance travelled in x is difference between two distances from midline
