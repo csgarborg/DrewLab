@@ -617,5 +617,15 @@ if length(frameSelection) >= 4
     calibrationValues.(['file_' fileName]).surfaceCalibFitY = surfaceCalibFitY;
     
     save('C:\Workspace\Code\DrewLab\calibrationValues.mat','calibrationValues');
+    
+    if ~exist('C:\Workspace\Code\DrewLab\calibrationLog.csv')
+        dlmwrite('C:\Workspace\Code\DrewLab\calibrationLog.csv',[]);
+        fid = fopen('C:\Workspace\Code\DrewLab\calibrationLog.csv','wt');
+        fprintf(fid,'%s, %s, %s, %s, %s, %s\n','Date','Filename','Objective Zoom','Digital Zoom','Frame Height (Pixels)','Turnabout');
+        fidClose = fclose(fid);
+    end
+    fid = fopen('C:\Workspace\Code\DrewLab\calibrationLog.csv','a');
+    fprintf(fid,'%s, %s, %.0f, %.0f, %.0f, %.0f\n',datestr(now,'yyyy/mm/dd HH:MM'),fileName,objMag,digMag,H,turnabout);
+    fidClose = fclose(fid);
 end
 end
