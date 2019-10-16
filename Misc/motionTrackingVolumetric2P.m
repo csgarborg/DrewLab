@@ -35,36 +35,23 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
+function motionTrackingVolumetric2P(tifFileName,calibrationFileString,redoFilterTF,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
 % Input video file which needs to be stabilized.
-% f = waitbar(0,'Compiling and Filtering Images');
 if compiledTifTF
     [imStack,tifLength] = imread_big(tifFileName);
-    if ~exist('tifFrameBounds','var')
-        tifFrameBounds = [2 tifLength];
-    end
 else
     tifLength = length(imfinfo(tifFileName));
-    if ~exist('tifFrameBounds','var')
-        tifFrameBounds = [2 tifLength];
-    end
-%     imStack = [];
-%     for n = 1:tifLength
-%         waitbar(round((n-tifFrameBounds(1))/tifLength,2),f,'Compiling and Filtering Images');
-%         imStack(:,:,end+1) = imread(tifFileName, n);
-%     end
 end
-% close(f);
 
-% if exist('tifFrameBounds','var')
-%     aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF,tifFrameBounds);
-% else
-%     aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF);
-%     tifFrameBounds = [2 tifLength];
-% end
+if exist('tifFrameBounds','var')
+    aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF,tifFrameBounds);
+else
+    aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF);
+    tifFrameBounds = [2 tifLength];
+end
 
 % Get calibration values
 if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat','file')
@@ -91,7 +78,7 @@ fileName = tokens{1}{1};
 
 % Create a System object(TM) to read video from a multimedia file. We set the
 % output to be of intensity only video.
-% hVideoSource = vision.VideoFileReader(aviFileName, 'ImageColorSpace', 'Intensity', 'VideoOutputDataType', 'double');
+hVideoSource = vision.VideoFileReader(aviFileName, 'ImageColorSpace', 'Intensity', 'VideoOutputDataType', 'double');
 
 %% Create template
 % Create a template matcher System object to compute the location of the
@@ -99,8 +86,10 @@ fileName = tokens{1}{1};
 % translation between successive video frames.
 if threeStepTF
     hTM = vision.TemplateMatcher('ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true, 'SearchMethod', 'Three-step');
+    hTM1 = vision.TemplateMatcher('OutputValue','Metric matrix','ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true,'SearchMethod', 'Three-step');
 else
     hTM = vision.TemplateMatcher('ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true);
+    hTM1 = vision.TemplateMatcher('OutputValue','Metric matrix','ROIInputPort', true, 'BestMatchNeighborhoodOutputPort', true);
 end
                         
 %% Create motion tracking output display
@@ -113,10 +102,18 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-if medFiltTF
-    initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+if compiledTifTF
+    if medFiltTF
+        initialImage = medfilt2(imStack(:,:,tifFrameBounds(1)));
+    else
+        initialImage = imStack(:,:,tifFrameBounds(1));
+    end
 else
-    initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+    if medFiltTF
+        initialImage = medfilt2(imread(tifFileName,tifFrameBounds(1)));
+    else
+        initialImage = imread(tifFileName,tifFrameBounds(1));
+    end
 end
 imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
@@ -140,9 +137,10 @@ pos.search_border = [abs(inputCoordSearchX(1) - inputCoordTargetX(1)),abs(inputC
 % Calculate important parameters
 pos.template_center = floor((pos.template_size-1)/2);
 pos.template_center_pos = (pos.template_orig + pos.template_center - 1);
-W = size(initialImage,2); % Width of video in pixels
-H = size(initialImage,1); % Height of video in pixels
-sz = [W,H];
+fileInfo = info(hVideoSource);
+W = fileInfo.VideoSize(1); % Width of video in pixels
+H = fileInfo.VideoSize(2); % Height of video in pixels
+sz = fileInfo.VideoSize;
 BorderCols = [1:pos.search_border(1)+4 W-pos.search_border(1)+4:W];
 BorderRows = [1:pos.search_border(2)+4 H-pos.search_border(2)+4:H];
 TargetRowIndices = ...
@@ -151,7 +149,7 @@ TargetColIndices = ...
   pos.template_orig(1)-1:pos.template_orig(1)+pos.template_size(1)-2;
 SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
-Target = zeros(length(TargetRowIndices),length(TargetColIndices));
+Target = zeros(18,22);
 firstTime = true;
 n = 1;
 targetNum = 0;
@@ -172,12 +170,8 @@ end
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
-for i = tifFrameBounds(1):tifFrameBounds(2)
-    if medFiltTF
-        input = im2double(medfilt2(imread(tifFileName, i)));
-    else
-        input = im2double(imread(tifFileName, i));
-    end
+while ~isDone(hVideoSource)
+    input = hVideoSource();
 
     % Find location of Target in the input video frame
     if firstTime
@@ -185,10 +179,11 @@ for i = tifFrameBounds(1):tifFrameBounds(2)
       motionVector = [0 0];
     else
       IdxPrev = Idx;
-% IdxPrev = int32(pos.template_center_pos);
+    % IdxPrev = int32(pos.template_center_pos);
 
       ROI = [SearchRegion, pos.template_size+2*pos.search_border];
       Idx = hTM(input,Target,ROI);
+      matchMet = hTM1(input,Target);
       
       motionVector = double(Idx-IdxPrev);
     end
@@ -208,7 +203,6 @@ for i = tifFrameBounds(1):tifFrameBounds(2)
     if targetNum <= targetAvgNum
         targetSum = targetSum + Stabilized(round(TargetRowIndices), round(TargetColIndices));
         Target = targetSum ./ targetNum;
-        imshow(Target);
     end
 
     % Add black border for display
@@ -260,15 +254,11 @@ for n = 2:movementLength
     waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from calibration');
 end
 close(f)
-meanPosX = mean(targetPosition(:,1));
-meanPosY = mean(targetPosition(:,2));
-targetPosition(:,1) = targetPosition(:,1) - meanPosX;
-targetPosition(:,2) = targetPosition(:,2) - meanPosY;
 
 %% Release
 % Here you call the release method on the objects to close any open files
 % and devices.
-% release(hVideoSource);
+release(hVideoSource);
 
 %% Output data
 

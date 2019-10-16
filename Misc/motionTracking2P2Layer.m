@@ -35,7 +35,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
+function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,layer,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -113,10 +113,18 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-if medFiltTF
-    initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+if layer == 1
+    if medFiltTF
+        initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+    else
+        initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+    end
 else
-    initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+    if medFiltTF
+        initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1)+1)));
+    else
+        initialImage = im2double(imread(tifFileName, tifFrameBounds(1)+1));
+    end
 end
 imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
@@ -172,7 +180,12 @@ end
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
-for i = tifFrameBounds(1):tifFrameBounds(2)
+if layer == 1
+    startFrame = tifFrameBounds(1);
+else
+    startFrame = tifFrameBounds(1)+1;
+end
+for i = startFrame:2:tifFrameBounds(2)
     if medFiltTF
         input = im2double(medfilt2(imread(tifFileName, i)));
     else
@@ -318,7 +331,7 @@ movementData.digMag = digMag;
 movementData.turnabout = turnabout;
 movementData.commentString = commentString;
 
-matFileName = [tifFileName(1:end-4) '_processed.mat'];
+matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '.mat'];
 save(matFileName,'movementData');
 
 % Plot data
