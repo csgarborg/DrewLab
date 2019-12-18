@@ -35,7 +35,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
+function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -113,10 +113,18 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-if medFiltTF
-    initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+if compiledTifTF
+    if medFiltTF
+        initialImage = im2double(medfilt2(imStack(:,:,tifFrameBounds(1))));
+    else
+        initialImage = im2double(imStack(:,:,tifFrameBounds(1)));
+    end
 else
-    initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+    if medFiltTF
+        initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+    else
+        initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+    end
 end
 imshow(initialImage);
 title('Select upper left, then lower right target corners and press enter');
@@ -168,15 +176,56 @@ secondsPerFrame = 1/framesPerSecond;
 if ~exist('commentString','var') || isempty(commentString)
     commentString = 'No comments';
 end
+if tempMedFiltTF
+    f = waitbar(0,'Loading frames for temporal median filtering');    
+    inputStack = [];
+    for n = tifFrameBounds(1):tifFrameBounds(2)
+        if compiledTifTF
+            if medFiltTF
+                inputStack(:,:,end+1) = im2double(medfilt2(imStack(:,:,n)));
+            else
+                inputStack(:,:,end+1) = im2double(imStack(:,:,n));
+            end
+        else
+            if medFiltTF
+                inputStack(:,:,end+1) = im2double(medfilt2(imread(tifFileName, n)));
+            else
+                inputStack(:,:,end+1) = im2double(imread(tifFileName, n));
+            end
+        end
+        waitbar(round((n-tifFrameBounds(1)+1)/(tifFrameBounds(2)-tifFrameBounds(1)+1),2),f,'Loading frames for temporal median filtering');
+    end
+    close(f)
+    f = waitbar(0,'Applying temporal median filter');
+    for i = 1:size(inputStack,1)
+        for j = 1:size(inputStack,2)
+            inputStack(i,j,:) = medfilt1(inputStack(i,j,:),3);
+            waitbar(round((((i-1)*size(inputStack,2))+j)/(size(inputStack,1)*size(inputStack,2)),2),f,'Applying temporal median filter');
+        end
+    end
+    close(f)
+end
 
 %% Stream Processing Loop
 % This is the main processing loop which uses the objects we instantiated
 % above to stabilize the input video.
-for i = tifFrameBounds(1):tifFrameBounds(2)
-    if medFiltTF
-        input = im2double(medfilt2(imread(tifFileName, i)));
+for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
+    if tempMedFiltTF
+        input = inputStack(:,:,i-tifFrameBounds(1)+1);
     else
-        input = im2double(imread(tifFileName, i));
+        if compiledTifTF
+            if medFiltTF
+                input = im2double(medfilt2(imStack(:,:,i)));
+            else
+                input = im2double(imStack(:,:,n));
+            end
+        else
+            if medFiltTF
+                input = im2double(medfilt2(imread(tifFileName, i)));
+            else
+                input = im2double(imread(tifFileName, i));
+            end
+        end
     end
 
     % Find location of Target in the input video frame

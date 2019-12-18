@@ -6,9 +6,9 @@ F = getframe(gcf);
 [image, ~] = frame2im(F);
 [imind,cm] = rgb2ind(image,256);
 if n == 1
-imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+imwrite(imind,cm,filename,'gif','DelayTime',.1, 'Loopcount',inf);
 else
-imwrite(imind,cm,filename,'gif','WriteMode','append');
+imwrite(imind,cm,filename,'gif','DelayTime',.1, 'WriteMode','append');
 end
 close all
 end

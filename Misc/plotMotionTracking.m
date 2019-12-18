@@ -107,12 +107,13 @@ xlabel('\mum')
 ylabel('\mum')
 
 h(5) = figure('Color','White');
-hist3(medFiltData,'CdataMode','auto','Nbins',[40 40]);
+hist3(medFiltData,'CdataMode','auto','Nbins',[15 15]);
 colorbar;
 view(2);
 axis equal square
 axis([-maxVal maxVal -maxVal maxVal])
 ax = gca;
+set(ax,'ColorScale','log')
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
 title(['\fontsize{20pt}\bf{Position of Target Object Histogram}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
