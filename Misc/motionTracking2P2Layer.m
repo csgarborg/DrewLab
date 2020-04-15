@@ -21,6 +21,8 @@
 %                   objMag: (double) objective magnification value
 %                   digMag: (double) digital magnification value (in MSCAN)
 %                   turnabout: (double) turnabout value in MSCAN (affects calibration of image)
+%                   layer: (double) layer 1 or 2 designation
+%                   hemisphere: (double) 1 = right, 2 = left
 %                   commentString: (string, NOT REQUIRED) include any notes about this run to be displayed on the output plots
 %                   tifFrameBounds: (1x2 double array, NOT REQUIRED) start and stop frames to process of the tif, default is 2nd frame to the end to avoid occasional distortion in first image
 %
@@ -35,7 +37,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,layer,commentString,tifFrameBounds)
+function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -330,12 +332,14 @@ movementData.objMag = objMag;
 movementData.digMag = digMag;
 movementData.turnabout = turnabout;
 movementData.commentString = commentString;
+movementData.layer = layer;
+movementData.hemisphere = hemisphere;
 
 matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '.mat'];
 save(matFileName,'movementData');
 
 % Plot data
-plotMotionTracking(matFileName);
+plotMotionTracking2Layer(matFileName);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

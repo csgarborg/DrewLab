@@ -29,6 +29,7 @@ medFiltSize = 6;
 
 % Generate plots
 subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
+movementData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
 h(1) = figure('Color','White');
 subplot(3,1,1)
 plot(1:size(movementData.moveDist,1),medfilt1(movementData.moveDist(:,1),medFiltSize),'r')
@@ -47,9 +48,9 @@ subplot(3,1,3)
 plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
 title('\fontsize{20pt}\bf{Ball Movement}')
 xlabel('Time (s)')
-ylabel('Movement')
+ylabel('m/s')
 grid on
-axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
 
 h(2) = figure('Color','White');
 subplot(2,1,1)
@@ -63,9 +64,9 @@ subplot(2,1,2)
 plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
 title('\fontsize{20pt}\bf{Ball Movement}')
 xlabel('Time (s)')
-ylabel('Movement')
+ylabel('m/s')
 grid on
-axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
 
 h(3) = figure('Color','White');
 x1 = subplot(3,1,1);
@@ -87,9 +88,9 @@ x3 = subplot(3,1,3);
 plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
 title('\fontsize{20pt}\bf{Ball Movement}')
 xlabel('Time (s)')
-ylabel('Movement')
+ylabel('m/s')
 grid on
-axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
 set(x3,'Position',[.05, .06, .9, .23])
 
 h(4) = figure('Color','White');

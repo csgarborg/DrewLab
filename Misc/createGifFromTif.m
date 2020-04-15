@@ -1,16 +1,17 @@
-filename = 'F:\DrewLabMeeting\19-10-07\gif10.gif';
-dataFileStr = 'E:\19-08-14_MouseExp\190814_002';
-for n = 1:300
-imshow(im2double(imread([dataFileStr '.tif'],n+800)));
-F = getframe(gcf);
-[image, ~] = frame2im(F);
-[imind,cm] = rgb2ind(image,256);
-if n == 1
-imwrite(imind,cm,filename,'gif','DelayTime',.1, 'Loopcount',inf);
-else
-imwrite(imind,cm,filename,'gif','DelayTime',.1, 'WriteMode','append');
-end
-close all
+filename = 'E:\20-01-15_MouseExp\200115_003_2LMovement.gif';
+dataFileStr = 'E:\20-01-15_MouseExp\200115_003_2LMovement';
+for n = 1:1945
+    % imshow(im2double(imread([dataFileStr '.tif'],n)));
+    % F = getframe(gcf);
+    image = im2double(imread([dataFileStr '.tif'],n));
+    % [image, ~] = frame2im(F);
+    [imind,cm] = rgb2ind(image,256);
+    if n == 1
+        imwrite(imind,cm,filename,'gif','DelayTime',.02, 'Loopcount',inf);
+    else
+        imwrite(imind,cm,filename,'gif','DelayTime',.02, 'WriteMode','append');
+    end
+    close all
 end
 
 

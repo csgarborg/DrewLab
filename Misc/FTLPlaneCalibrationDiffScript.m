@@ -1,3 +1,4 @@
+close all
 load('calibrationValues.mat')
 ax=calibrationValues.file_191210_015.surfaceCalibFitX;
 ay=calibrationValues.file_191210_015.surfaceCalibFitY;
@@ -22,7 +23,7 @@ pcolor(x,y,xDiff)
 shading interp
 axis([0 512 0 512])
 colorbar
-title('Absolute Difference in X Calibration Between FTL Planes (-2.1 and 1 Diopters)')
+title('Absolute Difference in X Calibration Between ETL Planes (-2.1 and 1 Diopters)')
 xlabel('Pixels (X)')
 ylabel('Pixels (Y)')
 h=colorbar;
@@ -34,7 +35,7 @@ pcolor(x,y,yDiff)
 shading interp
 axis([0 512 0 512])
 colorbar
-title('Absolute Difference in Y Calibration Between FTL Planes (-2.1 and 1 Diopters)')
+title('Absolute Difference in Y Calibration Between ETL Planes (-2.1 and 1 Diopters)')
 xlabel('Pixels (X)')
 ylabel('Pixels (Y)')
 h=colorbar;
