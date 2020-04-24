@@ -97,7 +97,7 @@ if ~exist('matFileName2','var')
     set(x3,'Position',[.05, .06, .9, .23])
     
     h(4) = figure('Color','White');
-    medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),medfilt1(movementData.targetPosition(:,2),medFiltSize)];
+    medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),-1*medfilt1(movementData.targetPosition(:,2),medFiltSize)];
     k = convhull(medFiltData(:,1),medFiltData(:,2));
     plot(medFiltData(k,1),medFiltData(k,2),'b',medFiltData(:,1),medFiltData(:,2),'k');
     maxVal = ceil(max(max(abs(movementData.targetPosition))));
@@ -187,17 +187,17 @@ else
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
     x2 = subplot(3,1,2);
-    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,medfilt1(movementData.targetPosition(:,2)-movementData.targetPosition(1,2),medFiltSize),'r')
+    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*medfilt1(movementData.targetPosition(:,2)-movementData.targetPosition(1,2),medFiltSize),'r')
     hold on
-    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,medfilt1(stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2),medFiltSize),'b')
+    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*medfilt1(stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2),medFiltSize),'b')
     legend('Brain','Skull')
     xlabel('Time (s)')
     ylabel('Y Position (\mum)')
     grid on
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxVal maxVal])
     set(x2,'Position',[.05, .39, .9, .23])
-    text(0,maxVal,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-    text(0,-maxVal,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     x3 = subplot(3,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
@@ -223,7 +223,7 @@ else
         posL1 = [posL1(1,:); posL1(:,:)];
     end
 %     posDiff = [posL2(:,1)-posL1(:,1),posL2(:,2)-posL1(:,2)];
-    medFiltData = [posL1(:,1)-posL2(:,1),posL1(:,2)-posL2(:,2)];
+    medFiltData = [posL1(:,1)-posL2(:,1),-1*(posL1(:,2)-posL2(:,2))];
     maxPosDiff = ceil(max(max(medFiltData)));
     maxMoveData = ceil(max([posL1(:,1);posL1(:,2);posL2(:,1);posL2(:,2);]));
     x1 = subplot(3,1,1);
@@ -248,8 +248,8 @@ else
     grid on
     axis([0 size(medFiltData,1)*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
     set(x2,'Position',[.05, .39, .9, .23])
-    text(0,maxVal,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-    text(0,-maxVal,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     x3 = subplot(3,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
@@ -273,13 +273,13 @@ else
     if movementData.hemisphere == 1
         text(maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
         text(-maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-        text(0,maxMoveData,'Caudal','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-        text(0,-maxMoveData,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+        text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
     else
         text(maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
         text(-maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-        text(0,maxMoveData,'Caudal','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-        text(0,-maxMoveData,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+        text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
     end
     
     h(4) = figure('Color','White');
@@ -301,7 +301,7 @@ else
     title(['\fontsize{20pt}\bf{Position of Target Object Histogram (X)}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('\mum')
     ylabel('Number of Data Points')
-    set(gca, 'YScale', 'log')
+%     set(gca, 'YScale', 'log')
     xlimVal = xlim;
     ylimVal = ylim;
     if movementData.hemisphere == 1
@@ -318,11 +318,58 @@ else
     title(['\fontsize{20pt}\bf{Position of Target Object Histogram (Y)}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('\mum')
     ylabel('Number of Data Points')
-    set(gca, 'YScale', 'log')
+%     set(gca, 'YScale', 'log')
     xlimVal = xlim;
     ylimVal = ylim;
-    text(xlimVal(1),ylimVal(2),'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    text(xlimVal(2),ylimVal(2),'Caudal','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(xlimVal(1),ylimVal(2),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(xlimVal(2),ylimVal(2),'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    
+    motionVec = pcaMotionAnalysis(medFiltData);
+    h(7) = figure('Color','White');
+    scatter(medFiltData(:,1),medFiltData(:,2),10)
+    hold on
+    drawArrow([0;0],[motionVec(1);motionVec(2)]);
+    hold off
+    axis equal square
+    axis([-maxMoveData maxMoveData -maxMoveData maxMoveData])
+    ax = gca;
+    ax.XAxisLocation = 'origin';
+    ax.YAxisLocation = 'origin';
+    title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+    xlabel('\mum')
+    ylabel('\mum')
+    if movementData.hemisphere == 1
+        text(maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(-maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+    else
+        text(maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(-maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+        text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+    end    
+    
+    [PowerX,HzX,ErrorX,PowerY,HzY,ErrorY] = motionSpectrumAnalysis(medFiltData);
+    h(8) = figure('Color','White');
+    plot(HzX,PowerX,'k')
+    hold on
+    f = fill([HzX flip(HzX)],[ErrorX(1,:) flip(ErrorX(2,:))],'r','Linestyle','none');
+    set(f,'facea',[.2]);
+    hold off
+    title(['\fontsize{20pt}\bf{X Position Frequency Domain}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+    xlabel('Frequency (Hz)')
+    ylabel('Power')
+    
+    h(9) = figure('Color','White');
+    plot(HzY,PowerY,'k')
+    hold on
+    f = fill([HzY flip(HzY)],[ErrorY(1,:) flip(ErrorY(2,:))],'r','Linestyle','none');
+    set(f,'facea',[.2]);
+    hold off
+    title(['\fontsize{20pt}\bf{Y Position Frequency Domain}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+    xlabel('Frequency (Hz)')
+    ylabel('Power')
     
 %     h(7) = figure('Color','White');
 %     title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
@@ -331,13 +378,13 @@ else
 %     if movementData.hemisphere == 1
 %         text(maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
 %         text(-maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-%         text(0,maxMoveData,'Caudal','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-%         text(0,-maxMoveData,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+%         text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+%         text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
 %     else
 %         text(maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
 %         text(-maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-%         text(0,maxMoveData,'Caudal','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-%         text(0,-maxMoveData,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+%         text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+%         text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
 %     end
 %     axis equal square
 %     for n = 1:length(medFiltData(:,1))-1
