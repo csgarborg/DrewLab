@@ -164,6 +164,7 @@ else
     medFiltSize = 6;
     
     subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
+    ballDataNoAbs = convertBallVoltToMPS(movementData.ballData(:,2));
     movementData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
     
     h(1) = figure('Color','White');
@@ -204,7 +205,7 @@ else
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
-    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
     set(x3,'Position',[.05, .06, .9, .23])
     
     h(2) = figure('Color','White');
@@ -218,7 +219,7 @@ else
     if size(posL1,1) > size(posL2,1)
         posL1 = posL1(1:end-1,:);
         posL2 = [posL2(1,:); posL2(:,:)];
-    else
+    elseif size(posL1,1) < size(posL2,1)
         posL2 = posL2(1:end-1,:);
         posL1 = [posL1(1,:); posL1(:,:)];
     end
@@ -227,12 +228,12 @@ else
     maxPosDiff = ceil(max(max(medFiltData)));
     maxMoveData = ceil(max([posL1(:,1);posL1(:,2);posL2(:,1);posL2(:,2);]));
     x1 = subplot(3,1,1);
-    plot([1:size(medFiltData,1)]*2*movementData.secondsPerFrame,medFiltData(:,1),'k')
+    plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,1),'k')
     title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Time (s)')
     ylabel('X Position (\mum)')
     grid on
-    axis([0 size(medFiltData,1)*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
+    axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
     set(x1,'Position',[.05, .68, .9, .23])
     if movementData.hemisphere == 1
         text(0,maxVal,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -242,11 +243,11 @@ else
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
     x2 = subplot(3,1,2);
-    plot([1:size(medFiltData,1)]*2*movementData.secondsPerFrame,medFiltData(:,2),'k')
+    plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,2),'k')
     xlabel('Time (s)')
     ylabel('Y Position (\mum)')
     grid on
-    axis([0 size(medFiltData,1)*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
+    axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
     set(x2,'Position',[.05, .39, .9, .23])
     text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -254,9 +255,9 @@ else
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
-    ylabel('Movement')
+    ylabel('m/s')
     grid on
-    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
     set(x3,'Position',[.05, .06, .9, .23])
     
     h(3) = figure('Color','White');   
@@ -350,9 +351,9 @@ else
         text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
     end    
     
-    [PowerX,HzX,ErrorX,PowerY,HzY,ErrorY] = motionSpectrumAnalysis(medFiltData);
+    [PowerX,HzX,ErrorX,PowerY,HzY,ErrorY] = motionSpectrumAnalysis(medFiltData(1:1850,:));
     h(8) = figure('Color','White');
-    plot(HzX,PowerX,'k')
+    semilogy(HzX,PowerX,'k')
     hold on
     f = fill([HzX flip(HzX)],[ErrorX(1,:) flip(ErrorX(2,:))],'r','Linestyle','none');
     set(f,'facea',[.2]);
@@ -362,7 +363,7 @@ else
     ylabel('Power')
     
     h(9) = figure('Color','White');
-    plot(HzY,PowerY,'k')
+    semilogy(HzY,PowerY,'k')
     hold on
     f = fill([HzY flip(HzY)],[ErrorY(1,:) flip(ErrorY(2,:))],'r','Linestyle','none');
     set(f,'facea',[.2]);
@@ -370,6 +371,127 @@ else
     title(['\fontsize{20pt}\bf{Y Position Frequency Domain}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Frequency (Hz)')
     ylabel('Power')
+    
+    h(10) = figure('Color','White');
+    movementFrameSec = [1:size(medFiltData,1)]*movementData.secondsPerFrame;
+    secondsPerSample = movementData.ballData(2,1) - movementData.ballData(1,1);
+    samplesPerSecond = 1/secondsPerSample;
+    acc = diff(medfilt1(ballDataNoAbs,15))/secondsPerSample;
+    accEventSec = [];
+    xPosBefore = [];
+    yPosBefore = [];
+    xPosAfter = [];
+    yPosAfter = [];
+    xMoveBefore = [];
+    yMoveBefore = [];
+    xMoveAfter = [];
+    yMoveAfter = [];
+    accSampleNum = ceil(samplesPerSecond);
+    while accSampleNum <= length(acc)-samplesPerSecond
+        if acc(accSampleNum) >= 15
+            accSec = accSampleNum*secondsPerSample;
+            accEventSec(end+1,1) = movementFrameSec(abs(movementFrameSec - accSec) == min(abs(movementFrameSec - accSec)));
+            secBeforeInd = ((accEventSec(end) - 1) <= movementFrameSec) & (movementFrameSec <= accEventSec(end));
+            secAfterInd = (accEventSec(end) <= movementFrameSec) & (movementFrameSec <= (accEventSec(end) + 1));
+            xPosBefore(end+1,1) = mean(medFiltData(secBeforeInd,1));
+            yPosBefore(end+1,1) = mean(medFiltData(secBeforeInd,2));
+            xPosAfter(end+1,1) = mean(medFiltData(secAfterInd,1));
+            yPosAfter(end+1,1) = mean(medFiltData(secAfterInd,2));
+            xMoveBefore(end+1,1) = max(medFiltData(secBeforeInd,1)) -  min(medFiltData(secBeforeInd,1));
+            yMoveBefore(end+1,1) = max(medFiltData(secBeforeInd,2)) -  min(medFiltData(secBeforeInd,2));
+            xMoveAfter(end+1,1) = max(medFiltData(secAfterInd,1)) -  min(medFiltData(secAfterInd,1));
+            yMoveAfter(end+1,1) = max(medFiltData(secAfterInd,2)) -  min(medFiltData(secAfterInd,2));
+            accSampleNum = accSampleNum + ceil(samplesPerSecond);
+        else
+            accSampleNum = accSampleNum + 1;
+        end
+    end
+    x1 = subplot(3,1,1);
+    plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,1),'k')
+    title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+    xlabel('Time (s)')
+    ylabel('X Position (\mum)')
+    grid on
+    axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
+    set(x1,'Position',[.05, .68, .9, .23])
+    if movementData.hemisphere == 1
+        text(0,maxVal,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+        text(0,-maxVal,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    else
+        text(0,maxVal,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+        text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    end
+    hold on
+    for n = 1:length(accEventSec)
+        plot([accEventSec(n) accEventSec(n)],[-maxPosDiff maxPosDiff],'k--')
+        f = fill([[accEventSec(n)-1 accEventSec(n)] flip([accEventSec(n)-1 accEventSec(n)])],[[maxPosDiff maxPosDiff] flip([-maxPosDiff -maxPosDiff])],'r','Linestyle','none');
+        set(f,'facea',[.2]);
+        f = fill([[accEventSec(n) accEventSec(n)+1] flip([accEventSec(n) accEventSec(n)+1])],[[maxPosDiff maxPosDiff] flip([-maxPosDiff -maxPosDiff])],'g','Linestyle','none');
+        set(f,'facea',[.2]);
+    end
+    hold off
+    x2 = subplot(3,1,2);
+    plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,2),'k')
+    xlabel('Time (s)')
+    ylabel('Y Position (\mum)')
+    grid on
+    axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
+    set(x2,'Position',[.05, .39, .9, .23])
+    text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    hold on
+    for n = 1:length(accEventSec)
+        plot([accEventSec(n) accEventSec(n)],[-maxPosDiff maxPosDiff],'k--')
+        f = fill([[accEventSec(n)-1 accEventSec(n)] flip([accEventSec(n)-1 accEventSec(n)])],[[maxPosDiff maxPosDiff] flip([-maxPosDiff -maxPosDiff])],'r','Linestyle','none');
+        set(f,'facea',[.2]);
+        f = fill([[accEventSec(n) accEventSec(n)+1] flip([accEventSec(n) accEventSec(n)+1])],[[maxPosDiff maxPosDiff] flip([-maxPosDiff -maxPosDiff])],'g','Linestyle','none');
+        set(f,'facea',[.2]);
+    end
+    hold off
+    x3 = subplot(3,1,3);
+    plot([1:length(acc)]*secondsPerSample,acc,'k')
+    title('\fontsize{20pt}\bf{Ball Movement}')
+    xlabel('Time (s)')
+    ylabel('m/s^2')
+    grid on
+    axis([0 length(acc)*secondsPerSample -ceil(max(abs(acc))/10)*10 ceil(max(abs(acc))/10)*10])
+    set(x3,'Position',[.05, .06, .9, .23])
+    
+    h(11) = figure('Color','White');
+    x1 = subplot(2,2,1);
+    plotSpread([xPosBefore xPosAfter],'xNames',{'Before','After'})
+    title('\fontsize{20pt}\bf{Brain Mean X Position 1s Before and After Acceleration Spike}')
+    ylabel('Brain Position From Baseline (\mum)')
+    if movementData.hemisphere == 1
+        text(0,ceil(max([xPosBefore;xPosAfter])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,floor(min([xPosBefore;xPosAfter])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    else
+        text(0,ceil(max([xPosBefore;xPosAfter])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,floor(min([xPosBefore;xPosAfter])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    end
+    x2 = subplot(2,2,2);
+    plotSpread([yPosBefore yPosAfter],'xNames',{'Before','After'})
+    title('\fontsize{20pt}\bf{Brain Mean Y Position 1s Before and After Acceleration Spike}')
+    ylabel('Brain Position From Baseline (\mum)')
+    text(0,ceil(max([yPosBefore;yPosAfter])),'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min([yPosBefore;yPosAfter])),'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    x3 = subplot(2,2,3);
+    plotSpread([xMoveBefore xMoveAfter],'xNames',{'Before','After'})
+    title('\fontsize{20pt}\bf{Brain X Movement 1s Before and After Acceleration Spike}')
+    ylabel('Brain Displacement (\mum)')
+    if movementData.hemisphere == 1
+        text(0,ceil(max([xMoveBefore;xMoveAfter])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,floor(min([xMoveBefore;xMoveAfter])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    else
+        text(0,ceil(max([xMoveBefore;xMoveAfter])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        text(0,floor(min([xMoveBefore;xMoveAfter])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    end
+    x4 = subplot(2,2,4);
+    plotSpread([yMoveBefore yMoveAfter],'xNames',{'Before','After'})
+    title('\fontsize{20pt}\bf{Brain Y Movement 1s Before and After Acceleration Spike}')
+    ylabel('Brain Displacement (\mum)')
+    text(0,ceil(max([yMoveBefore;yMoveAfter])),'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min([yMoveBefore;yMoveAfter])),'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     
 %     h(7) = figure('Color','White');
 %     title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])

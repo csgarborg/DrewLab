@@ -30,25 +30,40 @@ fn = fieldnames(calibrationValues);
 
 allDataX = [];
 allDataY = [];
-
-figure(1);
-subplot(2,1,1)
 for n = 1:numel(fn)
-    plot(calibrationValues.(fn{n}).zMatchMicrons,calibrationValues.(fn{n}).diopterVals,'-*');
-    allDataY = [allDataY calibrationValues.(fn{n}).diopterVals];
-    allDataX = [allDataX calibrationValues.(fn{n}).zMatchMicrons];
-    hold on
+    allDataX = [allDataX calibrationValues.(fn{n}).diopterVals];
+    allDataY = [allDataY calibrationValues.(fn{n}).zMatchMicrons];
 end
 coefficients = polyfit(allDataX, allDataY, 3);
 xFit = linspace(min(allDataX), max(allDataX), 1000);
 yFit = polyval(coefficients , xFit);
+yZeroDiff = yFit(1);
+yFit = yFit - yZeroDiff;
+uniqueX = unique(allDataX);
+for n = 1:length(uniqueX)
+    i = allDataX == uniqueX(n);
+    matchingY = allDataY(i);
+    stdX(n) = uniqueX(n);
+    stdYPlus(n) =  polyval(coefficients , uniqueX(n)) - yZeroDiff + std(matchingY);
+    stdYMinus(n) = polyval(coefficients , uniqueX(n)) - yZeroDiff - std(matchingY);
+end
+
+figure(1);
+subplot(2,1,1)
+for n = 1:numel(fn)
+%     plot(calibrationValues.(fn{n}).diopterVals,calibrationValues.(fn{n}).zMatchMicrons - yZeroDiff,'-*');
+    hold on
+end
+
 plot(xFit, yFit, '--', 'LineWidth', 2);
+f = fill([stdX, fliplr(stdX)], [stdYPlus, fliplr(stdYMinus)], 'r','Linestyle','none');
+set(f,'facea',[.2]);
 hold off
-ylabel('Diopters (meters^{-1})')
-xlabel('Z (microns)')
+xlabel('Diopters (meters^{-1})')
+ylabel('\Delta Z (microns)')
 title('Diopter Values vs. Focal Plane Position in Z')
 grid on
-axis([0 40 -2.1 1.5])
+% axis([-2.1 1.5 0 40])
 
 
 subplot(2,1,2)
