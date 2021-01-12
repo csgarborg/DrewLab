@@ -1,4 +1,5 @@
 function plotEMGWithBallData(filename)
+close all
 
 ballData = load(filename);
 
