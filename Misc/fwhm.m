@@ -1,4 +1,4 @@
-function width = fwhm(x,y)
+function [width,ttrail,tlead,Pol] = fwhm(x,y)
 
 % function width = fwhm(x,y)
 %
