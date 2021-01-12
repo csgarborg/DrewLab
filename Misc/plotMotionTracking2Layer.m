@@ -34,26 +34,33 @@ if ~exist('matFileName2','var')
     % Generate plots
     subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
     h(1) = figure('Color','White');
-    subplot(3,1,1)
+    subplot(4,1,1)
     plot(1:size(movementData.moveDist,1),medfilt1(movementData.moveDist(:,1),medFiltSize),'r')
     title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Frame')
     ylabel('X Movement (\mum)')
     grid on
     axis([1 size(movementData.moveDist,1) floor(min(medfilt1([movementData.moveDist(:,1);movementData.moveDist(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.moveDist(:,1);movementData.moveDist(:,2)],medFiltSize)))])
-    subplot(3,1,2)
+    subplot(4,1,2)
     plot(1:size(movementData.moveDist,1),medfilt1(movementData.moveDist(:,2),medFiltSize),'b')
     xlabel('Frame')
     ylabel('Y Movement (\mum)')
     grid on
     axis([1 size(movementData.moveDist,1) floor(min(medfilt1([movementData.moveDist(:,1);movementData.moveDist(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.moveDist(:,1);movementData.moveDist(:,2)],medFiltSize)))])
-    subplot(3,1,3)
+    subplot(4,1,3)
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('Movement')
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
+    subplot(4,1,4)
+    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+    title('\fontsize{20pt}\bf{EMG}')
+    xlabel('Time (s)')
+    ylabel('Amplitude (a.u.)')
+    grid on
+    axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
     
     h(2) = figure('Color','White');
     subplot(2,1,1)
@@ -168,7 +175,7 @@ else
     movementData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
     
     h(1) = figure('Color','White');
-    x1 = subplot(3,1,1);
+    x1 = subplot(4,1,1);
     plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,medfilt1(movementData.targetPosition(:,1)-movementData.targetPosition(1,1),medFiltSize),'r')
     hold on
     plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,medfilt1(stationaryData.targetPosition(:,1)-stationaryData.targetPosition(1,1),medFiltSize),'b')
@@ -179,7 +186,7 @@ else
     grid on
     maxVal = ceil(max(abs(medfilt1([movementData.targetPosition(:,1)-movementData.targetPosition(1,1);movementData.targetPosition(:,2)-movementData.targetPosition(1,2);stationaryData.targetPosition(:,1)-stationaryData.targetPosition(1,1);stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2)],medFiltSize))));
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxVal maxVal])
-    set(x1,'Position',[.05, .68, .9, .23])
+%     set(x1,'Position',[.05, .68, .9, .23])
     if movementData.hemisphere == 1
         text(0,maxVal,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -187,7 +194,7 @@ else
         text(0,maxVal,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
-    x2 = subplot(3,1,2);
+    x2 = subplot(4,1,2);
     plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*medfilt1(movementData.targetPosition(:,2)-movementData.targetPosition(1,2),medFiltSize),'r')
     hold on
     plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*medfilt1(stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2),medFiltSize),'b')
@@ -196,17 +203,24 @@ else
     ylabel('Y Position (\mum)')
     grid on
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxVal maxVal])
-    set(x2,'Position',[.05, .39, .9, .23])
+%     set(x2,'Position',[.05, .39, .9, .23])
     text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    x3 = subplot(3,1,3);
+    x3 = subplot(4,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
-    set(x3,'Position',[.05, .06, .9, .23])
+%     set(x3,'Position',[.05, .06, .9, .23])
+    x4 = subplot(4,1,4);
+    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+    title('\fontsize{20pt}\bf{EMG}')
+    xlabel('Time (s)')
+    ylabel('Amplitude (a.u.)')
+    grid on
+    axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
     
     h(2) = figure('Color','White');
     posL1 = [medfilt1(movementData.targetPosition(:,1) - movementData.targetPosition(1,1),medFiltSize), medfilt1(movementData.targetPosition(:,2) - movementData.targetPosition(1,2),medFiltSize)];
@@ -227,14 +241,14 @@ else
     medFiltData = [posL1(:,1)-posL2(:,1),-1*(posL1(:,2)-posL2(:,2))];
     maxPosDiff = ceil(max(max(medFiltData)));
     maxMoveData = ceil(max([posL1(:,1);posL1(:,2);posL2(:,1);posL2(:,2);]));
-    x1 = subplot(3,1,1);
+    x1 = subplot(4,1,1);
     plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,1),'k')
     title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Time (s)')
     ylabel('X Position (\mum)')
     grid on
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
-    set(x1,'Position',[.05, .68, .9, .23])
+%     set(x1,'Position',[.05, .68, .9, .23])
     if movementData.hemisphere == 1
         text(0,maxVal,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -242,23 +256,30 @@ else
         text(0,maxVal,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
-    x2 = subplot(3,1,2);
+    x2 = subplot(4,1,2);
     plot([1:size(medFiltData,1)]*movementData.secondsPerFrame,medFiltData(:,2),'k')
     xlabel('Time (s)')
     ylabel('Y Position (\mum)')
     grid on
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxPosDiff maxPosDiff])
-    set(x2,'Position',[.05, .39, .9, .23])
+%     set(x2,'Position',[.05, .39, .9, .23])
     text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    x3 = subplot(3,1,3);
+    x3 = subplot(4,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
-    set(x3,'Position',[.05, .06, .9, .23])
+%     set(x3,'Position',[.05, .06, .9, .23])
+    x4 = subplot(4,1,4);
+    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+    title('\fontsize{20pt}\bf{EMG}')
+    xlabel('Time (s)')
+    ylabel('Amplitude (a.u.)')
+    grid on
+    axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
     
     h(3) = figure('Color','White');   
     k = convhull(medFiltData(:,1),medFiltData(:,2));

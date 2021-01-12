@@ -1,5 +1,7 @@
 function plotEMGWithBallData(filename)
 
+close all
+
 ballData = load(filename);
 
 t = ballData(:,1);
@@ -8,9 +10,10 @@ emg = ballData(:,3);
 
 rawEMG = emg;
 % process EMG data
-fpass = [100,400];   % Hz
+% fpass = [100,400];   % Hz
+fpass = [300,4999];   % Hz
 trialDuration_sec = t(end);   % read this variable in from your data in seconds
-analogSamplingRate = 1000;   % Hz - change if yours is different
+analogSamplingRate = 10000;   % Hz - change if yours is different
 dsFs = 30;   % Hz - downsampled frequency
 analogExpectedLength = trialDuration_sec*analogSamplingRate;
 trimmedEMG = rawEMG(1:min(analogExpectedLength,length(rawEMG)));
@@ -24,6 +27,7 @@ resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
 procEMG = resampEMG;   % save this as your final array
 procT = 0:1/dsFs:t(end);
 semilogy(procT,procEMG)
+title('Select start and stop time (t) to use to determine mean baseline')
 tVals = ginput(2);
 close
 i = tVals(1,1) <= procT & procT <= tVals(2,1);
