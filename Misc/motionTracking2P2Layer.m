@@ -37,7 +37,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds)
+function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -178,20 +178,63 @@ secondsPerFrame = 1/framesPerSecond;
 if ~exist('commentString','var') || isempty(commentString)
     commentString = 'No comments';
 end
-
-%% Stream Processing Loop
-% This is the main processing loop which uses the objects we instantiated
-% above to stabilize the input video.
 if layer == 1
     startFrame = tifFrameBounds(1);
 else
     startFrame = tifFrameBounds(1)+1;
 end
+if tempMedFiltTF
+    f = waitbar(0,'Loading frames for temporal median filtering');    
+    inputStack = [];
+    for n = startFrame:2:tifFrameBounds(2)
+        if compiledTifTF
+            if medFiltTF
+                inputStack(:,:,end+1) = im2double(medfilt2(imStack(:,:,n)));
+            else
+                inputStack(:,:,end+1) = im2double(imStack(:,:,n));
+            end
+        else
+            if medFiltTF
+                inputStack(:,:,end+1) = im2double(medfilt2(imread(tifFileName, n)));
+            else
+                inputStack(:,:,end+1) = im2double(imread(tifFileName, n));
+            end
+        end
+        waitbar(round((n-tifFrameBounds(1)+1)/(tifFrameBounds(2)-tifFrameBounds(1)+1),2),f,'Loading frames for temporal median filtering');
+    end
+    close(f)
+    f = waitbar(0,'Applying temporal median filter');
+    for i = 1:size(inputStack,1)
+        for j = 1:size(inputStack,2)
+            inputStack(i,j,:) = medfilt1(inputStack(i,j,:),3);
+            waitbar(round((((i-1)*size(inputStack,2))+j)/(size(inputStack,1)*size(inputStack,2)),2),f,'Applying temporal median filter');
+        end
+    end
+    close(f)
+end
+
+%% Stream Processing Loop
+% This is the main processing loop which uses the objects we instantiated
+% above to stabilize the input video.
+tempFiltInd = 1;
 for i = startFrame:2:tifFrameBounds(2)
-    if medFiltTF
-        input = im2double(medfilt2(imread(tifFileName, i)));
+    if tempMedFiltTF
+        input = inputStack(:,:,tempFiltInd);
+        tempFiltInd = tempFiltInd + 1;
     else
-        input = im2double(imread(tifFileName, i));
+        if compiledTifTF
+            if medFiltTF
+                input = im2double(medfilt2(imStack(:,:,i)));
+            else
+                input = im2double(imStack(:,:,n));
+            end
+        else
+            if medFiltTF
+                input = im2double(medfilt2(imread(tifFileName, i)));
+            else
+                input = im2double(imread(tifFileName, i));
+            end
+        end
     end
 
     % Find location of Target in the input video frame
@@ -314,12 +357,17 @@ end
 secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
 ballData = load([tifFileName(1:end-3) 'txt']);
 ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
-ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
-emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
-
-% procBallData = filterEMGData(ballDataOnly,analogSampleRate);
-procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
-procBallData = ballDataOnly;
+if size(ballData,2) > 1
+    ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+    emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
+    
+    % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
+    procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
+    procBallData = ballDataOnly;
+else
+    procBallData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+    procEMGData = zeros(length(procBallData,1));
+end
 
 % Write data values to .mat file structure
 movementData.fileName = fileName;
