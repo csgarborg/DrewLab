@@ -35,7 +35,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,objMag,digMag,turnabout,commentString,tifFrameBounds)
+function motionTracking2P(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,hemisphere,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -344,11 +344,21 @@ if saveOutputVideoTF
     close(aviObject);
 end
 
-% Get binary ball data to compare to frame movement data
+% Get binary ball and EMG data to compare to frame movement data
 secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
 ballData = load([tifFileName(1:end-3) 'txt']);
 ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
-ballData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+if size(ballData,2) > 1
+    ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+    emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
+    
+    % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
+    procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
+    procBallData = ballDataOnly;
+else
+    procBallData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+    procEMGData = zeros(length(procBallData,1));
+end
 
 % Write data values to .mat file structure
 movementData.fileName = fileName;
@@ -360,12 +370,14 @@ movementData.frames = tifFrameBounds;
 movementData.imageSize = sz;
 movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
-movementData.ballData = ballData;
+movementData.ballData = procBallData;
+movementData.emgData = procEMGData;
 movementData.secondsPerFrame = secondsPerFrame;
 movementData.objMag = objMag;
 movementData.digMag = digMag;
 movementData.turnabout = turnabout;
 movementData.commentString = commentString;
+movementData.hemisphere = hemisphere;
 
 matFileName = [tifFileName(1:end-4) '_processed.mat'];
 save(matFileName,'movementData');
