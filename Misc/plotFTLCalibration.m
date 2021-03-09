@@ -51,7 +51,7 @@ end
 figure(1);
 subplot(2,1,1)
 for n = 1:numel(fn)
-%     plot(calibrationValues.(fn{n}).diopterVals,calibrationValues.(fn{n}).zMatchMicrons - yZeroDiff,'-*');
+    plot(calibrationValues.(fn{n}).diopterVals,calibrationValues.(fn{n}).zMatchMicrons - yZeroDiff,'-*');
     hold on
 end
 
@@ -82,9 +82,9 @@ ylabel('Diopters (meters^{-1})')
 xlabel('Z (microns)')
 title('Diopter Values vs. Focal Plane Position in Z')
 grid on
-if exist('inputZVec','var')
-    axis([0 ceil(max(inputZVec)) -2.1 ceil(max(yFitInput))])
-else
-    axis([0 40 -2.1 1.5])
-end
+% if exist('inputZVec','var')
+%     axis([0 ceil(max(inputZVec)) -2.1 ceil(max(yFitInput))])
+% else
+%     axis([0 40 -2.1 1.5])
+% end
 end
