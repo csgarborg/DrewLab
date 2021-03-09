@@ -1,0 +1,46 @@
+function combineMotionTracking(fileName,versionVec,mode)
+close all
+targetPositionX = [];
+targetPositionY = [];
+for n = 1:length(versionVec)
+    load([fileName num2str(versionVec(n)) '.mat'])
+    if n > 1
+        if size(movementData.targetPosition,1) > size(targetPositionX,2)
+            movementData.targetPosition = movementData.targetPosition(1:size(targetPositionX,2),:);
+        elseif size(movementData.targetPosition,1) < size(targetPositionX,2)
+            targetPositionX = targetPositionX(:,1:size(movementData.targetPosition,1));
+        end
+    end
+    targetPositionX(n,:) = movementData.targetPosition(:,1)';
+    targetPositionY(n,:) = movementData.targetPosition(:,2)';
+    if n < length(versionVec)
+        clear movementData
+    end
+end
+
+if mode == 1
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,95);
+elseif mode == 2
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,95);
+else
+    disp('Specify mode for combining positional data (1 = mean, 2 = median)')
+    return
+end
+
+moveDist = [diff(combinedTargetPositionX)' diff(combinedTargetPositionY)'];
+for n = 1:size(moveDist,1)
+    velocity(n,1) = sqrt((moveDist(n,1))^2+(moveDist(n,2))^2)/movementData.secondsPerFrame;
+end
+targetPosition = [combinedTargetPositionX' combinedTargetPositionY'];
+
+movementData.moveDist = moveDist;
+movementData.velocity = velocity;
+movementData.targetPosition = targetPosition;
+movementData.cIntFillPtsX = cIntFillPtsX;
+movementData.cIntFillPtsY = cIntFillPtsY;
+
+save([fileName 'combined.mat'],'movementData');
+plotMotionTracking([fileName 'combined.mat']);
+end
