@@ -313,15 +313,15 @@ for n = 2:movementLength
     micronDistTraveledY = getDistFromImCentY(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2),targetPositionPixel(n,1),targetPositionPixel(n,2),midlineY,surfaceCalibFitY);
     
     moveDist(n-1,:) = [micronDistTraveledX,micronDistTraveledY];
-    velocity(n-1,1) = sqrt((micronDistTraveledX)^2+(micronDistTraveledY)^2)/secondsPerFrame;
+    velocity(n-1,1) = sqrt((micronDistTraveledX)^2+(micronDistTraveledY)^2)/(2*secondsPerFrame);
     targetPosition(n,:) = targetPosition(n-1,:)+[micronDistTraveledX,micronDistTraveledY];
     waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from calibration');
 end
 close(f)
-meanPosX = mean(targetPosition(:,1));
-meanPosY = mean(targetPosition(:,2));
-targetPosition(:,1) = targetPosition(:,1) - meanPosX;
-targetPosition(:,2) = targetPosition(:,2) - meanPosY;
+% meanPosX = mean(targetPosition(:,1));
+% meanPosY = mean(targetPosition(:,2));
+% targetPosition(:,1) = targetPosition(:,1) - meanPosX;
+% targetPosition(:,2) = targetPosition(:,2) - meanPosY;
 
 %% Release
 % Here you call the release method on the objects to close any open files
@@ -369,6 +369,9 @@ else
     procEMGData = zeros(length(procBallData,1));
 end
 
+% Detect motion and events
+[motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,2*secondsPerFrame);
+
 % Write data values to .mat file structure
 movementData.fileName = fileName;
 movementData.moveDist = moveDist;
@@ -381,6 +384,9 @@ movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
 movementData.ballData = procBallData;
 movementData.emgData = procEMGData;
+movementData.motionEvents = motionEvents;
+movementData.EMGEvents = EMGEvents;
+movementData.EMGNoMotionEvents = EMGNoMotionEvents;
 movementData.secondsPerFrame = secondsPerFrame;
 movementData.objMag = objMag;
 movementData.digMag = digMag;
@@ -389,8 +395,13 @@ movementData.commentString = commentString;
 movementData.layer = layer;
 movementData.hemisphere = hemisphere;
 
-matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '.mat'];
-save(matFileName,'movementData');
+for n = 1:100
+    matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '_' num2str(n) '.mat'];
+    if ~exist(matFileName,'file')
+        save(matFileName,'movementData');
+        break
+    end
+end
 
 % Plot data
 plotMotionTracking2Layer(matFileName);
@@ -495,7 +506,8 @@ trimmedEMG = rawEMG(1:min(analogExpectedLength,length(rawEMG)));
 [z,p,k] = butter(3,fpass/(analogSamplingRate/2));
 [sos,g] = zp2sos(z,p,k);
 filtEMG = filtfilt(sos,g,trimmedEMG - mean(trimmedEMG));
-kernelWidth = 0.5;
+% kernelWidth = 0.5;
+kernelWidth = 0.01;
 smoothingKernel = gausswin(kernelWidth*analogSamplingRate)/sum(gausswin(kernelWidth*analogSamplingRate));
 EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
 resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);

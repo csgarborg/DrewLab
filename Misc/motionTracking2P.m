@@ -309,10 +309,10 @@ for n = 2:movementLength
     waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from calibration');
 end
 close(f)
-meanPosX = mean(targetPosition(:,1));
-meanPosY = mean(targetPosition(:,2));
-targetPosition(:,1) = targetPosition(:,1) - meanPosX;
-targetPosition(:,2) = targetPosition(:,2) - meanPosY;
+% meanPosX = mean(targetPosition(:,1));
+% meanPosY = mean(targetPosition(:,2));
+% targetPosition(:,1) = targetPosition(:,1) - meanPosX;
+% targetPosition(:,2) = targetPosition(:,2) - meanPosY;
 
 %% Release
 % Here you call the release method on the objects to close any open files
@@ -344,20 +344,33 @@ if saveOutputVideoTF
     close(aviObject);
 end
 
-% Get binary ball and EMG data to compare to frame movement data
-secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
-ballData = load([tifFileName(1:end-3) 'txt']);
-ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
-if size(ballData,2) > 1
-    ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
-    emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
-    
-    % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
-    procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
-    procBallData = ballDataOnly;
+if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
+    load([tifFileName(1:end-4) '_processed_1.mat']);
+    procBallData = movementData.ballData;
+    procEMGData = movementData.emgData;
+    motionEvents = movementData.motionEvents;
+    EMGEvents = movementData.EMGEvents;
+    EMGNoMotionEvents = movementData.EMGNoMotionEvents;
+    clear movementData
 else
-    procBallData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
-    procEMGData = zeros(length(procBallData,1));
+    % Get binary ball and EMG data to compare to frame movement data
+    secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
+    ballData = load([tifFileName(1:end-3) 'txt']);
+    ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
+    if size(ballData,2) > 1
+        ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+        emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
+        
+        % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
+        procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
+        procBallData = ballDataOnly;
+    else
+        procBallData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+        procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
+    end
+    
+    % Detect motion and events
+    [motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,secondsPerFrame);
 end
 
 % Write data values to .mat file structure
@@ -372,6 +385,9 @@ movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
 movementData.ballData = procBallData;
 movementData.emgData = procEMGData;
+movementData.motionEvents = motionEvents;
+movementData.EMGEvents = EMGEvents;
+movementData.EMGNoMotionEvents = EMGNoMotionEvents;
 movementData.secondsPerFrame = secondsPerFrame;
 movementData.objMag = objMag;
 movementData.digMag = digMag;
@@ -379,8 +395,13 @@ movementData.turnabout = turnabout;
 movementData.commentString = commentString;
 movementData.hemisphere = hemisphere;
 
-matFileName = [tifFileName(1:end-4) '_processed.mat'];
-save(matFileName,'movementData');
+for n = 1:100
+    matFileName = [tifFileName(1:end-4) '_processed_' num2str(n) '.mat'];
+    if ~exist(matFileName,'file')
+        save(matFileName,'movementData');
+        break
+    end
+end
 
 % Plot data
 plotMotionTracking(matFileName);
@@ -466,4 +487,41 @@ end
 
 % Distance travelled in x is difference between two distances from midline
 micronDistTraveledY = currMicronDistFromMid - prevMicronDistFromMid;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function procData = filterEMGData(emg,sampleRate)
+
+close all
+rawEMG = emg(:,2);
+t = emg(:,1);
+% process EMG data
+% fpass = [300,(sampleRate/2)-1];   % Hz
+fpass = [300,3000];   % Hz
+trialDuration_sec = t(end);   % read this variable in from your data in seconds
+analogSamplingRate = sampleRate;   % Hz - change if yours is different
+dsFs = 30;   % Hz - downsampled frequency
+analogExpectedLength = trialDuration_sec*analogSamplingRate;
+trimmedEMG = rawEMG(1:min(analogExpectedLength,length(rawEMG)));
+[z,p,k] = butter(3,fpass/(analogSamplingRate/2));
+[sos,g] = zp2sos(z,p,k);
+filtEMG = filtfilt(sos,g,trimmedEMG - mean(trimmedEMG));
+% kernelWidth = 0.5;
+kernelWidth = 0.005;
+smoothingKernel = gausswin(kernelWidth*analogSamplingRate)/sum(gausswin(kernelWidth*analogSamplingRate));
+% EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
+EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
+resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
+procEMG = resampEMG;   % save this as your final array
+procT = 0:1/dsFs:t(end);
+procT = procT(1:end-1);
+semilogy(procT,procEMG)
+title('Select start and stop time (t) to use to determine mean baseline')
+tVals = ginput(2);
+close
+i = tVals(1,1) <= procT & procT <= tVals(2,1);
+baseline = mean(procEMG(i));
+procEMG = procEMG - (baseline - 1);
+procData = [procT',procEMG];
 end

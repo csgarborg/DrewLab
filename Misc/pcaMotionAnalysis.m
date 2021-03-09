@@ -55,4 +55,4 @@ end
 numMags = ceil(size(positionData,1)*.2);
 magnitude = mean(maxk(((positionData(:,1).^2) + (positionData(:,2).^2)).^.5,numMags));
 motionVec = motionVec * magnitude;
-ended
+end
