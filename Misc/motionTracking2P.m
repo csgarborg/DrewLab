@@ -515,7 +515,12 @@ EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
 resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
 procEMG = resampEMG;   % save this as your final array
 procT = 0:1/dsFs:t(end);
-procT = procT(1:end-1);
+% procT = procT(1:end-1);
+if length(procT) > length(procEMG)
+    procT = procT(1:length(procEMG));
+elseif length(procT) < length(procEMG)
+    procEMG = procEMG(1:length(procT));
+end
 semilogy(procT,procEMG)
 title('Select start and stop time (t) to use to determine mean baseline')
 tVals = ginput(2);
