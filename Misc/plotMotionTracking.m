@@ -114,7 +114,7 @@ grid on
 axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
 % set(x3,'Position',[.05, .06, .9, .23])
 x4 = subplot(4,1,4);
-semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
 title('\fontsize{20pt}\bf{EMG}')
 xlabel('Time (s)')
 ylabel('Power')
@@ -346,7 +346,7 @@ else
     grid on
     axis([0 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
     subplot(3,1,3)
-    %     semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+    %     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
     title('\fontsize{20pt}\bf{EMG}')
     xlabel('Time (s)')
@@ -477,7 +477,7 @@ else
     end
     hold off
     subplot(4,1,4)
-    %     semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+    %     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
     title('EMG')
     xlabel('Time (s)')

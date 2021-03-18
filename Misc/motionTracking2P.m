@@ -276,6 +276,9 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
+    if firstTime
+        savedImage = input(:,:,1);
+    end
     
     % Save output video to variable
     if saveOutputVideoTF
@@ -285,7 +288,7 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
     
     % Add pixel motion to data
     if firstTime
-        targetPositionPixel = [double(Idx(1)), H-double(Idx(2))+1];
+        targetPositionPixel = [double(Idx(1)), 512-double(Idx(2))+1];
         targetPosition = [0 0];
         firstTime = false;
     else
@@ -295,18 +298,28 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
 end
 
 movementLength = size(targetPositionPixel,1);
+uniquePositions = unique(targetPositionPixel,'rows');
+lookupTableX = zeros(512,512);
+lookupTableY = zeros(512,512);
+f = waitbar(0,'Calculating position from calibration');
+for n = 1:size(uniquePositions,1)
+    lookupTableX(uniquePositions(n,1),uniquePositions(n,2)) = getDistFromImCentX(uniquePositions(n,1),uniquePositions(n,2),midlineX,surfaceCalibFitX);
+    lookupTableY(uniquePositions(n,1),uniquePositions(n,2)) = getDistFromImCentY(uniquePositions(n,1),uniquePositions(n,2),512-midlineY,surfaceCalibFitY);
+    waitbar(round((n)/(size(uniquePositions,1)),2),f,'Calculating position look-up table from calibration');
+end
+close(f)
 f = waitbar(0,'Calculating position from calibration');
 for n = 2:movementLength
     % Get x movement
-    micronDistTraveledX = getDistFromImCentX(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2),targetPositionPixel(n,1),targetPositionPixel(n,2),midlineX,surfaceCalibFitX);
+    micronDistTraveledX = lookupTableX(targetPositionPixel(n,1),targetPositionPixel(n,2)) - lookupTableX(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2));
     
     % Get y movement
-    micronDistTraveledY = getDistFromImCentY(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2),targetPositionPixel(n,1),targetPositionPixel(n,2),midlineY,surfaceCalibFitY);
+    micronDistTraveledY = lookupTableY(targetPositionPixel(n,1),targetPositionPixel(n,2)) - lookupTableY(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2));
     
     moveDist(n-1,:) = [micronDistTraveledX,micronDistTraveledY];
     velocity(n-1,1) = sqrt((micronDistTraveledX)^2+(micronDistTraveledY)^2)/secondsPerFrame;
     targetPosition(n,:) = targetPosition(n-1,:)+[micronDistTraveledX,micronDistTraveledY];
-    waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from calibration');
+    waitbar(round((n-1)/(movementLength-1),2),f,'Calculating position from look-up table');
 end
 close(f)
 % meanPosX = mean(targetPosition(:,1));
@@ -363,9 +376,9 @@ else
         
         % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
         procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
-        procBallData = ballDataOnly;
+        procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
-        procBallData = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
+        procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
         procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
     end
     
@@ -394,6 +407,7 @@ movementData.digMag = digMag;
 movementData.turnabout = turnabout;
 movementData.commentString = commentString;
 movementData.hemisphere = hemisphere;
+movementData.savedImage = savedImage;
 
 for n = 1:100
     matFileName = [tifFileName(1:end-4) '_processed_' num2str(n) '.mat'];
@@ -411,122 +425,84 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Subfunctions
-function micronDistTraveledX = getDistFromImCentX(prevPixelLocX,prevPixelLocY,currPixelLocX,currPixelLocY,midlinePixelVal,calibSurf)
+function micronDistFromMid = getDistFromImCentX(pixelLocX,pixelLocY,midlinePixelVal,calibSurf)
 
-% Get distance between midline and previous x value at certain y value from surface calibration
-prevCalibVec = [];
-if prevPixelLocX == midlinePixelVal % Dist is zero
-    prevMicronDistFromMid = 0;
-elseif prevPixelLocX < midlinePixelVal % Dist is negative from center of image
-    for x = prevPixelLocX:.5:midlinePixelVal
-        prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
+% Get distance between midline and x value at certain y value from surface calibration
+calibVec = [];
+if pixelLocX == midlinePixelVal % Dist is zero
+    micronDistFromMid = 0;
+elseif pixelLocX < midlinePixelVal % Dist is negative from center of image
+    for x = pixelLocX:.5:midlinePixelVal
+        calibVec(end+1,1) = calibSurf(x,pixelLocY);
     end
-    prevMicronDistFromMid = -trapz(prevPixelLocX:.5:midlinePixelVal,prevCalibVec);
+    micronDistFromMid = -trapz(pixelLocX:.5:midlinePixelVal,calibVec);
 else % Dist is positive from center of image
-    for x = midlinePixelVal:.5:prevPixelLocX
-        prevCalibVec(end+1,1) = calibSurf(x,prevPixelLocY);
+    for x = midlinePixelVal:.5:pixelLocX
+        calibVec(end+1,1) = calibSurf(x,pixelLocY);
     end
-    prevMicronDistFromMid = trapz(midlinePixelVal:.5:prevPixelLocX,prevCalibVec);
+    micronDistFromMid = trapz(midlinePixelVal:.5:pixelLocX,calibVec);
 end
-
-% Get distance between midline and current x value at certain y value from surface calibration
-currCalibVec = [];
-if currPixelLocX == midlinePixelVal % Dist is zero
-    currMicronDistFromMid = 0;
-elseif currPixelLocX < midlinePixelVal % Dist is negative from center of image
-    for x = currPixelLocX:.5:midlinePixelVal
-        currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
-    end
-    currMicronDistFromMid = -trapz(currPixelLocX:.5:midlinePixelVal,currCalibVec);
-else % Dist is positive from center of image
-    for x = midlinePixelVal:.5:currPixelLocX
-        currCalibVec(end+1,1) = calibSurf(x,currPixelLocY);
-    end
-    currMicronDistFromMid = trapz(midlinePixelVal:.5:currPixelLocX,currCalibVec);
-end
-
-% Distance travelled in x is difference between two distances from midline
-micronDistTraveledX = currMicronDistFromMid - prevMicronDistFromMid;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function micronDistTraveledY = getDistFromImCentY(prevPixelLocX,prevPixelLocY,currPixelLocX,currPixelLocY,midlinePixelVal,calibSurf)
+function micronDistFromMid = getDistFromImCentY(pixelLocX,pixelLocY,midlinePixelVal,calibSurf)
 
 % Get distance between midline and previous x value at certain y value from surface calibration
 prevCalibVec = [];
-if prevPixelLocY == midlinePixelVal % Dist is zero
-    prevMicronDistFromMid = 0;
-elseif prevPixelLocY < midlinePixelVal % Dist is negative from center of image
-    for y = prevPixelLocY:.5:midlinePixelVal
-        prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
+if pixelLocY == midlinePixelVal % Dist is zero
+    micronDistFromMid = 0;
+elseif pixelLocY < midlinePixelVal % Dist is negative from center of image
+    for y = pixelLocY:.5:midlinePixelVal
+        prevCalibVec(end+1,1) = calibSurf(pixelLocX,y);
     end
-    prevMicronDistFromMid = -trapz(prevPixelLocY:.5:midlinePixelVal,prevCalibVec);
+    micronDistFromMid = -trapz(pixelLocY:.5:midlinePixelVal,prevCalibVec);
 else % Dist is positive from center of image
-    for y = midlinePixelVal:.5:prevPixelLocY
-        prevCalibVec(end+1,1) = calibSurf(prevPixelLocX,y);
+    for y = midlinePixelVal:.5:pixelLocY
+        prevCalibVec(end+1,1) = calibSurf(pixelLocX,y);
     end
-    prevMicronDistFromMid = trapz(midlinePixelVal:.5:prevPixelLocY,prevCalibVec);
+    micronDistFromMid = trapz(midlinePixelVal:.5:pixelLocY,prevCalibVec);
 end
-
-% Get distance between midline and current x value at certain y value from surface calibration
-currCalibVec = [];
-if currPixelLocY == midlinePixelVal % Dist is zero
-    currMicronDistFromMid = 0;
-elseif currPixelLocY < midlinePixelVal % Dist is negative from center of image
-    for y = currPixelLocY:.5:midlinePixelVal
-        currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
-    end
-    currMicronDistFromMid = -trapz(currPixelLocY:.5:midlinePixelVal,currCalibVec);
-else % Dist is positive from center of image
-    for y = midlinePixelVal:.5:currPixelLocY
-        currCalibVec(end+1,1) = calibSurf(currPixelLocX,y);
-    end
-    currMicronDistFromMid = trapz(midlinePixelVal:.5:currPixelLocY,currCalibVec);
-end
-
-% Distance travelled in x is difference between two distances from midline
-micronDistTraveledY = currMicronDistFromMid - prevMicronDistFromMid;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function procData = filterEMGData(emg,sampleRate)
-
-close all
-rawEMG = emg(:,2);
-t = emg(:,1);
-% process EMG data
-% fpass = [300,(sampleRate/2)-1];   % Hz
-fpass = [300,3000];   % Hz
-trialDuration_sec = t(end);   % read this variable in from your data in seconds
-analogSamplingRate = sampleRate;   % Hz - change if yours is different
-dsFs = 30;   % Hz - downsampled frequency
-analogExpectedLength = trialDuration_sec*analogSamplingRate;
-trimmedEMG = rawEMG(1:min(analogExpectedLength,length(rawEMG)));
-[z,p,k] = butter(3,fpass/(analogSamplingRate/2));
-[sos,g] = zp2sos(z,p,k);
-filtEMG = filtfilt(sos,g,trimmedEMG - mean(trimmedEMG));
-% kernelWidth = 0.5;
-kernelWidth = 0.005;
-smoothingKernel = gausswin(kernelWidth*analogSamplingRate)/sum(gausswin(kernelWidth*analogSamplingRate));
-% EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
-EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
-resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
-procEMG = resampEMG;   % save this as your final array
-procT = 0:1/dsFs:t(end);
-% procT = procT(1:end-1);
-if length(procT) > length(procEMG)
-    procT = procT(1:length(procEMG));
-elseif length(procT) < length(procEMG)
-    procEMG = procEMG(1:length(procT));
-end
-semilogy(procT,procEMG)
-title('Select start and stop time (t) to use to determine mean baseline')
-tVals = ginput(2);
-close
-i = tVals(1,1) <= procT & procT <= tVals(2,1);
-baseline = mean(procEMG(i));
-procEMG = procEMG - (baseline - 1);
-procData = [procT',procEMG];
-end
+% function procData = filterEMGData(emg,sampleRate)
+% 
+% close all
+% rawEMG = emg(:,2);
+% t = emg(:,1);
+% % process EMG data
+% % fpass = [300,(sampleRate/2)-1];   % Hz
+% fpass = [300,3000];   % Hz
+% trialDuration_sec = t(end);   % read this variable in from your data in seconds
+% analogSamplingRate = sampleRate;   % Hz - change if yours is different
+% dsFs = 30;   % Hz - downsampled frequency
+% analogExpectedLength = trialDuration_sec*analogSamplingRate;
+% trimmedEMG = rawEMG(1:min(analogExpectedLength,length(rawEMG)));
+% [z,p,k] = butter(3,fpass/(analogSamplingRate/2));
+% [sos,g] = zp2sos(z,p,k);
+% filtEMG = filtfilt(sos,g,trimmedEMG - mean(trimmedEMG));
+% % kernelWidth = 0.5;
+% kernelWidth = 0.005;
+% smoothingKernel = gausswin(kernelWidth*analogSamplingRate)/sum(gausswin(kernelWidth*analogSamplingRate));
+% % EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
+% EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
+% resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
+% procEMG = resampEMG;   % save this as your final array
+% procT = 0:1/dsFs:t(end);
+% % procT = procT(1:end-1);
+% if length(procT) > length(procEMG)
+%     procT = procT(1:length(procEMG));
+% elseif length(procT) < length(procEMG)
+%     procEMG = procEMG(1:length(procT));
+% end
+% plot(procT,procEMG)
+% title('Select start and stop time (t) to use to determine mean baseline')
+% tVals = ginput(2);
+% close
+% i = tVals(1,1) <= procT & procT <= tVals(2,1);
+% baseline = mean(procEMG(i));
+% procEMG = procEMG - (baseline - 1);
+% procData = [procT',procEMG];
+% end
