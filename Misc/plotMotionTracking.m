@@ -81,20 +81,29 @@ title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' 
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 grid on
+if movementData.hemisphere == 1
+    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+else
+    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+end
 axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
 % set(x1,'Position',[.05, .68, .9, .23])
 x2 = subplot(4,1,2);
-plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
+plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,-1*medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
 if contains(matFileName,'combined')
     hold on;
-    f = fill([(1:size(movementData.targetPosition,1))*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame)],movementData.cIntFillPtsY,'r','Linestyle','none');
+    f = fill([(1:size(movementData.targetPosition,1))*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame)],-1*movementData.cIntFillPtsY,'r','Linestyle','none');
     set(f,'facea',[.2]);
     hold off
 end
 xlabel('Time (s)')
 ylabel('Y Position (\mum)')
 grid on
-axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
+text(0,-floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(0,-ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame -ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) -floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
 % set(x2,'Position',[.05, .39, .9, .23])
 x3 = subplot(4,1,3);
 plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
@@ -110,7 +119,8 @@ title('\fontsize{20pt}\bf{EMG}')
 xlabel('Time (s)')
 ylabel('Power')
 grid on
-axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0.9 ceil(max(movementData.emgData(2:end,2))*10)/10])
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+% axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0.9 ceil(max(movementData.emgData(2:end,2))*10)/10])
 
 h(4) = figure('Color','White');
 medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),medfilt1(movementData.targetPosition(:,2),medFiltSize)];
