@@ -19,11 +19,11 @@ for n = 1:length(versionVec)
 end
 
 if mode == 1
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,95);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,95);
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,99);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,99);
 elseif mode == 2
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,95);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,95);
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,99);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,99);
 else
     disp('Specify mode for combining positional data (1 = mean, 2 = median)')
     return

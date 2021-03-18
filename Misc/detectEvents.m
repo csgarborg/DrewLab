@@ -35,6 +35,7 @@ function [motionEvents,motionVelocityThresh] = detectMotionEvents(procBallData,a
 
 motionEvents = [];
 motionVelocityThresh = [];
+analogSampleRate = 1/(procBallData(2,1) - procBallData(1,1));
 if size(procBallData,1) <= 7.1*analogSampleRate
     return
 else
