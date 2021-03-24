@@ -82,13 +82,13 @@ xlabel('Time (s)')
 ylabel('X Position (\mum)')
 grid on
 if movementData.hemisphere == 1
-    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 else
-    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,ceil(max(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,floor(min(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 end
-axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
+axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize)))])
 % set(x1,'Position',[.05, .68, .9, .23])
 x2 = subplot(4,1,2);
 plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,-1*medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
@@ -103,7 +103,7 @@ ylabel('Y Position (\mum)')
 grid on
 text(0,-floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(0,-ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame -ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) -floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
+axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)],medFiltSize)))])
 % set(x2,'Position',[.05, .39, .9, .23])
 x3 = subplot(4,1,3);
 plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
@@ -123,7 +123,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
 % axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0.9 ceil(max(movementData.emgData(2:end,2))*10)/10])
 
 h(4) = figure('Color','White');
-medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),medfilt1(movementData.targetPosition(:,2),medFiltSize)];
+medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),-1*medfilt1(movementData.targetPosition(:,2),medFiltSize)];
 k = convhull(medFiltData(:,1),medFiltData(:,2));
 plot(medFiltData(k,1),medFiltData(k,2),'b',medFiltData(:,1),medFiltData(:,2),'k');
 maxVal = ceil(max(max(abs(movementData.targetPosition))));
@@ -523,6 +523,33 @@ else
     ylabel('Y Position (\mum)')
     ylim([-maxMeanVal maxMeanVal])
     grid on
+end
+
+motionVec = pcaMotionAnalysis(medFiltData);
+maxMoveData = ceil(max([medFiltData(:,1);medFiltData(:,2)]));
+h(14) = figure('Color','White');
+scatter(medFiltData(:,1),medFiltData(:,2),10)
+hold on
+drawArrow([0;0],[motionVec(1);motionVec(2)]);
+hold off
+axis equal square
+axis([-maxMoveData maxMoveData -maxMoveData maxMoveData])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+xlabel('\mum')
+ylabel('\mum')
+if movementData.hemisphere == 1
+    text(maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+else
+    text(maxMoveData,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-maxMoveData,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,maxMoveData,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-maxMoveData,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
 end
 % h(5) = figure('Color','White');
 % [uxy,~,idx] = unique([movementData.targetPosition(:,1),movementData.targetPosition(:,2)],'rows');
