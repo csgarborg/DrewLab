@@ -75,6 +75,7 @@ if contains(matFileName,'combined')
     hold on;
     f = fill([(1:size(movementData.targetPosition,1))*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame)],movementData.cIntFillPtsX,'r','Linestyle','none');
     set(f,'facea',[.2]);
+    plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPositionSGF(:,1),'k')
     hold off
 end
 title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
@@ -96,6 +97,7 @@ if contains(matFileName,'combined')
     hold on;
     f = fill([(1:size(movementData.targetPosition,1))*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame)],-1*movementData.cIntFillPtsY,'r','Linestyle','none');
     set(f,'facea',[.2]);
+    plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPositionSGF(:,2),'k')
     hold off
 end
 xlabel('Time (s)')

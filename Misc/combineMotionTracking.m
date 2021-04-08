@@ -35,9 +35,13 @@ for n = 1:size(moveDist,1)
 end
 targetPosition = [combinedTargetPositionX' combinedTargetPositionY'];
 
+% sgf = sgolayfilt(targetPosition,3,17);
+sgf = sgolayfilt(targetPosition,3,13);
+
 movementData.moveDist = moveDist;
 movementData.velocity = velocity;
 movementData.targetPosition = targetPosition;
+movementData.targetPositionSGF = sgf;
 movementData.cIntFillPtsX = cIntFillPtsX;
 movementData.cIntFillPtsY = cIntFillPtsY;
 

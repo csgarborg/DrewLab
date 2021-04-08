@@ -23,7 +23,16 @@
 % WRITTEN BY:       Spencer Garborg 11/07/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function concatenateFTLMoviesForZCalibration(outputFilename,inputFilenameCellArray)
+function concatenateFTLMoviesForZCalibration(outputFilename,filenameStem,filenameVec)
+for n = 1:length(filenameVec)
+    if filenameVec(n) < 10
+        inputFilenameCellArray{n} = [filenameStem '00' num2str(filenameVec(n)) '.tif'];
+    elseif filenameVec(n) < 100
+        inputFilenameCellArray{n} = [filenameStem '0' num2str(filenameVec(n)) '.tif'];
+    else
+        inputFilenameCellArray{n} = [filenameStem num2str(filenameVec(n)) '.tif'];
+    end
+end
 
 for n = 1:numel(inputFilenameCellArray)
     tifLength = length(imfinfo(inputFilenameCellArray{n}));
