@@ -3,132 +3,157 @@
 % 2000 (lines per inch) Mesh Copper Grid (2155C from SPI supplies): bar size = 5 microns, hole size = 7.5 microns
 function motionTrackingCalibrationGrid2P(filename,barSize,holeSize,objMag,digMag,turnabout,commentString)
 close all
+% read in and filter image
 a = imread(filename);
 filtImg = medfilt2(a);
 b = filtImg;
 c = b;
 widthData = [];
 heightData = [];
-W = 1;
+% W = 1;
+% run loop while new selections are made, finish calibration if none
 newSelections = true;
 while newSelections
-    if ~isempty(widthData)
-        widthData(mean(isnan(widthData),2)>0,:) = [];
-    end
-    if ~isempty(heightData)
-        heightData(mean(isnan(heightData),2)>0,:) = [];
-    end
-    if isempty(widthData)
-        b = insertText(b(:,:,1),[1 1],'Horizontal','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
-%         imshow(b);
-    else
-        b = insertShape(b, 'Line', [[widthData(:,4),widthData(:,2),widthData(:,5),widthData(:,2)];[widthData(:,4),widthData(:,2)-5,widthData(:,4),widthData(:,2)+5];[widthData(:,5),widthData(:,2)-5,widthData(:,5),widthData(:,2)+5]], 'Color', 'yellow');
-        b = insertShape(b, 'FilledCircle', [widthData(:,1),widthData(:,2),2*ones(size(widthData,1),1)], 'Color', 'yellow');
-%         imshow(b)
-    end
-    if isempty(heightData)
-        c = insertText(c(:,:,1),[1 1],'Vertical','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
-%         imshow(c);
-    else
-        c = insertShape(c, 'Line', [[heightData(:,1),heightData(:,4),heightData(:,1),heightData(:,5)];[heightData(:,1)-5,heightData(:,4),heightData(:,1)+5,heightData(:,4)];[heightData(:,1)-5,heightData(:,5),heightData(:,1)+5,heightData(:,5)]], 'Color', 'yellow');
-        c = insertShape(c, 'FilledCircle', [heightData(:,1),heightData(:,2),2*ones(size(heightData,1),1)], 'Color', 'yellow');
-%         imshow(c)
-    end
-    imshow([b c]);
-    title('Select upper left, then lower right target corners on left picture and press enter');
-    [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
-    close(gcf);
-    if isempty(inputCoordTargetX)
-        break
-    end
-    inputCoordTargetX = round(inputCoordTargetX);
-    inputCoordTargetY = round(inputCoordTargetY);
-    if inputCoordTargetX(2)-inputCoordTargetX(1) > inputCoordTargetY(2)-inputCoordTargetY(1)
-        pixelBlock = filtImg(inputCoordTargetY(1):inputCoordTargetY(2),inputCoordTargetX(1):inputCoordTargetX(2));
-        pixelRangeX = inputCoordTargetX(1):inputCoordTargetX(2);
-        pixelRangeInt = mean(pixelBlock);
-        pixelMidpointY = inputCoordTargetY(1)+((inputCoordTargetY(2)-inputCoordTargetY(1))/2);
-        peakSelection = [];
-        cont = true;
-        h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
-        while cont
-            plot(pixelRangeX,pixelRangeInt,'b');
-            hold on
-            %     if length(frameSelection) == 1
-            %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
-            %     end
-            for n = 1:length(peakSelection)
-                line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+    try
+        % remove NaNs to prevent error
+        if ~isempty(widthData)
+            widthData(mean(isnan(widthData),2)>0,:) = [];
+        end
+        if ~isempty(heightData)
+            heightData(mean(isnan(heightData),2)>0,:) = [];
+        end
+        % draw new height and width spots on the image
+        if isempty(widthData)
+            bShow = insertText(b(:,:,1),[1 1],'Horizontal','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
+            %             %         imshow(b);
+        else
+            bShow = insertText(b(:,:,1),[1 1],'Horizontal','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
+            bShow = insertShape(bShow, 'Line', [[widthData(:,4),widthData(:,2),widthData(:,5),widthData(:,2)];[widthData(:,4),widthData(:,2)-5,widthData(:,4),widthData(:,2)+5];[widthData(:,5),widthData(:,2)-5,widthData(:,5),widthData(:,2)+5]], 'Color', 'yellow');
+            bShow = insertShape(bShow, 'FilledCircle', [widthData(:,1),widthData(:,2),2*ones(size(widthData,1),1)], 'Color', 'yellow');
+            %         imshow(b)
+        end
+        if isempty(heightData)
+            cShow = insertText(c(:,:,1),[1 1],'Vertical','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
+            %         imshow(c);
+        else
+            cShow = insertText(c(:,:,1),[1 1],'Vertical','FontSize',16, 'TextColor', 'white', 'BoxOpacity', 0);
+            cShow = insertShape(cShow, 'Line', [[heightData(:,1),heightData(:,4),heightData(:,1),heightData(:,5)];[heightData(:,1)-5,heightData(:,4),heightData(:,1)+5,heightData(:,4)];[heightData(:,1)-5,heightData(:,5),heightData(:,1)+5,heightData(:,5)]], 'Color', 'yellow');
+            cShow = insertShape(cShow, 'FilledCircle', [heightData(:,1),heightData(:,2),2*ones(size(heightData,1),1)], 'Color', 'yellow');
+            %         imshow(c)
+        end
+        imshow([bShow cShow]);
+        title('Select upper left, then lower right target corners on left picture and press enter. Add a third point to remove previous selections.');
+        [inputCoordTargetX,inputCoordTargetY] = getpts(gcf);
+        close(gcf);
+        % if no new points, finish calibration
+        if isempty(inputCoordTargetX)
+            newSelections = false;
+            break
+        end
+        inputCoordTargetX = round(inputCoordTargetX);
+        inputCoordTargetY = round(inputCoordTargetY);
+        % horizontal
+        if inputCoordTargetX(2)-inputCoordTargetX(1) > inputCoordTargetY(2)-inputCoordTargetY(1)
+            if length(inputCoordTargetX) > 2 && ~isempty(widthData) 
+                widthData = widthData(1:end-newWidth,:);
             end
-            hold off
-            %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
-            xlabel('X Position (Pixels)')
-            ylabel('Mean Pixel Intensity')
-            axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
-            grid on
-            
-            [selectedCoordX,~,arrowKey] = ginput(1);
-            
-            if isempty(arrowKey)
-                cont = false;
-                close(h(1))
-            elseif arrowKey == 1
-                if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
-                    peakSelection = peakSelection(1:end-1);
-                else
-                    peakSelection(end+1) = round(selectedCoordX);
+            pixelBlock = filtImg(inputCoordTargetY(1):inputCoordTargetY(2),inputCoordTargetX(1):inputCoordTargetX(2));
+            pixelRangeX = inputCoordTargetX(1):inputCoordTargetX(2);
+            pixelRangeInt = mean(pixelBlock);
+            pixelMidpointY = inputCoordTargetY(1)+((inputCoordTargetY(2)-inputCoordTargetY(1))/2);
+            peakSelection = [];
+            cont = true;
+            h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
+            while cont
+                plot(pixelRangeX,pixelRangeInt,'b');
+                hold on
+                %     if length(frameSelection) == 1
+                %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
+                %     end
+                for n = 1:length(peakSelection)
+                    line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+                end
+                hold off
+                %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
+                xlabel('X Position (Pixels)')
+                ylabel('Mean Pixel Intensity')
+                axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
+                grid on
+                
+                [selectedCoordX,~,arrowKey] = ginput(1);
+                
+                if isempty(arrowKey)
+                    cont = false;
+                    close(h(1))
+                elseif arrowKey == 1
+                    if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
+                        peakSelection = peakSelection(1:end-1);
+                    else
+                        peakSelection(end+1) = round(selectedCoordX);
+                    end
                 end
             end
-        end
-        for n = 1:length(peakSelection)-1
-            pixelChunkInt = pixelRangeInt(peakSelection(n) <= pixelRangeX & pixelRangeX <= peakSelection(n+1));
-            [width,leftBound,rightBound,polarity] = fwhm(peakSelection(n):peakSelection(n+1),pixelChunkInt);
-            widthData(end+1,:) = [leftBound+((rightBound-leftBound)/2), pixelMidpointY, width, leftBound, rightBound, polarity];
-        end
-    else
-        pixelBlock = filtImg(inputCoordTargetY(1):inputCoordTargetY(2),inputCoordTargetX(1):inputCoordTargetX(2));
-        pixelRangeY = inputCoordTargetY(1):inputCoordTargetY(2);
-        pixelRangeInt = mean(pixelBlock,2);
-        pixelMidpointX = inputCoordTargetX(1)+((inputCoordTargetX(2)-inputCoordTargetX(1))/2);
-        peakSelection = [];
-        cont = true;
-        h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
-        while cont
-            plot(pixelRangeY,pixelRangeInt,'b');
-            hold on
-            %     if length(frameSelection) == 1
-            %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
-            %     end
-            for n = 1:length(peakSelection)
-                line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+            newWidth = 0;
+            for n = 1:2:length(peakSelection)-1
+                pixelChunkInt = pixelRangeInt(peakSelection(n) <= pixelRangeX & pixelRangeX <= peakSelection(n+1));
+                [width,leftBound,rightBound,polarity] = fwhm(peakSelection(n):peakSelection(n+1),pixelChunkInt);
+                widthData(end+1,:) = [leftBound+((rightBound-leftBound)/2), pixelMidpointY, width, leftBound, rightBound, polarity];
+                newWidth = newWidth + 1;
             end
-            hold off
-            %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
-            xlabel('Y Position (Pixels)')
-            ylabel('Mean Pixel Intensity')
-            axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
-            grid on
-            
-            [selectedCoordX,~,arrowKey] = ginput(1);
-            
-            if isempty(arrowKey)
-                cont = false;
-                close(h(1))
-            elseif arrowKey == 1
-                if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
-                    peakSelection = peakSelection(1:end-1);
-                else
-                    peakSelection(end+1) = round(selectedCoordX);
+            % vertical
+        else
+            if length(inputCoordTargetX) > 2 && ~isempty(heightData) 
+                heightData = heightData(1:end-newHeight,:);
+            end
+            pixelBlock = filtImg(inputCoordTargetY(1):inputCoordTargetY(2),inputCoordTargetX(1):inputCoordTargetX(2));
+            pixelRangeY = inputCoordTargetY(1):inputCoordTargetY(2);
+            pixelRangeInt = mean(pixelBlock,2);
+            pixelMidpointX = inputCoordTargetX(1)+((inputCoordTargetX(2)-inputCoordTargetX(1))/2);
+            peakSelection = [];
+            cont = true;
+            h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
+            while cont
+                plot(pixelRangeY,pixelRangeInt,'b');
+                hold on
+                %     if length(frameSelection) == 1
+                %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
+                %     end
+                for n = 1:length(peakSelection)
+                    line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+                end
+                hold off
+                %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
+                xlabel('Y Position (Pixels)')
+                ylabel('Mean Pixel Intensity')
+                axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
+                grid on
+                
+                [selectedCoordX,~,arrowKey] = ginput(1);
+                
+                if isempty(arrowKey)
+                    cont = false;
+                    close(h(1))
+                elseif arrowKey == 1
+                    if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
+                        peakSelection = peakSelection(1:end-1);
+                    else
+                        peakSelection(end+1) = round(selectedCoordX);
+                    end
                 end
             end
+            newHeight = 0;
+            for n = 1:2:length(peakSelection)-1
+                pixelChunkInt = pixelRangeInt(peakSelection(n) <= pixelRangeY & pixelRangeY <= peakSelection(n+1));
+                [height,topBound,bottomBound,polarity] = fwhm(peakSelection(n):peakSelection(n+1),pixelChunkInt);
+                heightData(end+1,:) = [pixelMidpointX, topBound+((bottomBound-topBound)/2), height, topBound, bottomBound, polarity];
+                newHeight = newHeight + 1;
+            end
         end
-        for n = 1:length(peakSelection)-1
-            pixelChunkInt = pixelRangeInt(peakSelection(n) <= pixelRangeY & pixelRangeY <= peakSelection(n+1));
-            [height,topBound,bottomBound,polarity] = fwhm(peakSelection(n):peakSelection(n+1),pixelChunkInt);
-            heightData(end+1,:) = [pixelMidpointX, topBound+((bottomBound-topBound)/2), height, topBound, bottomBound, polarity];
-        end
+    catch
+        disp('Error occured, please retry')
     end
 end
+close all
 
 subtitle = [num2str(barSize) ' ' char(181) 'm Bar Size, ' num2str(holeSize) ' ' char(181) 'm Hole Size, ' num2str(objMag*digMag) 'x Magnification (' num2str(objMag) 'x Objective, ' num2str(digMag) 'x Digital), Turnabout = ' num2str(turnabout)];
 if ~exist('commentString','var') || isempty(commentString)
@@ -163,8 +188,8 @@ zlabel('\mum/Pixel')
 h(3) = figure('Color','White');
 scatter(widthData(:,1),widthData(:,2),50,micronLengthValWidth./widthData(:,3),'filled');
 colorbar;
-h = colorbar;
-ylabel(h,'\mum/pixel','FontSize',15)
+k = colorbar;
+ylabel(k,'\mum/pixel','FontSize',15)
 hold off
 axis equal
 axis([1 W 1 H])
@@ -178,8 +203,8 @@ ylabel('Pixels')
 h(4) = figure('Color','White');
 scatter(heightData(:,1),heightData(:,2),50,micronLengthValHeight./heightData(:,3),'filled');
 colorbar;
-h = colorbar;
-ylabel(h,'\mum/pixel','FontSize',15)
+k = colorbar;
+ylabel(k,'\mum/pixel','FontSize',15)
 hold off
 axis equal
 axis([1 W 1 H])
@@ -191,7 +216,7 @@ xlabel('Pixels')
 ylabel('Pixels')
 
 h(5) = figure;
-imshow([b c]);
+imshow([bShow cShow]);
 
 % Save figures to single .fig file
 savefig(h,[filename(1:end-4) '_calibrationPlots.fig']);

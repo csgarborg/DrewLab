@@ -1,6 +1,6 @@
 close all;
 clear all
-x=load('C:\Workspace\210310_007.txt');
+x=load('C:\Workspace\210323_004.txt');
 %%
 
 emg_raw=x(:,3);

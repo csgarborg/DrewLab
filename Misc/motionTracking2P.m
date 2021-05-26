@@ -301,14 +301,14 @@ movementLength = size(targetPositionPixel,1);
 uniquePositions = unique(targetPositionPixel,'rows');
 lookupTableX = zeros(512,512);
 lookupTableY = zeros(512,512);
-f = waitbar(0,'Calculating position from calibration');
+f = waitbar(0,'Calculating position look-up table from calibration');
 for n = 1:size(uniquePositions,1)
     lookupTableX(uniquePositions(n,1),uniquePositions(n,2)) = getDistFromImCentX(uniquePositions(n,1),uniquePositions(n,2),midlineX,surfaceCalibFitX);
     lookupTableY(uniquePositions(n,1),uniquePositions(n,2)) = getDistFromImCentY(uniquePositions(n,1),uniquePositions(n,2),512-midlineY,surfaceCalibFitY);
     waitbar(round((n)/(size(uniquePositions,1)),2),f,'Calculating position look-up table from calibration');
 end
 close(f)
-f = waitbar(0,'Calculating position from calibration');
+f = waitbar(0,'Calculating position from look-up table');
 for n = 2:movementLength
     % Get x movement
     micronDistTraveledX = lookupTableX(targetPositionPixel(n,1),targetPositionPixel(n,2)) - lookupTableX(targetPositionPixel(n-1,1),targetPositionPixel(n-1,2));
@@ -376,10 +376,12 @@ else
         
         % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
         procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
+        procEKGData = filterEKGData(emgDataOnly,analogSampleRate);
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
         procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
+        procEKGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
     end
     
     % Detect motion and events
@@ -398,6 +400,7 @@ movementData.medFiltTF = medFiltTF;
 movementData.pos = pos;
 movementData.ballData = procBallData;
 movementData.emgData = procEMGData;
+movementData.ekgData = procEKGData;
 movementData.motionEvents = motionEvents;
 movementData.EMGEvents = EMGEvents;
 movementData.EMGNoMotionEvents = EMGNoMotionEvents;
