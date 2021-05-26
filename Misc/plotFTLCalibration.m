@@ -37,7 +37,8 @@ end
 coefficients = polyfit(allDataX, allDataY, 3);
 xFit = linspace(min(allDataX), max(allDataX), 1000);
 yFit = polyval(coefficients , xFit);
-yZeroDiff = yFit(1);
+% yZeroDiff = yFit(1);
+yZeroDiff = 0;
 yFit = yFit - yZeroDiff;
 uniqueX = unique(allDataX);
 for n = 1:length(uniqueX)
@@ -50,25 +51,27 @@ end
 
 figure(1);
 subplot(2,1,1)
+plot(0.23,0,'kx','MarkerSize',20)
+hold on
 for n = 1:numel(fn)
     plot(calibrationValues.(fn{n}).diopterVals,calibrationValues.(fn{n}).zMatchMicrons - yZeroDiff,'-*');
-    hold on
 end
 
 plot(xFit, yFit, '--', 'LineWidth', 2);
 f = fill([stdX, fliplr(stdX)], [stdYPlus, fliplr(stdYMinus)], 'r','Linestyle','none');
 set(f,'facea',[.2]);
 hold off
-xlabel('Diopters (meters^{-1})')
+xlabel('Diopter Input (meters^{-1})')
 ylabel('\Delta Z (microns)')
-title('Diopter Values vs. Focal Plane Position in Z')
+title('Controller Diopter Values vs. Focal Plane Position in Z')
 grid on
 % axis([-2.1 1.5 0 40])
 
 
 subplot(2,1,2)
-plot(xFit, yFit, '--', 'LineWidth', 2);
+plot(0.23,0,'kx','MarkerSize',20)
 hold on
+plot(xFit, yFit, '--', 'LineWidth', 2);
 if exist('inputZVec','var')
     inputZVec = inputZVec + xFit(1);
     yFitInput = polyval(coefficients , inputZVec);
@@ -78,9 +81,9 @@ if exist('inputZVec','var')
     hold off
     text(.25,ceil(max(yFitInput))-.2,['Diopter Values Output: ' num2str(round(yFitInput,2))])
 end
-ylabel('Diopters (meters^{-1})')
-xlabel('Z (microns)')
-title('Diopter Values vs. Focal Plane Position in Z')
+xlabel('Diopter Input (meters^{-1})')
+ylabel('\Delta Z (microns)')
+title('Controller Diopter Values vs. Focal Plane Position in Z')
 grid on
 % if exist('inputZVec','var')
 %     axis([0 ceil(max(inputZVec)) -2.1 ceil(max(yFitInput))])
