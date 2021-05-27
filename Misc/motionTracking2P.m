@@ -370,7 +370,7 @@ else
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
     ballData = load([tifFileName(1:end-3) 'txt']);
     ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
-    if size(ballData,2) > 1
+    if size(ballData,2) > 2
         ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
         emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
         

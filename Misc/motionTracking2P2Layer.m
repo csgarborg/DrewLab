@@ -379,7 +379,7 @@ else
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
     ballData = load([tifFileName(1:end-3) 'txt']);
     ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
-    if size(ballData,2) > 1
+    if size(ballData,2) > 2
         ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
         emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
         
@@ -389,8 +389,8 @@ else
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
-        procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
-        procEKGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
+        procEMGData = [procBallData(:,1) zeros(size(procBallData,1))];
+        procEKGData = [procBallData(:,1) zeros(size(procBallData,1))];
     end
     
     % Detect motion and events

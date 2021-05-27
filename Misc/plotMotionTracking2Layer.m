@@ -55,12 +55,16 @@ if ~exist('matFileName2','var')
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
     subplot(4,1,4)
-    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
-    title('\fontsize{20pt}\bf{EMG}')
-    xlabel('Time (s)')
-    ylabel('Amplitude (a.u.)')
-    grid on
-    axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+    if all(movementData.emgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EMG Data0}')
+    else
+        semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EMG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+        axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+    end
     
     h(2) = figure('Color','White');
     subplot(2,1,1)
