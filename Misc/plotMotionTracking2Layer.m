@@ -56,7 +56,7 @@ if ~exist('matFileName2','var')
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
     subplot(4,1,4)
     if all(movementData.emgData(:,2) == 0)
-        title('\fontsize{20pt}\bf{No EMG Data0}')
+        title('\fontsize{20pt}\bf{No EMG Data}')
     else
         semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
@@ -83,29 +83,40 @@ if ~exist('matFileName2','var')
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
     
     h(3) = figure('Color','White');
-    x1 = subplot(3,1,1);
+    x1 = subplot(4,1,1);
     plot(1:size(movementData.targetPosition,1),medfilt1(movementData.targetPosition(:,1),medFiltSize),'r')
     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Frame')
     ylabel('X Position (\mum)')
     grid on
     axis([1 size(movementData.targetPosition,1) floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
-    set(x1,'Position',[.05, .68, .9, .23])
-    x2 = subplot(3,1,2);
+%     set(x1,'Position',[.05, .68, .9, .23])
+    x2 = subplot(4,1,2);
     plot(1:size(movementData.targetPosition,1),medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
     xlabel('Frame')
     ylabel('Y Position (\mum)')
     grid on
     axis([1 size(movementData.targetPosition,1) floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))) ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)))])
-    set(x2,'Position',[.05, .39, .9, .23])
-    x3 = subplot(3,1,3);
+%     set(x2,'Position',[.05, .39, .9, .23])
+    x3 = subplot(4,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('Movement')
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) -1 ceil(max(movementData.ballData(:,2)))])
-    set(x3,'Position',[.05, .06, .9, .23])
+%     set(x3,'Position',[.05, .06, .9, .23])
+    subplot(4,1,4)
+    if all(movementData.emgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EMG Data}')
+    else
+        semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EMG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+        axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+    end
     
     h(4) = figure('Color','White');
     medFiltData = [medfilt1(movementData.targetPosition(:,1),medFiltSize),-1*medfilt1(movementData.targetPosition(:,2),medFiltSize)];
@@ -207,7 +218,7 @@ if ~exist('matFileName2','var')
         ylabel('X Position (\mum)')
         
         subplot(4,1,3)
-        plot((1:size(movementData.targetPosition,2))*movementData.secondsPerFrame,medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
+        plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,medfilt1(movementData.targetPosition(:,2),medFiltSize),'b')
         moveMin = floor(min(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize))); 
         moveMax = ceil(max(medfilt1([movementData.targetPosition(:,1);movementData.targetPosition(:,2)],medFiltSize)));
         hold on

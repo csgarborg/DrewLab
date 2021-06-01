@@ -394,7 +394,7 @@ else
     end
     
     % Detect motion and events
-    [motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,secondsPerFrame);
+    [motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,2*secondsPerFrame);
 end
 
 % Write data values to .mat file structure
