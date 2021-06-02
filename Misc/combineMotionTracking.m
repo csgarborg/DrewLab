@@ -19,11 +19,11 @@ for n = 1:length(versionVec)
 end
 
 if mode == 1
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,99);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,99);
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,95);
 elseif mode == 2
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,99);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,99);
+    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,95);
 else
     disp('Specify mode for combining positional data (1 = mean, 2 = median)')
     return
@@ -36,15 +36,19 @@ end
 targetPosition = [combinedTargetPositionX' combinedTargetPositionY'];
 
 % sgf = sgolayfilt(targetPosition,3,17);
-sgf = sgolayfilt(targetPosition,3,13);
+% sgf = sgolayfilt(targetPosition,3,13);
 
 movementData.moveDist = moveDist;
 movementData.velocity = velocity;
 movementData.targetPosition = targetPosition;
-movementData.targetPositionSGF = sgf;
+% movementData.targetPositionSGF = sgf;
 movementData.cIntFillPtsX = cIntFillPtsX;
 movementData.cIntFillPtsY = cIntFillPtsY;
 
 save([fileName 'combined.mat'],'movementData');
-plotMotionTracking([fileName 'combined.mat']);
+if contains(fileName,'Layer')
+    plotMotionTracking2Layer([fileName 'combined.mat']);
+else
+    plotMotionTracking([fileName 'combined.mat']);
+end
 end

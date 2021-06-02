@@ -380,8 +380,8 @@ else
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
-        procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
-        procEKGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1))];
+        procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1),1)];
+        procEKGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1),1)];
     end
     
     % Detect motion and events

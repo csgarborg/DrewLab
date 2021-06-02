@@ -366,10 +366,20 @@ if saveOutputVideoTF
     close(aviObject);
 end
 
-if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
-    load([tifFileName(1:end-4) '_processed_1.mat']);
+if exist([tifFileName(1:end-4) '_processed_Layer1_1.mat'],'file')
+    load([tifFileName(1:end-4) '_processed_Layer1_1.mat']);
     procBallData = movementData.ballData;
     procEMGData = movementData.emgData;
+    procEKGData = movementData.ekgData;
+    motionEvents = movementData.motionEvents;
+    EMGEvents = movementData.EMGEvents;
+    EMGNoMotionEvents = movementData.EMGNoMotionEvents;
+    clear movementData
+elseif exist([tifFileName(1:end-4) '_processed_Layer2_1.mat'],'file')
+    load([tifFileName(1:end-4) '_processed_Layer2_1.mat']);
+    procBallData = movementData.ballData;
+    procEMGData = movementData.emgData;
+    procEKGData = movementData.ekgData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
@@ -389,8 +399,8 @@ else
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
-        procEMGData = [procBallData(:,1) zeros(size(procBallData,1))];
-        procEKGData = [procBallData(:,1) zeros(size(procBallData,1))];
+        procEMGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
+        procEKGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
     end
     
     % Detect motion and events
@@ -413,7 +423,7 @@ movementData.ekgData = procEKGData;
 movementData.motionEvents = motionEvents;
 movementData.EMGEvents = EMGEvents;
 movementData.EMGNoMotionEvents = EMGNoMotionEvents;
-movementData.secondsPerFrame = secondsPerFrame;
+movementData.secondsPerFrame = 2*secondsPerFrame;
 movementData.objMag = objMag;
 movementData.digMag = digMag;
 movementData.turnabout = turnabout;
