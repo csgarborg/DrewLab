@@ -395,7 +395,7 @@ else
         
         % procBallData = filterEMGData(ballDataOnly,analogSampleRate);
         procEMGData = filterEMGData(emgDataOnly,analogSampleRate);
-        procEKGData = filterEKGData(emgDataOnly,analogSampleRate);
+        procEKGData = filterEKGData(emgDataOnly,analogSampleRate,[tifFileName(1:end-4) '_EKG.fig']);
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
@@ -409,9 +409,12 @@ end
 
 % Write data values to .mat file structure
 movementData.fileName = fileName;
-movementData.moveDist = moveDist;
-movementData.velocity = velocity;
-movementData.targetPosition = targetPosition;
+movementData.moveDistRaw = moveDist;
+movementData.velocityRaw = velocity;
+movementData.targetPositionRaw = targetPosition;
+movementData.moveDist = medfilt1(moveDist,6);
+movementData.velocity = medfilt1(velocity,6);
+movementData.targetPosition = medfilt1(targetPosition,6);
 movementData.calibrationFileString = calibrationFileString;
 movementData.frames = tifFrameBounds;
 movementData.imageSize = sz;

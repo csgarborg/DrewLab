@@ -1,4 +1,4 @@
-function procData = filterEKGData(EKG,sampleRate)
+function procData = filterEKGData(EKG,sampleRate,fileName)
 
 close all
 
@@ -41,17 +41,24 @@ procEKG = procEKG - (baseline - 1);
 procData = [procT',procEKG];
 
 
-
+h(1) = figure('Color','White');
 subplot(211)
+title('EKG')
+xlabel('Time (s)')
+ylabel('Amplitude (a.u.)')
 plot(procData(:,1),procData(:,2))
 subplot(212)
+title('Power Spectrum')
+xlabel('Frequency (Hz)')
+ylabel('Power')
 dt = 1/sampleRate;
 tapers = [2 3];
 params.Fs = 1/dt;
 params.tapers = tapers;
 params.fpass = [0.025 100];
 params.err = [2 0.05]; %use jack-knife resampling confidence intervals p = 0.05
-[Power, Hz, Error] = mtspectrumc(rawEKG',params);
+% [Power, Hz, Error] = mtspectrumc(rawEKG',params);
+[Power, Hz, Error] = mtspectrumc(EKGPwr',params);
 semilogy(Hz,Power,'k')
 [pks,locs] = findpeaks(Power,Hz);
 hrSec = pks(5 <= locs & locs <= 15);
@@ -59,5 +66,8 @@ hrAmp = max(hrSec);
 i = pks == hrAmp;
 hold on
 plot(locs(i),pks(i),'or')
+text(locs(i)+5,pks(i),['HR = ' num2str(locs(i)) ' Hz'])
 hold off
+savefig(h,fileName);
+close
 end
