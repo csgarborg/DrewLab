@@ -1,4 +1,4 @@
-tifFileName = 'C:\Workspace\21-06-07_MouseExp\210607_006.TIF';
+tifFileName = 'C:\Workspace\21-08-31_MouseExp\210831_014.TIF';
 
 tifLength = length(imfinfo(tifFileName));
 

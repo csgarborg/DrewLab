@@ -145,8 +145,13 @@ if ~exist('matFileName2','var')
     
     h(4) = figure('Color','White');
     targetPositionInSkull = [movementData.targetPosition(:,1),-1*movementData.targetPosition(:,2)];
-    k = convhull(targetPositionInSkull(:,1),targetPositionInSkull(:,2));
-    plot(targetPositionInSkull(k,1),targetPositionInSkull(k,2),'b',targetPositionInSkull(:,1),targetPositionInSkull(:,2),'k');
+    try
+        k = convhull(targetPositionInSkull(:,1),targetPositionInSkull(:,2));
+        plot(targetPositionInSkull(k,1),targetPositionInSkull(k,2),'b',targetPositionInSkull(:,1),targetPositionInSkull(:,2),'k');
+    catch
+        disp('Not enough unique points for a convex hull')
+        plot(targetPositionInSkull(:,1),targetPositionInSkull(:,2),'k');
+    end
     maxVal = ceil(max(max(abs(movementData.targetPosition))));
     axis equal square
     axis([-maxVal maxVal -maxVal maxVal])
