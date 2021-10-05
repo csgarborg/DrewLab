@@ -35,27 +35,39 @@ if ~exist('matFileName2','var')
     % Generate plots
     subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
     h(1) = figure('Color','White');
-    subplot(4,1,1)
+    subplot(6,1,1)
     plot(1:size(movementData.moveDist,1),movementData.moveDist(:,1),'r')
     title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Frame')
     ylabel('X Movement (\mum)')
     grid on
-    axis([1 size(movementData.moveDist,1) floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
-    subplot(4,1,2)
+    try
+        axis([1 size(movementData.moveDist,1) floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
+    catch
+        disp('No movement detected, default axis')
+    end
+    subplot(6,1,2)
     plot(1:size(movementData.moveDist,1),movementData.moveDist(:,2),'b')
     xlabel('Frame')
     ylabel('Y Movement (\mum)')
     grid on
-    axis([1 size(movementData.moveDist,1) floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
-    subplot(4,1,3)
+    try
+        axis([1 size(movementData.moveDist,1) floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
+    catch
+        disp('No movement detected, default axis')
+    end
+    subplot(6,1,3)
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
-    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
-    subplot(4,1,4)
+    try
+        axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+    catch
+        disp('No movement detected, default axis')
+    end
+    subplot(6,1,4)
     if all(movementData.emgData(:,2) == 0)
         title('\fontsize{20pt}\bf{No EMG Data}')
     else
@@ -64,7 +76,43 @@ if ~exist('matFileName2','var')
         xlabel('Time (s)')
         ylabel('Amplitude (a.u.)')
         grid on
-        axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+        try
+            axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+        catch
+            disp('No movement detected, default axis')
+        end
+    end
+    subplot(6,1,5)
+    if all(movementData.ekgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EKG Data}')
+    else
+        semilogy(movementData.ekgData(:,1),movementData.ekgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EKG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.ekgData(:,1)) max(movementData.ekgData(:,1)) 0 ceil(max(movementData.ekgData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,6)
+    if all(movementData.thermoData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No Thermo Data}')
+    else
+        plot(movementData.thermoData(:,1),movementData.thermoData(:,2),'k')
+        title('\fontsize{20pt}\bf{Thermocouple}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.thermoData(:,1)) max(movementData.thermoData(:,1)) 0 ceil(max(movementData.thermoData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     h(2) = figure('Color','White');
@@ -74,17 +122,25 @@ if ~exist('matFileName2','var')
     xlabel('Frame')
     ylabel('Velocity (\mum/s)')
     grid on
-    axis([1 size(movementData.velocity,1) 0 ceil(max(movementData.velocity(:,1))/10)*10])
+    try
+        axis([1 size(movementData.velocity,1) 0 ceil(max(movementData.velocity(:,1))/10)*10])
+    catch
+        disp('No movement detected, default axis')
+    end
     subplot(2,1,2)
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
-    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
-    
+    try
+        axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+    catch
+        disp('No movement detected, default axis')
+    end
+        
     h(3) = figure('Color','White');
-    x1 = subplot(4,1,1);
+    x1 = subplot(6,1,1);
     plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPosition(:,1),'r')
     if contains(matFileName1,'combined')
         hold on;
@@ -104,9 +160,13 @@ if ~exist('matFileName2','var')
         text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
-    axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)]))])
-    %     set(x1,'Position',[.05, .68, .9, .23])
-    x2 = subplot(4,1,2);
+    try
+        axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)]))])
+    catch
+        disp('No movement detected, default axis')
+    end
+        %     set(x1,'Position',[.05, .68, .9, .23])
+    x2 = subplot(6,1,2);
     plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2),'b')
     if contains(matFileName1,'combined')
         hold on;
@@ -120,17 +180,25 @@ if ~exist('matFileName2','var')
     grid on
     text(0,-floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)]))])
-%     set(x2,'Position',[.05, .39, .9, .23])
-    x3 = subplot(4,1,3);
+    try
+        axis([1 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)]))])
+    catch
+        disp('No movement detected, default axis')
+    end
+        %     set(x2,'Position',[.05, .39, .9, .23])
+    x3 = subplot(6,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
     ylabel('m/s')
     grid on
-    axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+    try
+        axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+    catch
+        disp('No movement detected, default axis')
+    end
     %     set(x3,'Position',[.05, .06, .9, .23])
-    x4 = subplot(4,1,4);
+    x4 = subplot(6,1,4);
     if all(movementData.emgData(:,2) == 0)
         title('\fontsize{20pt}\bf{No EMG Data}')
     else
@@ -141,6 +209,36 @@ if ~exist('matFileName2','var')
         grid on
         %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
         xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,5)
+    if all(movementData.ekgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EKG Data}')
+    else
+        semilogy(movementData.ekgData(:,1),movementData.ekgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EKG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.ekgData(:,1)) max(movementData.ekgData(:,1)) 0 ceil(max(movementData.ekgData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+    end
+    subplot(6,1,6)
+    if all(movementData.thermoData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No Thermo Data}')
+    else
+        plot(movementData.thermoData(:,1),movementData.thermoData(:,2),'k')
+        title('\fontsize{20pt}\bf{Thermocouple}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.thermoData(:,1)) max(movementData.thermoData(:,1)) 0 ceil(max(movementData.thermoData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
     end
     
     h(4) = figure('Color','White');
@@ -656,7 +754,7 @@ else
 %     movemeplontData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
     
     h(1) = figure('Color','White');
-    x1 = subplot(4,1,1);
+    x1 = subplot(6,1,1);
     plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,movementData.targetPosition(:,1)-movementData.targetPosition(1,1),'b')
     hold on
     plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,stationaryData.targetPosition(:,1)-stationaryData.targetPosition(1,1),'r')
@@ -686,7 +784,7 @@ else
         text(0,maxVal,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
-    x2 = subplot(4,1,2);
+    x2 = subplot(6,1,2);
     plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2)-movementData.targetPosition(1,2),'b')
     hold on
     plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2),'r')
@@ -708,7 +806,7 @@ else
 %     set(x2,'Position',[.05, .39, .9, .23])
     text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    x3 = subplot(4,1,3);
+    x3 = subplot(6,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
@@ -716,7 +814,7 @@ else
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
 %     set(x3,'Position',[.05, .06, .9, .23])
-    x4 = subplot(4,1,4);
+    x4 = subplot(6,1,4);
     if all(movementData.emgData(:,2) == 0)
         title('\fontsize{20pt}\bf{No EMG Data}')
     else
@@ -726,6 +824,38 @@ else
         ylabel('Amplitude (a.u.)')
         grid on
 %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,5)
+    if all(movementData.ekgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EKG Data}')
+    else
+        semilogy(movementData.ekgData(:,1),movementData.ekgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EKG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.ekgData(:,1)) max(movementData.ekgData(:,1)) 0 ceil(max(movementData.ekgData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,6)
+    if all(movementData.thermoData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No Thermo Data}')
+    else
+        plot(movementData.thermoData(:,1),movementData.thermoData(:,2),'k')
+        title('\fontsize{20pt}\bf{Thermocouple}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.thermoData(:,1)) max(movementData.thermoData(:,1)) 0 ceil(max(movementData.thermoData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
 xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
@@ -748,7 +878,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     targetPositionInSkull = [posL1(:,1)-posL2(:,1),-1*(posL1(:,2)-posL2(:,2))];
     maxPosDiff = ceil(max(max(targetPositionInSkull)));
     maxMoveData = ceil(max([posL1(:,1);posL1(:,2);posL2(:,1);posL2(:,2);]));
-    x1 = subplot(4,1,1);
+    x1 = subplot(6,1,1);
     plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'k')
     title(['\fontsize{20pt}\bf{Position of Brain in Skull}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
     xlabel('Time (s)')
@@ -763,7 +893,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         text(0,maxVal,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
-    x2 = subplot(4,1,2);
+    x2 = subplot(6,1,2);
     plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'k')
     xlabel('Time (s)')
     ylabel('Y Position (\mum)')
@@ -772,7 +902,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
 %     set(x2,'Position',[.05, .39, .9, .23])
     text(0,maxVal,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(0,-maxVal,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    x3 = subplot(4,1,3);
+    x3 = subplot(6,1,3);
     plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
     title('\fontsize{20pt}\bf{Ball Movement}')
     xlabel('Time (s)')
@@ -780,7 +910,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     grid on
     axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
 %     set(x3,'Position',[.05, .06, .9, .23])
-    x4 = subplot(4,1,4);
+    x4 = subplot(6,1,4);
     if all(movementData.emgData(:,2) == 0)
         title('\fontsize{20pt}\bf{No EMG Data}')
     else
@@ -791,6 +921,38 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         grid on
         %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
         xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,5)
+    if all(movementData.ekgData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No EKG Data}')
+    else
+        semilogy(movementData.ekgData(:,1),movementData.ekgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EKG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.ekgData(:,1)) max(movementData.ekgData(:,1)) 0 ceil(max(movementData.ekgData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+    end
+    subplot(6,1,6)
+    if all(movementData.thermoData(:,2) == 0)
+        title('\fontsize{20pt}\bf{No Thermo Data}')
+    else
+        plot(movementData.thermoData(:,1),movementData.thermoData(:,2),'k')
+        title('\fontsize{20pt}\bf{Thermocouple}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+%         try
+%             axis([min(movementData.thermoData(:,1)) max(movementData.thermoData(:,1)) 0 ceil(max(movementData.thermoData(:,2)))])
+%         catch
+%             disp('No movement detected, default axis')
+%         end
+xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     h(3) = figure('Color','White');

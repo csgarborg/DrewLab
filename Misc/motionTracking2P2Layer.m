@@ -371,6 +371,7 @@ if exist([tifFileName(1:end-4) '_processed_Layer1_1.mat'],'file')
     procBallData = movementData.ballData;
     procEMGData = movementData.emgData;
     procEKGData = movementData.ekgData;
+    procThermoData = movementData.thermoData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
@@ -380,6 +381,7 @@ elseif exist([tifFileName(1:end-4) '_processed_Layer2_1.mat'],'file')
     procBallData = movementData.ballData;
     procEMGData = movementData.emgData;
     procEKGData = movementData.ekgData;
+    procThermoData = movementData.thermoData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
@@ -389,6 +391,9 @@ else
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
     ballData = load([tifFileName(1:end-3) 'txt']);
     ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
+    if size(ballData,2) > 3
+        ballData(:,3:4) = [ballData(:,4) ballData(:,3)];
+    end
     if size(ballData,2) > 2
         ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];
         emgDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,3)];
@@ -401,6 +406,11 @@ else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
         procEMGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
         procEKGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
+    end
+    if size(ballData,2) > 3
+        procThermoData = filterThermoData([ballData(ballDataIndex,1) ballData(ballDataIndex,4)],analogSampleRate);
+    else
+        procThermoData = [procBallData(:,1) zeros(size(procBallData,1),1)];
     end
     
     % Detect motion and events
@@ -423,6 +433,7 @@ movementData.pos = pos;
 movementData.ballData = procBallData;
 movementData.emgData = procEMGData;
 movementData.ekgData = procEKGData;
+movementData.thermoData = procThermoData;
 movementData.motionEvents = motionEvents;
 movementData.EMGEvents = EMGEvents;
 movementData.EMGNoMotionEvents = EMGNoMotionEvents;
