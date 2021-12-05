@@ -1,8 +1,8 @@
 close all
-a = {'007','008','009','010','011','012','013','014'};
+a = {'001','002','003','004','005','006','007','008','009','010'};
 for n = 1:size(a,2)
     h(n) = figure('Color','White');
-    load(['sgvd01_210831_' a{n} 'a_pArt1_MScanData.mat']);
+    load(['sgvd04_211014_' a{n} 'a_pArt1_MScanData.mat']);
     subplot(5,1,1)
     t = (1:length(MScanData.data.vesselDiameter))*(1/MScanData.notes.frameRate);
     procData = smoothdata(MScanData.data.vesselDiameter,'gaussian',10);
@@ -10,7 +10,7 @@ for n = 1:size(a,2)
     xlabel('Time (s)')
     ylabel('Diameter (\mum)')
     title('Surface Vessel (0 \mum depth)')
-    load(['sgvd01_210831_' a{n} 'b_pArt1_MScanData.mat']);
+    load(['sgvd04_211014_' a{n} 'b_pArt1_MScanData.mat']);
     subplot(5,1,2)
     t = (1:length(MScanData.data.vesselDiameter))*(2/MScanData.notes.frameRate);
     procData = smoothdata(MScanData.data.vesselDiameter,'gaussian',10);
@@ -38,4 +38,4 @@ for n = 1:size(a,2)
     title('Right Whisker Stim')
 end
 
-savefig(h,'210831_vesselDiameter.fig');
+savefig(h,'H:\21-10-11_MouseExp\211011_vesselDiameter.fig');
