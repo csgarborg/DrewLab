@@ -122,3 +122,124 @@ ylabel('Y Position (\mum)')
 ylim([-maxMeanVal maxMeanVal])
 grid on
 clear movementData
+
+stopMotionEventsLocationsX = [];
+stopMotionEventsLocationsY = [];
+for i = 1:numel(fileName)
+    load(fileName{i});
+    if size(movementData.stopMotionEvents,1) == 0
+        disp('No Ball Motion Events To Plot')
+    else
+        for n = 1:size(movementData.stopMotionEvents,1)
+            motionVectorX = movementData.targetPosition(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),1);
+            motionVectorY = movementData.targetPosition(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),2);
+            if n > 1 || i > 1
+                if length(motionVectorX) > size(stopMotionEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopMotionEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopMotionEventsLocationsX,2)
+                    stopMotionEventsLocationsX = stopMotionEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopMotionEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopMotionEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopMotionEventsLocationsY,2)
+                    stopMotionEventsLocationsY = stopMotionEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopMotionEventsLocationsX(end+1,:) = medfilt1(motionVectorX-motionVectorX(1),medFiltSize)';
+            stopMotionEventsLocationsY(end+1,:) = medfilt1(motionVectorY-motionVectorY(1),medFiltSize)';
+        end
+    end
+    clear movementData
+end
+load(fileName{1});
+[meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopMotionEventsLocationsX,90);
+[meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopMotionEventsLocationsY,90);
+timeVecX = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanX));
+timeVecY = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanY));
+
+h(3) = figure('Color','White');
+subplot(2,1,1)
+maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
+plot(timeVecX,meanX,'k')
+hold on
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+set(f,'facea',[.2]);
+plot([0 0],[-maxMeanVal maxMeanVal],'r')
+hold off
+title(['\fontsize{20pt}\bf{Mean Motion During Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+xlabel('Time (s)')
+ylabel('X Position (\mum)')
+ylim([-maxMeanVal maxMeanVal])
+grid on
+subplot(2,1,2)
+plot(timeVecY,meanY,'k')
+hold on
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+set(f,'facea',[.2]);
+plot([0 0],[-maxMeanVal maxMeanVal],'r')
+hold off
+xlabel('Time (s)')
+ylabel('Y Position (\mum)')
+ylim([-maxMeanVal maxMeanVal])
+grid on
+clear movementData
+
+h(4) = figure('Color','White');
+stopEMGEventsLocationsX = [];
+stopEMGEventsLocationsY = [];
+for i = 1:numel(fileName)
+    load(fileName{i});
+    if size(movementData.stopEMGEvents,1) == 0
+        disp('No EMG Events To Plot')
+    else
+        for n = 1:size(movementData.stopEMGEvents,1)
+            motionVectorX = movementData.targetPosition(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),1);
+            motionVectorY = movementData.targetPosition(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),2);
+            if n > 1 || i > 1
+                if length(motionVectorX) > size(stopEMGEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopEMGEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopEMGEventsLocationsX,2)
+                    stopEMGEventsLocationsX = stopEMGEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopEMGEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopEMGEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopEMGEventsLocationsY,2)
+                    stopEMGEventsLocationsY = stopEMGEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopEMGEventsLocationsX(end+1,:) = medfilt1(motionVectorX-motionVectorX(1),medFiltSize);
+            stopEMGEventsLocationsY(end+1,:) = medfilt1(motionVectorY-motionVectorY(1),medFiltSize);
+        end
+    end
+    clear movementData
+end
+load(fileName{1});
+[meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopEMGEventsLocationsX,90);
+[meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopEMGEventsLocationsY,90);
+timeVecX = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanX));
+timeVecY = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanY));
+subplot(2,1,1)
+maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
+plot(timeVecX,meanX,'k')
+hold on
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+set(f,'facea',[.2]);
+plot([0 0],[-maxMeanVal maxMeanVal],'r')
+hold off
+title(['\fontsize{20pt}\bf{Mean Motion During EMG Events, n = ' num2str(size(stopEMGEventsLocationsX,1)) '}'])
+xlabel('Time (s)')
+ylabel('X Position (\mum)')
+ylim([-maxMeanVal maxMeanVal])
+grid on
+subplot(2,1,2)
+plot(timeVecY,meanY,'k')
+hold on
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+set(f,'facea',[.2]);
+plot([0 0],[-maxMeanVal maxMeanVal],'r')
+hold off
+xlabel('Time (s)')
+ylabel('Y Position (\mum)')
+ylim([-maxMeanVal maxMeanVal])
+grid on
+clear movementData

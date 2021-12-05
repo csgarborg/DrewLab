@@ -46,7 +46,10 @@ else
 end
 
 % Determine direction of principal component vector based on mean of data
-if mean(positionData(:,1)) < 0 && motionVec(1) > 0
+% if mean(positionData(:,1)) < 0 && motionVec(1) > 0
+%     motionVec = motionVec * -1;
+% end
+if motionVec(2) < 0
     motionVec = motionVec * -1;
 end
 
