@@ -436,6 +436,129 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     h(10) = figure('Color','White');
+    stopMotionEventsLocationsX = [];
+    stopMotionEventsLocationsY = [];
+    if size(movementData.stopMotionEvents,1) == 0
+        title('No Stop Ball Motion Events To Plot')
+    else
+        for n = 1:size(movementData.stopMotionEvents,1)
+            motionVectorX = movementData.targetPosition(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),1);
+            motionVectorY = movementData.targetPosition(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),2);
+            if n > 1
+                if length(motionVectorX) > size(stopMotionEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopMotionEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopMotionEventsLocationsX,2)
+                    stopMotionEventsLocationsX = stopMotionEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopMotionEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopMotionEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopMotionEventsLocationsY,2)
+                    stopMotionEventsLocationsY = stopMotionEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopMotionEventsLocationsX(end+1,:) = motionVectorX-motionVectorX(1);
+            stopMotionEventsLocationsY(end+1,:) = motionVectorY-motionVectorY(1);
+        end
+        [meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopMotionEventsLocationsX,90);
+        [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopMotionEventsLocationsY,90);
+        timeVecX = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanX));
+        timeVecY = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanY));
+        
+        subplot(3,1,1)
+        plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPosition(:,1),'b')
+        moveMin = floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        moveMax = ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{X Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        title('\fontsize{20pt}\bf{Motion During Locomotion Events}')
+        grid on
+        if movementData.hemisphere == 1
+            text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        else
+            text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        end
+        axis([0 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]))])
+        subplot(3,1,2)
+        plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2),'b')
+        moveMin = floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        moveMax = ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{Y Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        grid on
+        text(0,-floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,-ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        axis([0 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]))])
+        subplot(3,1,3)
+        plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
+        title('\fontsize{20pt}\bf{Ball Movement}')
+        xlabel('Time (s)')
+        ylabel('m/s')
+        grid on
+        axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+    end
+    
+    h(11) = figure('Color','White');
+    if size(movementData.stopMotionEvents,1) == 0
+        title('No Stop Ball Motion Events To Plot')
+    else
+        subplot(2,1,1)
+        maxMeanVal = max(abs([meanX meanY]));
+        plot(timeVecX,meanX,'k')
+        hold on
+        %     f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        title('\fontsize{20pt}\bf{Mean Motion During Stopping Locomotion Events}')
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+        subplot(2,1,2)
+        plot(timeVecY,-1*meanY,'k')
+        hold on
+        %     f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+    end
+    
+    h(12) = figure('Color','White');
     EMGEventsLocationsX = [];
     EMGEventsLocationsY = [];
     if size(movementData.EMGEvents,1) == 0
@@ -529,7 +652,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         hold off
     end
     
-    h(11) = figure('Color','White');
+    h(13) = figure('Color','White');
     if size(movementData.EMGEvents,1) == 0
         title('No EMG Events To Plot')
     else
@@ -559,7 +682,131 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         grid on
     end
     
-    h(12) = figure('Color','White');
+    h(14) = figure('Color','White');
+    stopEMGEventsLocationsX = [];
+    stopEMGEventsLocationsY = [];
+    if size(movementData.stopEMGEvents,1) == 0
+        title('No EMG Events To Plot')
+    else
+        for n = 1:size(movementData.stopEMGEvents,1)
+            motionVectorX = movementData.targetPosition(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),1);
+            motionVectorY = movementData.targetPosition(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),2);
+            if n > 1
+                if length(motionVectorX) > size(stopEMGEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopEMGEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopEMGEventsLocationsX,2)
+                    stopEMGEventsLocationsX = stopEMGEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopEMGEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopEMGEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopEMGEventsLocationsY,2)
+                    stopEMGEventsLocationsY = stopEMGEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopEMGEventsLocationsX(end+1,:) = motionVectorX-motionVectorX(1);
+            stopEMGEventsLocationsY(end+1,:) = motionVectorY-motionVectorY(1);
+        end
+        [meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopEMGEventsLocationsX,90);
+        [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopEMGEventsLocationsY,90);
+        timeVecX = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanX));
+        timeVecY = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanY));
+        
+        subplot(3,1,1)
+        plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPosition(:,1),'b')
+        moveMin = floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        moveMax = ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{X Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        title('\fontsize{20pt}\bf{Motion During EMG Events}')
+        grid on
+        if movementData.hemisphere == 1
+            text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        else
+            text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        end
+        axis([0 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]))])
+        subplot(3,1,2)
+        plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2),'b')
+        moveMin = floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        moveMax = ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]));
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{Y Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        grid on
+        text(0,-floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(0,-ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        axis([0 size(movementData.targetPosition,1)*movementData.secondsPerFrame floor(min([movementData.targetPosition(:,1);movementData.targetPosition(:,2)])) ceil(max([movementData.targetPosition(:,1);movementData.targetPosition(:,2)]))])
+        subplot(3,1,3)
+        %     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EMG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+        axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[.8 ceil(max(movementData.emgData(:,2)))],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[0 0 ceil(max(movementData.emgData(:,2))) ceil(max(movementData.emgData(:,2)))],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[0 0 ceil(max(movementData.emgData(:,2))) ceil(max(movementData.emgData(:,2)))],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+    end
+    
+    h(15) = figure('Color','White');
+    if size(movementData.stopEMGEvents,1) == 0
+        title('No EMG Events To Plot')
+    else
+        subplot(2,1,1)
+        maxMeanVal = max(abs([meanX meanY]));
+        plot(timeVecX,meanX,'k')
+        hold on
+        %     f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        title('\fontsize{20pt}\bf{Mean Motion During EMG Events}')
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+        subplot(2,1,2)
+        plot(timeVecY,-1*meanY,'k')
+        hold on
+        %     f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+    end
+    
+    h(16) = figure('Color','White');
     EMGNoMotionEventsLocationsX = [];
     EMGNoMotionEventsLocationsY = [];
     if size(movementData.EMGNoMotionEvents,1) == 0
@@ -669,7 +916,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         hold off
     end
     
-    h(13) = figure('Color','White');
+    h(17) = figure('Color','White');
     if size(movementData.EMGNoMotionEvents,1) == 0
         title('No EMG Without Ball Motion Events To Plot')
     else
@@ -700,7 +947,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     motionVec = pcaMotionAnalysis(targetPositionInSkull);
-    h(14) = figure('Color','White');
+    h(18) = figure('Color','White');
     scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10)
     hold on
     drawArrow([0;0],[motionVec(1);motionVec(2)]);
@@ -1192,6 +1439,130 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     h(12) = figure('Color','White');
+    stopMotionEventsLocationsX = [];
+    stopMotionEventsLocationsY = [];
+    if size(movementData.stopMotionEvents,1) == 0
+        title('No Stop Ball Motion Events To Plot')
+    else
+        movementData.stopMotionEvents(:,4:6) = 2*movementData.stopMotionEvents(:,4:6);
+        for n = 1:size(movementData.stopMotionEvents,1)
+            motionVectorX = targetPositionInSkull(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),1);
+            motionVectorY = targetPositionInSkull(movementData.stopMotionEvents(n,4):movementData.stopMotionEvents(n,6),2);
+            if n > 1
+                if length(motionVectorX) > size(stopMotionEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopMotionEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopMotionEventsLocationsX,2)
+                    stopMotionEventsLocationsX = stopMotionEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopMotionEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopMotionEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopMotionEventsLocationsY,2)
+                    stopMotionEventsLocationsY = stopMotionEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopMotionEventsLocationsX(end+1,:) = motionVectorX-motionVectorX(1);
+            stopMotionEventsLocationsY(end+1,:) = motionVectorY-motionVectorY(1);
+        end
+        [meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopMotionEventsLocationsX,90);
+        [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopMotionEventsLocationsY,90);
+        timeVecX = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanX));
+        timeVecY = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanY));
+        
+        subplot(3,1,1)
+        plot((1:size(targetPositionInSkull,1))*movementData.secondsPerFrame,targetPositionInSkull(:,1),'b')
+        moveMin = floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        moveMax = ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{X Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        title('\fontsize{20pt}\bf{Motion During Locomotion Events}')
+        grid on
+        if movementData.hemisphere == 1
+            text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        else
+            text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        end
+        axis([0 size(targetPositionInSkull,1)*movementData.secondsPerFrame floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])) ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]))])
+        subplot(3,1,2)
+        plot((1:size(targetPositionInSkull,1))*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+        moveMin = floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        moveMax = ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{Y Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        grid on
+        text(0,-floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+        text(0,-ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        axis([0 size(targetPositionInSkull,1)*movementData.secondsPerFrame floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])) ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]))])
+        subplot(3,1,3)
+        plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
+        title('\fontsize{20pt}\bf{Ball Movement}')
+        xlabel('Time (s)')
+        ylabel('m/s')
+        grid on
+        axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2)*10))/10])
+        hold on
+        for n = 1:size(stopMotionEventsLocationsX,1)
+            plot([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopMotionEvents(n,1) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopMotionEvents(n,2) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,3) movementData.stopMotionEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+    end
+    
+    h(13) = figure('Color','White');
+    if size(movementData.stopMotionEvents,1) == 0
+        title('No Stop Ball Motion Events To Plot')
+    else
+        subplot(2,1,1)
+        maxMeanVal = max(abs([meanX meanY]));
+        plot(timeVecX,meanX,'k')
+        hold on
+        %     f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        title('\fontsize{20pt}\bf{Mean Motion During Locomotion Events}')
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+        subplot(2,1,2)
+        plot(timeVecY,meanY,'k')
+        hold on
+        %     f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+    end
+    
+    h(14) = figure('Color','White');
     EMGEventsLocationsX = [];
     EMGEventsLocationsY = [];
     if size(movementData.EMGEvents,1) == 0
@@ -1286,7 +1657,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         hold off
     end
     
-    h(13) = figure('Color','White');
+    h(15) = figure('Color','White');
     if size(movementData.EMGEvents,1) == 0
         title('No EMG Events To Plot')
     else
@@ -1316,7 +1687,132 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         grid on
     end
     
-    h(14) = figure('Color','White');
+    h(16) = figure('Color','White');
+    stopEMGEventsLocationsX = [];
+    stopEMGEventsLocationsY = [];
+    if size(movementData.stopEMGEvents,1) == 0
+        title('No EMG Events To Plot')
+    else
+        movementData.stopEMGEvents(:,4:6) = 2*movementData.stopEMGEvents(:,4:6);
+        for n = 1:size(movementData.stopEMGEvents,1)
+            motionVectorX = targetPositionInSkull(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),1);
+            motionVectorY = targetPositionInSkull(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),2);
+            if n > 1
+                if length(motionVectorX) > size(stopEMGEventsLocationsX,2)
+                    motionVectorX = motionVectorX(1:size(stopEMGEventsLocationsX,2));
+                elseif length(motionVectorX) < size(stopEMGEventsLocationsX,2)
+                    stopEMGEventsLocationsX = stopEMGEventsLocationsX(:,1:length(motionVectorX));
+                end
+                if length(motionVectorY) > size(stopEMGEventsLocationsY,2)
+                    motionVectorY = motionVectorY(1:size(stopEMGEventsLocationsY,2));
+                elseif length(motionVectorY) < size(stopEMGEventsLocationsY,2)
+                    stopEMGEventsLocationsY = stopEMGEventsLocationsY(:,1:length(motionVectorY));
+                end
+            end
+            stopEMGEventsLocationsX(end+1,:) = motionVectorX-motionVectorX(1);
+            stopEMGEventsLocationsY(end+1,:) = motionVectorY-motionVectorY(1);
+        end
+        [meanX,cIntFillPtsX] = getCIntMeanAndFillPts(stopEMGEventsLocationsX,90);
+        [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopEMGEventsLocationsY,90);
+        timeVecX = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanX));
+        timeVecY = linspace(round(movementData.stopEMGEvents(1,1)-movementData.stopEMGEvents(1,2)),round(movementData.stopEMGEvents(1,3)-movementData.stopEMGEvents(1,2)),length(meanY));
+        
+        subplot(3,1,1)
+        plot((1:size(targetPositionInSkull,1))*movementData.secondsPerFrame,targetPositionInSkull(:,1),'b')
+        moveMin = floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        moveMax = ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{X Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        title('\fontsize{20pt}\bf{Motion During EMG Events}')
+        grid on
+        if movementData.hemisphere == 1
+            text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        else
+            text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+            text(0,floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        end
+        axis([0 size(targetPositionInSkull,1)*movementData.secondsPerFrame floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])) ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]))])
+        subplot(3,1,2)
+        plot((1:size(targetPositionInSkull,1))*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+        moveMin = floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        moveMax = ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]));
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[moveMin moveMax],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[moveMin moveMin moveMax moveMax],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[moveMin moveMin moveMax moveMax],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+        %     title(['\fontsize{20pt}\bf{Y Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        grid on
+        text(0,-floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+        text(0,-ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+        axis([0 size(targetPositionInSkull,1)*movementData.secondsPerFrame floor(min([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])) ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)]))])
+        subplot(3,1,3)
+        %     plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+        title('\fontsize{20pt}\bf{EMG}')
+        xlabel('Time (s)')
+        ylabel('Amplitude (a.u.)')
+        grid on
+        axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
+        hold on
+        for n = 1:size(stopEMGEventsLocationsY,1)
+            plot([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2)],[.8 ceil(max(movementData.emgData(:,2)))],'k--')
+            f = fill([movementData.stopEMGEvents(n,1) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,1)],[0 0 ceil(max(movementData.emgData(:,2))) ceil(max(movementData.emgData(:,2)))],'r','Linestyle','none');
+            set(f,'facea',[.2]);
+            f = fill([movementData.stopEMGEvents(n,2) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,3) movementData.stopEMGEvents(n,2)],[0 0 ceil(max(movementData.emgData(:,2))) ceil(max(movementData.emgData(:,2)))],'g','Linestyle','none');
+            set(f,'facea',[.2]);
+        end
+        hold off
+    end
+    
+    h(17) = figure('Color','White');
+    if size(movementData.stopEMGEvents,1) == 0
+        title('No EMG Events To Plot')
+    else
+        subplot(2,1,1)
+        maxMeanVal = max(abs([meanX meanY]));
+        plot(timeVecX,meanX,'k')
+        hold on
+        %     f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        title('\fontsize{20pt}\bf{Mean Motion During EMG Events}')
+        xlabel('Time (s)')
+        ylabel('X Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+        subplot(2,1,2)
+        plot(timeVecY,meanY,'k')
+        hold on
+        %     f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+        %     set(f,'facea',[.2]);
+        plot([0 0],[-maxMeanVal maxMeanVal],'r')
+        hold off
+        xlabel('Time (s)')
+        ylabel('Y Position (\mum)')
+        ylim([-maxMeanVal maxMeanVal])
+        grid on
+    end
+    
+    h(18) = figure('Color','White');
     EMGNoMotionEventsLocationsX = [];
     EMGNoMotionEventsLocationsY = [];
     if size(movementData.EMGNoMotionEvents,1) == 0
@@ -1427,7 +1923,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         hold off
     end
     
-    h(15) = figure('Color','White');
+    h(19) = figure('Color','White');
     if size(movementData.EMGNoMotionEvents,1) == 0
         title('No EMG Without Ball Motion Events To Plot')
     else
@@ -1610,6 +2106,22 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     
     % Save figures to single .fig file
     savefig(h,[matFileName1(1:end-21) '_2layerComparisonOutputPlots.fig']);
+    movementData.targetPosition = targetPositionInSkull;
+    save([matFileName1(1:end-21) '_2layerBrainInSkullDataFinal.mat'],'movementData');
+    if exist(movementData.xLocMicrons,'var')
+        if exist('C:\Workspace\Code\DrewLab\movementDataLog.mat','file')
+            load('C:\Workspace\Code\DrewLab\movementDataLog.mat');
+            if any(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]))
+                dupRow = find(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]));
+                moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+            else
+                moveDataMat(end+1,:) = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+            end
+        else
+            moveDataMat = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+        end
+        save('C:\Workspace\Code\DrewLab\movementDataLog.mat','moveDataMat');
+    end
 end
 end
 

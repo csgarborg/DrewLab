@@ -20,10 +20,10 @@
 % WRITTEN BY:       Spencer Garborg 2/22/21
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,secondsPerFrame)
+function [motionEvents,stopMotionEvents,EMGEvents,stopEMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,secondsPerFrame)
 
-[motionEvents,motionVelocityThresh] = detectMotionEvents(procBallData,analogSampleRate,secondsPerFrame);
-[EMGEvents,EMGThresh] = detectEMGEvents(procEMGData,secondsPerFrame);
+[motionEvents,stopMotionEvents,motionVelocityThresh] = detectMotionEvents(procBallData,analogSampleRate,secondsPerFrame);
+[EMGEvents,stopEMGEvents,EMGThresh] = detectEMGEvents(procEMGData,secondsPerFrame);
 EMGNoMotionEvents = detectEMGNoMotionEvents(procBallData,procEMGData,analogSampleRate,secondsPerFrame,motionVelocityThresh,EMGThresh);
 end
 
@@ -31,9 +31,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Subfunctions
-function [motionEvents,motionVelocityThresh] = detectMotionEvents(procBallData,analogSampleRate,secondsPerFrame)
+function [motionEvents,stopMotionEvents,motionVelocityThresh] = detectMotionEvents(procBallData,analogSampleRate,secondsPerFrame)
 
 motionEvents = [];
+stopMotionEvents = [];
 motionVelocityThresh = [];
 analogSampleRate = 1/(procBallData(2,1) - procBallData(1,1));
 if size(procBallData,1) <= 7.1*analogSampleRate
@@ -60,12 +61,27 @@ else
             end
         end
     end
+    i = find(procBallData(:,2)<motionVelocityThresh);
+    for n = 1:length(i)
+        index = i(n);
+        iStart = index - (2*analogSampleRate);
+        iStop = index + (3*analogSampleRate);
+        if index > startFrame && index < stopFrame && ~any(procBallData(iStart:index-1,2)<motionVelocityThresh)
+            stopMotionEvents(end+1,1:3) = [iStart/analogSampleRate index/analogSampleRate iStop/analogSampleRate];
+            stopMotionEvents(end,4:6) = stopMotionEvents(end,1:3)./secondsPerFrame;
+            if stopMotionEvents(end,5) - round(stopMotionEvents(end,5)) > 0
+                stopMotionEvents(end,4:6) = floor(stopMotionEvents(end,4:6));
+            elseif stopMotionEvents(end,5) - round(stopMotionEvents(end,5)) < 0
+                stopMotionEvents(end,4:6) = ceil(stopMotionEvents(end,4:6));
+            end
+        end
+    end
 end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [EMGEvents,EMGThresh] = detectEMGEvents(procEMGData,secondsPerFrame)
+function [EMGEvents,stopEMGEvents,EMGThresh] = detectEMGEvents(procEMGData,secondsPerFrame)
 
 EMGEvents = [];
 EMGThresh = [];
@@ -90,6 +106,21 @@ else
                 EMGEvents(end,4:6) = floor(EMGEvents(end,4:6));
             elseif EMGEvents(end,5) - round(EMGEvents(end,5)) < 0
                 EMGEvents(end,4:6) = ceil(EMGEvents(end,4:6));
+            end
+        end
+    end
+    i = find(procEMGData(:,2)<EMGThresh);
+    for n = 1:length(i)
+        index = i(n);
+        iStart = index - (2*EMGSampleRate);
+        iStop = index + (3*EMGSampleRate);
+        if index > startFrame && index < stopFrame && ~any(procEMGData(iStart:index-1,2)<EMGThresh)
+            stopEMGEvents(end+1,1:3) = [iStart/EMGSampleRate index/EMGSampleRate iStop/EMGSampleRate];
+            stopEMGEvents(end,4:6) = stopEMGEvents(end,1:3)./secondsPerFrame;
+            if stopEMGEvents(end,5) - round(stopEMGEvents(end,5)) > 0
+                stopEMGEvents(end,4:6) = floor(stopEMGEvents(end,4:6));
+            elseif stopEMGEvents(end,5) - round(stopEMGEvents(end,5)) < 0
+                stopEMGEvents(end,4:6) = ceil(stopEMGEvents(end,4:6));
             end
         end
     end

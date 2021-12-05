@@ -37,7 +37,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds)
+function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds,xLocMicrons,yLocMicrons,zLocMicrons,mouseBreed,mouseNumber,runDate,runNumber)
 %% Initialization
 close all;
 
@@ -67,6 +67,14 @@ end
 %     aviFileName = imageFilter2P(tifFileName,redoFilterTF,medFiltTF,compiledTifTF);
 %     tifFrameBounds = [2 tifLength];
 % end
+
+if exist(xLocMicrons,'var')
+    if xLocMicrons < 0
+        hemisphere = 2;
+    else
+        hemisphere = 1;
+    end
+end
 
 % Get calibration values
 if exist('C:\Workspace\Code\DrewLab\calibrationValues.mat','file')
@@ -414,7 +422,7 @@ else
     end
     
     % Detect motion and events
-    [motionEvents,EMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,2*secondsPerFrame);
+    [motionEvents,stopMotionEvents,EMGEvents,stopEMGEvents,EMGNoMotionEvents] = detectEvents(procBallData,procEMGData,analogSampleRate,2*secondsPerFrame);
 end
 
 % Write data values to .mat file structure
@@ -435,7 +443,9 @@ movementData.emgData = procEMGData;
 movementData.ekgData = procEKGData;
 movementData.thermoData = procThermoData;
 movementData.motionEvents = motionEvents;
+movementData.stopMotionEvents = stopMotionEvents;
 movementData.EMGEvents = EMGEvents;
+movementData.stopEMGEvents = stopEMGEvents;
 movementData.EMGNoMotionEvents = EMGNoMotionEvents;
 movementData.secondsPerFrame = 2*secondsPerFrame;
 movementData.objMag = objMag;
@@ -445,6 +455,15 @@ movementData.commentString = commentString;
 movementData.layer = layer;
 movementData.hemisphere = hemisphere;
 movementData.savedImage = savedImage;
+if exist(xLocMicrons,'var')
+    movementData.xLocMicrons = xLocMicrons;
+    movementData.yLocMicrons = yLocMicrons;
+    movementData.zLocMicrons = zLocMicrons;
+    movementData.mouseBreed = mouseBreed;
+    movementData.mouseNumber = mouseNumber;
+    movementData.runDate = runDate;
+    movementData.runNumber = runNumber;
+end
 
 for n = 1:100
     matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '_' num2str(n) '.mat'];

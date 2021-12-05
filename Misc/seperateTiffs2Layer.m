@@ -1,4 +1,4 @@
-tifFileName = 'C:\Workspace\21-08-31_MouseExp\210831_014.TIF';
+tifFileName = 'C:\Users\csgar\OneDrive - The Pennsylvania State University\Records\DrewLabMeeting\21-10-05\210824_001.TIF';
 
 tifLength = length(imfinfo(tifFileName));
 
