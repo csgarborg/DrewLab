@@ -1,4 +1,4 @@
-function combineMotionTracking(fileName,versionVec,mode)
+function combineMotionTracking(fileName,versionVec,mode,brainTF)
 close all
 targetPositionX = [];
 targetPositionY = [];
@@ -18,12 +18,32 @@ for n = 1:length(versionVec)
     end
 end
 
+if brainTF
+    cutoff = 7;
+else
+    cutoff = 3;
+end
+for m = 1:size(targetPositionX,2)
+    for n = 2:size(targetPositionX,1)
+        if abs(targetPositionX(n,m)) > cutoff
+            targetPositionX(n,m) = targetPositionX(n-1,m);
+        end
+    end
+end
+for m = 1:size(targetPositionY,2)
+    for n = 2:size(targetPositionY,1)
+        if abs(targetPositionY(n,m)) > cutoff
+            targetPositionY(n,m) = targetPositionY(n-1,m);
+        end
+    end
+end
+
 if mode == 1
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMeanAndFillPts(targetPositionX,95);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMeanAndFillPts(targetPositionY,95);
+    [combinedTargetPositionX,cIntFillPtsX,meanCIX,stdCIX] = getCIntMeanAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY,cIntFillPtsY,meanCIY,stdCIY] = getCIntMeanAndFillPts(targetPositionY,95);
 elseif mode == 2
-    [combinedTargetPositionX cIntFillPtsX] = getCIntMedianAndFillPts(targetPositionX,95);
-    [combinedTargetPositionY cIntFillPtsY] = getCIntMedianAndFillPts(targetPositionY,95);
+    [combinedTargetPositionX,cIntFillPtsX,meanCIX,stdCIX] = getCIntMedianAndFillPts(targetPositionX,95);
+    [combinedTargetPositionY,cIntFillPtsY,meanCIY,stdCIY] = getCIntMedianAndFillPts(targetPositionY,95);
 else
     disp('Specify mode for combining positional data (1 = mean, 2 = median)')
     return
@@ -44,11 +64,19 @@ movementData.targetPosition = targetPosition;
 % movementData.targetPositionSGF = sgf;
 movementData.cIntFillPtsX = cIntFillPtsX;
 movementData.cIntFillPtsY = cIntFillPtsY;
+movementData.meanCIX = meanCIX;
+movementData.meanCIY = meanCIY;
+movementData.stdCIX = stdCIX;
+movementData.stdCIY = stdCIY;
 
 save([fileName 'combined.mat'],'movementData');
-if contains(fileName,'Layer')
-    plotMotionTracking2Layer([fileName 'combined.mat']);
-else
-    plotMotionTracking([fileName 'combined.mat']);
+try
+    if contains(fileName,'Layer')
+        plotMotionTracking2Layer([fileName 'combined.mat']);
+    else
+        plotMotionTracking([fileName 'combined.mat']);
+    end
+catch
+    display('Error in producing plots, data saved')
 end
 end

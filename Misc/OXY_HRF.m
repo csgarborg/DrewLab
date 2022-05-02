@@ -42,7 +42,7 @@ function out = OXY_HRF(s,x,Fr)
     s = detrend(s); % won't affect the shape of HRF
     
     timeShift = 10; % shift stimulus backward by 10 seconds to avoid boundary effects
-    IRLength = 60*Fr; % length of impulse response fuction, 70 seconds
+    IRLength = 70*Fr; % length of impulse response fuction, 70 seconds
 
     %% Compute HRF directly
     HRF = ImpResp(s,x,Fr,timeShift,IRLength); % HRF contains timeshift data

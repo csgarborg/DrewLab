@@ -19,8 +19,8 @@ filtEMG = filtfilt(sos,g,trimmedEMG - mean(trimmedEMG));
 % kernelWidth = 0.5;
 kernelWidth = 0.005;
 smoothingKernel = gausswin(kernelWidth*analogSamplingRate)/sum(gausswin(kernelWidth*analogSamplingRate));
-% EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
-EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
+EMGPwr = log10(conv(filtEMG.^2,smoothingKernel,'same'));
+% EMGPwr = conv(filtEMG.^2,smoothingKernel,'same');
 % EMGPwr = filtEMG.^2;
 resampEMG = resample(EMGPwr,dsFs,analogSamplingRate);
 procEMG = resampEMG;   % save this as your final array
@@ -38,6 +38,16 @@ close
 i = tVals(1,1) <= procT & procT <= tVals(2,1);
 baseline = mean(procEMG(i));
 procEMG = procEMG - (baseline - 1);
+for n = length(procEMG)-100:length(procEMG)
+    if procEMG(n) < 0
+        procEMG(n) = procEMG(n-1);
+    end
+end
 procData = [procT',procEMG];
 plot(procData(:,1),procData(:,2))
+
+% subplot(2,1,1)
+% plot(emg(:,1),emg(:,2))
+% subplot(2,1,2)
+% plot(procData(:,1),procData(:,2))
 end

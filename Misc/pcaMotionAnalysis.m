@@ -21,8 +21,11 @@
 % WRITTEN BY:       Spencer Garborg 4/16/20
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionVec = pcaMotionAnalysis(positionData)
+function motionVec = pcaMotionAnalysis(positionData,swapTF)
 
+if ~exist('swapTF','var')
+    swapTF = false;
+end
 % Mean center data
 positionDataMC(:,1) = positionData(:,1) - mean(positionData(:,1));
 positionDataMC(:,2) = positionData(:,2) - mean(positionData(:,2));
@@ -40,9 +43,17 @@ C = cov(positionDataMC);
 % Determine the principal component with largest variance to make the
 % directional unit vec of movement
 if D(1,1) > D(2,2)
-    motionVec = [V(1,1) V(2,1)];
+    if swapTF
+        motionVec = [V(1,2) V(2,2)];
+    else
+        motionVec = [V(1,1) V(2,1)];
+    end
 else
-    motionVec = [V(1,2) V(2,2)];
+    if swapTF
+        motionVec = [V(1,1) V(2,1)];
+    else
+        motionVec = [V(1,2) V(2,2)];
+    end
 end
 
 % Determine direction of principal component vector based on mean of data
@@ -56,6 +67,7 @@ end
 % Calculate magnitude based on average of furthest 20% of movement data
 % points from origin
 numMags = ceil(size(positionData,1)*.2);
-magnitude = mean(maxk(((positionData(:,1).^2) + (positionData(:,2).^2)).^.5,numMags));
-motionVec = motionVec * magnitude;
+distanceVec = ((positionData(:,1).^2) + (positionData(:,2).^2)).^.5;
+magnitude = mean(maxk(distanceVec,numMags));
+motionVec = [motionVec * magnitude, motionVec * prctile(distanceVec,75), motionVec * prctile(distanceVec,95)];
 end

@@ -37,7 +37,7 @@
 % WRITTEN BY:       Spencer Garborg 1/22/19
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,commentString,tifFrameBounds,xLocMicrons,yLocMicrons,zLocMicrons,mouseBreed,mouseNumber,runDate,runNumber)
+function motionTracking2P2Layer(tifFileName,calibrationFileString,updateSearchTF,medFiltTF,saveOutputVideoTF,threeStepTF,compiledTifTF,tempMedFiltTF,targetAvgNum,framesPerSecond,analogSampleRate,objMag,digMag,turnabout,layer,hemisphere,xLocMicrons,yLocMicrons,zLocMicrons,mouseBreed,mouseNumber,runDate,runNumber,commentString,tifFrameBounds)
 %% Initialization
 close all;
 
@@ -68,7 +68,7 @@ end
 %     tifFrameBounds = [2 tifLength];
 % end
 
-if exist(xLocMicrons,'var')
+if exist('xLocMicrons','var')
     if xLocMicrons < 0
         hemisphere = 2;
     else
@@ -123,17 +123,33 @@ hVideoOut.Position(3:4) = [1050 550];
 
 %% Initialize variables for processing loop
 % Get target window
-if layer == 1
-    if medFiltTF
-        initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+if compiledTifTF
+    if layer == 1
+        if medFiltTF
+            initialImage = im2double(medfilt2(imStack(:,:,tifFrameBounds(1))));
+        else
+            initialImage = im2double(imStack(:,:,tifFrameBounds(1)));
+        end
     else
-        initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+        if medFiltTF
+            initialImage = im2double(medfilt2(imStack(:,:,tifFrameBounds(1)+1)));
+        else
+            initialImage = im2double(imStack(:,:,tifFrameBounds(1)+1));
+        end
     end
 else
-    if medFiltTF
-        initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1)+1)));
+    if layer == 1
+        if medFiltTF
+            initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1))));
+        else
+            initialImage = im2double(imread(tifFileName, tifFrameBounds(1)));
+        end
     else
-        initialImage = im2double(imread(tifFileName, tifFrameBounds(1)+1));
+        if medFiltTF
+            initialImage = im2double(medfilt2(imread(tifFileName, tifFrameBounds(1)+1)));
+        else
+            initialImage = im2double(imread(tifFileName, tifFrameBounds(1)+1));
+        end
     end
 end
 imshow(initialImage);
@@ -382,6 +398,8 @@ if exist([tifFileName(1:end-4) '_processed_Layer1_1.mat'],'file')
     procThermoData = movementData.thermoData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
+    stopMotionEvents = movementData.stopMotionEvents;
+    stopEMGEvents = movementData.stopEMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
     clear movementData
 elseif exist([tifFileName(1:end-4) '_processed_Layer2_1.mat'],'file')
@@ -392,6 +410,8 @@ elseif exist([tifFileName(1:end-4) '_processed_Layer2_1.mat'],'file')
     procThermoData = movementData.thermoData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
+    stopMotionEvents = movementData.stopMotionEvents;
+    stopEMGEvents = movementData.stopEMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
     clear movementData
 else
@@ -455,7 +475,7 @@ movementData.commentString = commentString;
 movementData.layer = layer;
 movementData.hemisphere = hemisphere;
 movementData.savedImage = savedImage;
-if exist(xLocMicrons,'var')
+if exist('xLocMicrons','var')
     movementData.xLocMicrons = xLocMicrons;
     movementData.yLocMicrons = yLocMicrons;
     movementData.zLocMicrons = zLocMicrons;
@@ -465,6 +485,7 @@ if exist(xLocMicrons,'var')
     movementData.runNumber = runNumber;
 end
 
+% for i = 1:3
 for n = 1:100
     matFileName = [tifFileName(1:end-4) '_processed_Layer' num2str(layer) '_' num2str(n) '.mat'];
     if ~exist(matFileName,'file')
@@ -472,6 +493,7 @@ for n = 1:100
         break
     end
 end
+% end
 
 % Plot data
 plotMotionTracking2Layer(matFileName);

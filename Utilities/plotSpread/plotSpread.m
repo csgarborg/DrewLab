@@ -160,6 +160,7 @@ if ~isempty(varargin) && ~ischar(varargin{1}) && ~isstruct(varargin{1})
     opt.categoryIdx = [];
     opt.categoryColors = def.distributionColors;
     opt.categoryMarkers = def.distributionMarkers;
+    opt.categoryLabels = def.categoryLabels;
     opt.yLabel = '';
     opt.spreadWidth = def.spreadWidth;
     opt.individualLabels = false;

@@ -22,10 +22,12 @@
 % WRITTEN BY:       Spencer Garborg 1/10/20
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plotMotionTracking2Layer(matFileName1,matFileName2)
+function plotMotionTracking2Layer(matFileName1,matFileName2,swapTF)
 
 close all;
-
+if ~exist('swapTF','var')
+    swapTF = false;
+end
 
 if ~exist('matFileName2','var')
     load(matFileName1);
@@ -74,7 +76,7 @@ if ~exist('matFileName2','var')
         semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         try
             axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
@@ -205,7 +207,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
         xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
@@ -480,7 +482,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     title(['\fontsize{20pt}\bf{X Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
-        title('\fontsize{20pt}\bf{Motion During Locomotion Events}')
+        title('\fontsize{20pt}\bf{Motion During Stop Locomotion Events}')
         grid on
         if movementData.hemisphere == 1
             text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -638,7 +640,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -686,7 +688,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     stopEMGEventsLocationsX = [];
     stopEMGEventsLocationsY = [];
     if size(movementData.stopEMGEvents,1) == 0
-        title('No EMG Events To Plot')
+        title('No Stop EMG Events To Plot')
     else
         for n = 1:size(movementData.stopEMGEvents,1)
             motionVectorX = movementData.targetPosition(movementData.stopEMGEvents(n,4):movementData.stopEMGEvents(n,6),1);
@@ -727,7 +729,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     title(['\fontsize{20pt}\bf{X Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
-        title('\fontsize{20pt}\bf{Motion During EMG Events}')
+        title('\fontsize{20pt}\bf{Motion During Stop EMG Events}')
         grid on
         if movementData.hemisphere == 1
             text(0,ceil(max([movementData.targetPosition(:,1);-1*movementData.targetPosition(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -762,7 +764,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -778,7 +780,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     
     h(15) = figure('Color','White');
     if size(movementData.stopEMGEvents,1) == 0
-        title('No EMG Events To Plot')
+        title('No Stop EMG Events To Plot')
     else
         subplot(2,1,1)
         maxMeanVal = max(abs([meanX meanY]));
@@ -788,7 +790,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     set(f,'facea',[.2]);
         plot([0 0],[-maxMeanVal maxMeanVal],'r')
         hold off
-        title('\fontsize{20pt}\bf{Mean Motion During EMG Events}')
+        title('\fontsize{20pt}\bf{Mean Motion During Stop EMG Events}')
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
         ylim([-maxMeanVal maxMeanVal])
@@ -902,7 +904,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('EMG')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -988,8 +990,42 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     % xlabel('\mum')
     % ylabel('\mum')
     
+    if any(strcmp('xLocMicrons',fieldnames(movementData))) && contains(matFileName1,'combined')
+        if movementData.layer == 1
+            if exist('C:\Workspace\Code\DrewLab\movementDataLogBrain.mat','file')
+                load('C:\Workspace\Code\DrewLab\movementDataLogBrain.mat');
+                if any(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]))
+                    dupRow = find(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]));
+                    moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+                else
+                    moveDataMat(end+1,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+                end
+            else
+                moveDataMat = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+            end
+            save('C:\Workspace\Code\DrewLab\movementDataLogBrain.mat','moveDataMat');
+        else
+            if exist('C:\Workspace\Code\DrewLab\movementDataLogSkull.mat','file')
+                load('C:\Workspace\Code\DrewLab\movementDataLogSkull.mat');
+                if any(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]))
+                    dupRow = find(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]));
+                    moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+                else
+                    moveDataMat(end+1,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+                end
+            else
+                moveDataMat = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec};
+            end
+            save('C:\Workspace\Code\DrewLab\movementDataLogSkull.mat','moveDataMat');
+        end
+    end
+    
     % Save figures to single .fig file
-    savefig(h,[matFileName1(1:end-23) '_outputPlots_Layer' num2str(movementData.layer) '.fig']);
+    if contains(matFileName1,'combined')
+        savefig(h,[matFileName1(1:end-4) '_outputPlots.fig']);
+    else
+        savefig(h,[matFileName1(1:end-23) '_outputPlots_Layer' num2str(movementData.layer) '.fig']);
+    end
 else
     load(matFileName1);
     stationaryData = movementData;
@@ -1068,7 +1104,7 @@ else
         semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
 %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
 xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
@@ -1164,7 +1200,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         %         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
         xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
@@ -1267,7 +1303,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     text(xlimVal(1),ylimVal(2),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     text(xlimVal(2),ylimVal(2),'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
     
-    motionVec = pcaMotionAnalysis(targetPositionInSkull);
+    motionVec = pcaMotionAnalysis(targetPositionInSkull,swapTF);
     h(7) = figure('Color','White');
     scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10)
     hold on
@@ -1484,7 +1520,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     title(['\fontsize{20pt}\bf{X Position - Locomotion Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
-        title('\fontsize{20pt}\bf{Motion During Locomotion Events}')
+        title('\fontsize{20pt}\bf{Motion During Stop Locomotion Events}')
         grid on
         if movementData.hemisphere == 1
             text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -1544,7 +1580,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     set(f,'facea',[.2]);
         plot([0 0],[-maxMeanVal maxMeanVal],'r')
         hold off
-        title('\fontsize{20pt}\bf{Mean Motion During Locomotion Events}')
+        title('\fontsize{20pt}\bf{Mean Motion During Stop Locomotion Events}')
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
         ylim([-maxMeanVal maxMeanVal])
@@ -1643,7 +1679,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -1691,7 +1727,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     stopEMGEventsLocationsX = [];
     stopEMGEventsLocationsY = [];
     if size(movementData.stopEMGEvents,1) == 0
-        title('No EMG Events To Plot')
+        title('No stop EMG Events To Plot')
     else
         movementData.stopEMGEvents(:,4:6) = 2*movementData.stopEMGEvents(:,4:6);
         for n = 1:size(movementData.stopEMGEvents,1)
@@ -1733,7 +1769,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     title(['\fontsize{20pt}\bf{X Position - EMG Events}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
-        title('\fontsize{20pt}\bf{Motion During EMG Events}')
+        title('\fontsize{20pt}\bf{Motion During Stop EMG Events}')
         grid on
         if movementData.hemisphere == 1
             text(0,ceil(max([targetPositionInSkull(:,1);targetPositionInSkull(:,2)])),'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -1768,7 +1804,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('\fontsize{20pt}\bf{EMG}')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -1784,7 +1820,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     
     h(17) = figure('Color','White');
     if size(movementData.stopEMGEvents,1) == 0
-        title('No EMG Events To Plot')
+        title('No Stop EMG Events To Plot')
     else
         subplot(2,1,1)
         maxMeanVal = max(abs([meanX meanY]));
@@ -1794,7 +1830,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         %     set(f,'facea',[.2]);
         plot([0 0],[-maxMeanVal maxMeanVal],'r')
         hold off
-        title('\fontsize{20pt}\bf{Mean Motion During EMG Events}')
+        title('\fontsize{20pt}\bf{Mean Motion During Stop EMG Events}')
         xlabel('Time (s)')
         ylabel('X Position (\mum)')
         ylim([-maxMeanVal maxMeanVal])
@@ -1909,7 +1945,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
         title('EMG')
         xlabel('Time (s)')
-        ylabel('Amplitude (a.u.)')
+        ylabel('Power')
         grid on
         axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) .8 ceil(max(movementData.emgData(2:end,2)))])
         hold on
@@ -2108,17 +2144,17 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     savefig(h,[matFileName1(1:end-21) '_2layerComparisonOutputPlots.fig']);
     movementData.targetPosition = targetPositionInSkull;
     save([matFileName1(1:end-21) '_2layerBrainInSkullDataFinal.mat'],'movementData');
-    if exist(movementData.xLocMicrons,'var')
+    if any(strcmp('xLocMicrons',fieldnames(movementData)))
         if exist('C:\Workspace\Code\DrewLab\movementDataLog.mat','file')
             load('C:\Workspace\Code\DrewLab\movementDataLog.mat');
             if any(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]))
                 dupRow = find(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]));
-                moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+                moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec,stationaryData.meanCIX,stationaryData.meanCIY,stationaryData.stdCIX,stationaryData.stdCIY,movementData.meanCIX,movementData.meanCIY,movementData.stdCIX,movementData.stdCIY};
             else
-                moveDataMat(end+1,:) = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+                moveDataMat(end+1,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec,stationaryData.meanCIX,stationaryData.meanCIY,stationaryData.stdCIX,stationaryData.stdCIY,movementData.meanCIX,movementData.meanCIY,movementData.stdCIX,movementData.stdCIY};
             end
         else
-            moveDataMat = {[movementData.runDate '_' movementData.runNumber],mouseBreed,mouseNumber,xLocMicrons,yLocMicrons,zLocMicrons,motionVec};
+            moveDataMat = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec,stationaryData.meanCIX,stationaryData.meanCIY,stationaryData.stdCIX,stationaryData.stdCIY,movementData.meanCIX,movementData.meanCIY,movementData.stdCIX,movementData.stdCIY};
         end
         save('C:\Workspace\Code\DrewLab\movementDataLog.mat','moveDataMat');
     end

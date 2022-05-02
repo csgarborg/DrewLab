@@ -84,6 +84,7 @@ end
 function [EMGEvents,stopEMGEvents,EMGThresh] = detectEMGEvents(procEMGData,secondsPerFrame)
 
 EMGEvents = [];
+stopEMGEvents = [];
 EMGThresh = [];
 EMGSampleRate = 1/(procEMGData(2,1) - procEMGData(1,1));
 if size(procEMGData,1) <= 7.1*EMGSampleRate
