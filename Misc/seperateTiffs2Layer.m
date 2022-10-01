@@ -1,8 +1,8 @@
-for n = 1:10
+for n = 1
     if n < 10
-        tifFileName = ['H:\21-10-14_MouseExp\211014_00' num2str(n) '.TIF'];
+        tifFileName = ['H:\21-12-16_MouseExp\211216_00' num2str(n) '_001.TIF'];
     else
-        tifFileName = ['H:\21-10-14_MouseExp\211014_0' num2str(n) '.TIF'];
+        tifFileName = ['H:\21-12-16_MouseExp\211216_0' num2str(n) '_001.TIF'];
     end
     
     tifLength = length(imfinfo(tifFileName));

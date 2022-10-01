@@ -8,7 +8,7 @@ params.err = [2,0.05];
 % you want to make sure 'LH_restData' and 'RH_restData' have a mean of 0. You can use multiple trials just make sure the matrix is oriented properly
 
 % input data as time (1st dimension, vertical) by trials (2nd dimension, horizontal)
-ballData = load('H:\21-12-16_MouseExp\211216_002.txt');
+% ballData = load('H:\21-12-16_MouseExp\211216_002.txt');
 load('H:\21-12-16_MouseExp\211216_002_processed_Layer1_combined.mat');
 Thermo = ballData(:,[1 3]); % load raw thermo data
 resp = filterThermoDataHz(Thermo,10000); % filter and resample thermo data from 10000 to 20 Hz
@@ -33,6 +33,8 @@ brainY = [tBrain' brain(:,2)];
 
 figure(1)
 subplot(3,1,1)
+PowerX = downsample(PowerX,3);
+HzX = downsample(HzX,3);
 semilogx(HzX,PowerX,'k')
 xlabel('Frequency (Hz)')
 ylabel('Power')
@@ -42,6 +44,8 @@ title('Brain Motion Spectrum (Lateral/Medial)')
 % set(f,'facea',[.2]);
 % hold off
 subplot(3,1,2)
+PowerT = downsample(PowerT,3);
+HzT = downsample(HzT,3);
 semilogx(HzT,PowerT,'k')
 xlabel('Frequency (Hz)')
 ylabel('Power')
@@ -51,13 +55,15 @@ title('Thermocouple Spectrum')
 % set(f,'facea',[.2]);
 % hold off
 subplot(3,1,3)
+fx = downsample(fx,3);
+Cx = downsample(Cx,3);
 semilogx(fx,Cx);
 ylim([0 1])
 xlabel('Frequency (Hz)')
 ylabel('Coherence')
 hold on
-f = fill([fx flip(fx)],[cErrx(1,:) flip(cErrx(2,:))],'r','Linestyle','none');
-set(f,'facea',[.2]);
+% f = fill([fx flip(fx)],[cErrx(1,:) flip(cErrx(2,:))],'r','Linestyle','none');
+% set(f,'facea',[.2]);
 yline(confCx);
 hold off
 text(.1,.8,['Conf = ' num2str(confCx)])
@@ -65,6 +71,8 @@ title('Coherence')
 
 figure(2)
 subplot(3,1,1)
+PowerY = downsample(PowerY,3);
+HzY = downsample(HzY,3);
 semilogx(HzY,PowerY,'k')
 xlabel('Frequency (Hz)')
 ylabel('Power')
@@ -83,13 +91,15 @@ title('Thermocouple Spectrum')
 % set(f,'facea',[.2]);
 % hold off
 subplot(3,1,3)
+Cy = downsample(Cy,3);
+fy = downsample(fy,3);
 semilogx(fy,Cy);
 ylim([0 1])
 xlabel('Frequency (Hz)')
 ylabel('Coherence')
 hold on
-f = fill([fy flip(fy)],[cErry(1,:) flip(cErry(2,:))],'r','Linestyle','none');
-set(f,'facea',[.2]);
+% f = fill([fy flip(fy)],[cErry(1,:) flip(cErry(2,:))],'r','Linestyle','none');
+% set(f,'facea',[.2]);
 yline(confCx);
 hold off
 text(.1,.8,['Conf = ' num2str(confCy)])

@@ -42,6 +42,7 @@ if size(procBallData,1) <= 7.1*analogSampleRate
 else
     procBallData = abs(procBallData);
     plot(procBallData(:,1),procBallData(:,2));
+    title('Select upper limit of ball motion events')
     [~,motionVelocityThresh] = ginput(1);
     close;
     startFrame = 2*analogSampleRate + 1;
@@ -91,6 +92,7 @@ if size(procEMGData,1) <= 7.1*EMGSampleRate
     return
 else
     plot(procEMGData(:,1),procEMGData(:,2));
+    title('Select upper limit of EMG events')
     [~,EMGThresh] = ginput(1);
     close;
     startFrame = 2*EMGSampleRate + 1;

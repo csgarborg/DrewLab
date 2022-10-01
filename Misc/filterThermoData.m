@@ -41,7 +41,7 @@ end
 procData = [procT',procEKG];
 
 plot(procData(:,1),procData(:,2))
-title('Select upper or lower limit')
+title('Select upper or lower limit of thermocouple data')
 limitVal = ginput(1);
 close
 for n = 1:size(procData,1)
