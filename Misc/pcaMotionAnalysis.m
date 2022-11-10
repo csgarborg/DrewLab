@@ -21,7 +21,7 @@
 % WRITTEN BY:       Spencer Garborg 4/16/20
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function motionVec = pcaMotionAnalysis(positionData,swapTF)
+function motionVec = pcaMotionAnalysis(positionData,swapTF,vecReverseTF)
 
 if ~exist('swapTF','var')
     swapTF = false;
@@ -60,7 +60,7 @@ end
 % if mean(positionData(:,1)) < 0 && motionVec(1) > 0
 %     motionVec = motionVec * -1;
 % end
-if motionVec(2) < 0
+if vecReverseTF
     motionVec = motionVec * -1;
 end
 

@@ -22,11 +22,17 @@
 % WRITTEN BY:       Spencer Garborg 1/10/20
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plotMotionTracking2Layer(matFileName1,matFileName2,swapTF)
+function plotMotionTracking2Layer(matFileName1,matFileName2,swapVecTF,vecReverseTF,swapLayersTF)
 
 close all;
 if ~exist('swapTF','var')
-    swapTF = false;
+    swapVecTF = false;
+end
+if ~exist('vecReverseTF','var')
+    vecReverseTF = false;
+end
+if ~exist('swapLayersTF','var')
+    swapLayersTF = false;
 end
 
 if ~exist('matFileName2','var')
@@ -1071,9 +1077,15 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         savefig(h,[matFileName1(1:end-23) '_outputPlots_Layer' num2str(movementData.layer) '.fig']);
     end
 else
-    load(matFileName1);
-    stationaryData = movementData;
-    load(matFileName2);
+    if swapLayersTF
+        load(matFileName2);
+        stationaryData = movementData;
+        load(matFileName1);
+    else
+        load(matFileName1);
+        stationaryData = movementData;
+        load(matFileName2);
+    end
     
     subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
     movementData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
@@ -1082,9 +1094,9 @@ else
     
     h(1) = figure('Color','White');
     x1 = subplot(6,1,1);
-    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,movementData.targetPosition(:,1)-movementData.targetPosition(1,1),'b')
+    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,movementData.targetPosition(:,1),'b')
     hold on
-    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,stationaryData.targetPosition(:,1)-stationaryData.targetPosition(1,1),'r')
+    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'r')
     hold off
     if contains(matFileName1,'combined')
         hold on;
@@ -1101,7 +1113,7 @@ else
     xlabel('Time (s)')
     ylabel('X Position (\mum)')
     grid on
-    maxVal = ceil(max(abs([movementData.targetPosition(:,1)-movementData.targetPosition(1,1);movementData.targetPosition(:,2)-movementData.targetPosition(1,2);stationaryData.targetPosition(:,1)-stationaryData.targetPosition(1,1);stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2)])));
+    maxVal = ceil(max(abs([movementData.targetPosition(:,1);movementData.targetPosition(:,2);stationaryData.targetPosition(:,1);stationaryData.targetPosition(:,2)])));
     axis([0 size(movementData.targetPosition,1)*2*movementData.secondsPerFrame -maxVal maxVal])
 %     set(x1,'Position',[.05, .68, .9, .23])
     if movementData.hemisphere == 1
@@ -1112,9 +1124,9 @@ else
         text(0,-maxVal,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     end
     x2 = subplot(6,1,2);
-    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2)-movementData.targetPosition(1,2),'b')
+    plot([1:size(movementData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*movementData.targetPosition(:,2),'b')
     hold on
-    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*stationaryData.targetPosition(:,2)-stationaryData.targetPosition(1,2),'r')
+    plot([1:size(stationaryData.targetPosition,1)]*2*movementData.secondsPerFrame,-1*stationaryData.targetPosition(:,2),'r')
     if contains(matFileName1,'combined')
         hold on;
         f = fill([(1:size(movementData.targetPosition,1))*2*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*2*movementData.secondsPerFrame)],-1*movementData.cIntFillPtsY,'b','Linestyle','none');
@@ -1187,11 +1199,11 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     end
     
     h(2) = figure('Color','White');
-    posL1 = [movementData.targetPosition(:,1) - movementData.targetPosition(1,1), movementData.targetPosition(:,2) - movementData.targetPosition(1,2)];
+    posL1 = [movementData.targetPosition(:,1), movementData.targetPosition(:,2)];
     meanPosValL1 = [.5*(posL1(1:end-1,1) + posL1(2:end,1)),.5*(posL1(1:end-1,2) + posL1(2:end,2))];
     posL1 = zipperVecs(posL1,meanPosValL1);
 %     posL1 = posL1(2:end,:);
-    posL2 = [stationaryData.targetPosition(:,1) - stationaryData.targetPosition(1,1), stationaryData.targetPosition(:,2) - stationaryData.targetPosition(1,2)];
+    posL2 = [stationaryData.targetPosition(:,1), stationaryData.targetPosition(:,2)];
     meanPosValL2 = [.5*(posL2(1:end-1,1) + posL2(2:end,1)),.5*(posL2(1:end-1,2) + posL2(2:end,2))];
     posL2 = zipperVecs(posL2,meanPosValL2);
     if size(posL1,1) > size(posL2,1)
@@ -1347,7 +1359,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     text(xlimVal(1),ylimVal(2),'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     text(xlimVal(2),ylimVal(2),'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
     
-    motionVec = pcaMotionAnalysis(targetPositionInSkull,swapTF);
+    motionVec = pcaMotionAnalysis(targetPositionInSkull,swapVecTF,vecReverseTF);
     h(7) = figure('Color','White');
     scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10)
     hold on
