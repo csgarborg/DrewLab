@@ -181,7 +181,7 @@ for n = 1:size(dateCell,2)
 %             xlim([0 size(movementData.ballData(:,2),1)])
             
             goodRun = 2;
-            while goodRun ~= 0 || goodRun ~= 1
+            while goodRun >= 2
                 goodRun = input('');
                 if goodRun == 0
                     rerunCell{end+1} = [dateCell{n} '_' runNumberStr];

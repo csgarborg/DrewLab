@@ -25,7 +25,7 @@
 function plotMotionTracking2Layer(matFileName1,matFileName2,swapVecTF,vecReverseTF,swapLayersTF)
 
 close all;
-if ~exist('swapTF','var')
+if ~exist('swapVecTF','var')
     swapVecTF = false;
 end
 if ~exist('vecReverseTF','var')
