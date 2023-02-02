@@ -26,6 +26,9 @@ function motionVec = pcaMotionAnalysis(positionData,swapTF,vecReverseTF)
 if ~exist('swapTF','var')
     swapTF = false;
 end
+if ~exist('vecReverseTF','var')
+    vecReverseTF = false;
+end
 % Mean center data
 positionDataMC(:,1) = positionData(:,1) - mean(positionData(:,1));
 positionDataMC(:,2) = positionData(:,2) - mean(positionData(:,2));

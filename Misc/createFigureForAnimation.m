@@ -1,0 +1,22 @@
+x = [200 220];
+y = [-4 6];
+close all
+figure(1)
+subplot(8,1,1)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1)-movementData.targetPosition(1,1))
+xlim(x)
+ylim(y)
+subplot(8,1,2)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2)-movementData.targetPosition(1,2))
+xlim(x)
+ylim(y)
+subplot(8,1,3:4)
+semilogy(movementData.emgData(:,1),movementData.emgData(:,2))
+xlim(x)
+subplot(8,1,5:6)
+plot(movementData.ballData(:,1),movementData.ballData(:,2))
+xlim(x)
+subplot(8,1,7:8)
+plot(movementData.thermoData(:,1),movementData.thermoData(:,2))
+xlim(x)
+set(gcf,'renderer','Painters')

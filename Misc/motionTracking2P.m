@@ -259,21 +259,25 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
         Target = targetSum ./ targetNum;
         imshow(Target);
     end
-
+    
     % Add black border for display
     Stabilized(:, BorderCols) = 0;
     Stabilized(BorderRows, :) = 0;
-
+    
     TargetRect = [pos.template_orig-Offset, pos.template_size];
     SearchRegionRect = [SearchRegion, pos.template_size + 2*pos.search_border];
-
+    
     % Draw rectangles on input to show target and search region
-    input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
-                        'Color', 'white');
+%         input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
+%                             'Color', 'White');
+    input = insertShape(input, 'Rectangle', SearchRegionRect,...
+        'Color', [58 58 58], 'LineWidth', 2);
+    input = insertShape(input, 'Rectangle', TargetRect,...
+        'Color', 'white');
     % Display the offset (displacement) values on the input image
-    txt = sprintf('(%+05.1f pixels,%+05.1f pixels)', Offset);
-    input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
-                    'TextColor', 'white', 'BoxOpacity', 0);
+%     txt = sprintf('(%+05.1f pixels,%+05.1f pixels)', Offset);
+%     input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
+%         'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
     if firstTime
@@ -336,31 +340,37 @@ close(f)
 
 % Save output video to AVI file
 if saveOutputVideoTF
-    [HOut,WOut] = size(imageStack{1,1});
-    imageStackMat = cell2mat(imageStack);
-    imageStackMat = double(reshape(imageStackMat,HOut,WOut,tifLength));
-    aviFileNameOutput = [tifFileName(1:end-4) '_output.avi'];
-    if exist(aviFileNameOutput,'file')
-        delete(aviFileNameOutput)
+%     [HOut,WOut] = size(imageStack{1,1});
+%     imageStackMat = cell2mat(imageStack);
+%     imageStackMat = double(reshape(imageStackMat,HOut,WOut,tifLength));
+%     aviFileNameOutput = [tifFileName(1:end-4) '_output.avi'];
+%     if exist(aviFileNameOutput,'file')
+%         delete(aviFileNameOutput)
+%     end
+%     aviObject = VideoWriter(aviFileNameOutput,'Uncompressed AVI');
+%     aviObject.FrameRate = 10;
+%     open(aviObject);
+%     f = waitbar(0,'Creating output AVI file');
+%     for k = 1:tifLength
+%         waitbar(round(k/tifLength,2),f,'Creating output AVI file');
+%         %     imagesc(filteredData(:,:,k));
+%         %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
+%         writeVideo(aviObject,imageStackMat(:,:,k));
+%     end
+%     close(f)
+%     close(aviObject);
+    tiffFileNameOutput = [tifFileName(1:end-4) '_output.tif'];
+    imwrite(imageStack{1,1},tiffFileNameOutput)
+    for n = 2:length(imageStack)
+        imwrite(imageStack{1,n},tiffFileNameOutput,'WriteMode','append')
     end
-    aviObject = VideoWriter(aviFileNameOutput,'Uncompressed AVI');
-    aviObject.FrameRate = 10;
-    open(aviObject);
-    f = waitbar(0,'Creating output AVI file');
-    for k = 1:tifLength
-        waitbar(round(k/tifLength,2),f,'Creating output AVI file');
-        %     imagesc(filteredData(:,:,k));
-        %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
-        writeVideo(aviObject,imageStackMat(:,:,k));
-    end
-    close(f)
-    close(aviObject);
 end
 
 if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
     load([tifFileName(1:end-4) '_processed_1.mat']);
     procBallData = movementData.ballData;
     procEMGData = movementData.emgData;
+    procEKGData = movementData.ekgData;
     motionEvents = movementData.motionEvents;
     EMGEvents = movementData.EMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
@@ -368,7 +378,7 @@ if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
 else
     % Get binary ball and EMG data to compare to frame movement data
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
-    ballData = load([tifFileName(1:end-3) 'txt']);
+    ballData = load([tifFileName(1:end-3) '.txt']);
     ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
     if size(ballData,2) > 2
         ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];

@@ -58,49 +58,10 @@
 % end
 
 % dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823'};
-% close all
-% for n = 1:size(dateCell,2)
-%     folderName = ['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
-%     fileList = dir(folderName);
-%     fileNamesCell = struct2cell(fileList);
-%     fileNames = fileNamesCell(1,:);
-%     maxRun = 0;
-%     for i = 1:size(fileNames,2)
-%         if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
-%              maxRun = str2double(fileNames{i}(8:10));
-%         end
-%     end
-%     for i = 1:maxRun
-%         if i > 9
-%             runNumberStr = num2str(i);
-%         else
-%             runNumberStr = ['0' num2str(i)];
-%         end
-%         if exist(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
-%             for k = 1:2
-%                 fileName = ['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
-%                     
-%                 versionVec = [1 2 3];
-%                 mode = 1;
-%                 if k == 1
-%                     brainTF = true;
-%                 else
-%                     brainTF = false;
-%                 end
-%                 combineMotionTracking(fileName,versionVec,mode,brainTF)
-%             end
-%         end
-%     end
-% end
-
-
-
-
-dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823'};
+dateCell = {'221205','221207','221208','221213'};
 close all
-rerunCell = {};
 for n = 1:size(dateCell,2)
-    folderName = ['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+    folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
     fileList = dir(folderName);
     fileNamesCell = struct2cell(fileList);
     fileNames = fileNamesCell(1,:);
@@ -116,8 +77,49 @@ for n = 1:size(dateCell,2)
         else
             runNumberStr = ['0' num2str(i)];
         end
-        if exist(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
-            plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false)
+        if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
+            for k = 1:2
+                fileName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
+                    
+                versionVec = [1 2 3];
+                mode = 1;
+                if k == 1
+                    brainTF = true;
+                else
+                    brainTF = false;
+                end
+                combineMotionTracking(fileName,versionVec,mode,brainTF)
+            end
+        end
+    end
+end
+
+
+
+
+% dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823'};
+dateCell = {'221205','221207','221208','221213'};
+close all
+rerunCell = {};
+for n = 1:size(dateCell,2)
+    folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+    fileList = dir(folderName);
+    fileNamesCell = struct2cell(fileList);
+    fileNames = fileNamesCell(1,:);
+    maxRun = 0;
+    for i = 1:size(fileNames,2)
+        if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
+             maxRun = str2double(fileNames{i}(8:10));
+        end
+    end
+    for i = 1:maxRun
+        if i > 9
+            runNumberStr = num2str(i);
+        else
+            runNumberStr = ['0' num2str(i)];
+        end
+        if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
+            plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false)
             figure(1)
             set(gcf,'units','normalized','outerposition',[0 0.5 .5 .5])
             figure(2)
@@ -128,13 +130,13 @@ for n = 1:size(dateCell,2)
             set(gcf,'units','normalized','outerposition',[0.5 0.5 .5 .5])
 %             figure(1)
 %             set(gcf, 'Position', get(0, 'Screensize'));
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_1.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_1.mat'])
 %             x1 = movementData.targetPosition(:,1);
 %             y1 = movementData.targetPosition(:,2);
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_2.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_2.mat'])
 %             x2 = movementData.targetPosition(:,1);
 %             y2 = movementData.targetPosition(:,2);
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'])
 %             x3 = movementData.targetPosition(:,1);
 %             y3 = movementData.targetPosition(:,2);
 %             subplot(5,1,1)
@@ -152,13 +154,13 @@ for n = 1:size(dateCell,2)
 %             plot(mean([y1 y2 y3],2),'k')
 %             hold off
 %             
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_1.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_1.mat'])
 %             x1 = movementData.targetPosition(:,1);
 %             y1 = movementData.targetPosition(:,2);
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_2.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_2.mat'])
 %             x2 = movementData.targetPosition(:,1);
 %             y2 = movementData.targetPosition(:,2);
-%             load(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'])
+%             load(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'])
 %             x3 = movementData.targetPosition(:,1);
 %             y3 = movementData.targetPosition(:,2);
 %             subplot(5,1,3)
@@ -187,31 +189,31 @@ for n = 1:size(dateCell,2)
                     rerunCell{end+1} = [dateCell{n} '_' runNumberStr];
                 elseif goodRun == 2 % orthogonal vector
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,false,false)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,false,false)
                     figure(7)
                 elseif goodRun == 3 % switch vector direction
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,true,false)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,true,false)
                     figure(7)
                 elseif goodRun == 4 % switch layers
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,false,true)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,false,true)
                     figure(7)
                 elseif goodRun == 5 % orthogonal vector and switch layers
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,false,true)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,false,true)
                     figure(7)
                 elseif goodRun == 6 % switch vector direction and switch layers
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,true,true)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false,true,true)
                     figure(7)
                 elseif goodRun == 7 % orthogonal vector and switch vector direction
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,true,false)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,true,false)
                     figure(7)
                 elseif goodRun == 8 % switch vector direction and switch layers and switch layers
                     close all
-                    plotMotionTracking2Layer(['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['I:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,true,true)
+                    plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],true,true,true)
                     figure(7)
                 end
             end

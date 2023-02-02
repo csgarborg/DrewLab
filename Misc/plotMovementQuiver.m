@@ -1,5 +1,5 @@
 close all
-fileName = 'C:\Workspace\Code\DrewLab\movementDataLogSkull.mat';
+fileName = 'C:\Workspace\Code\DrewLab\movementDataLog.mat';
 load(fileName)
 if contains(fileName,'Skull') || contains(fileName,'Brain')
     xLoc = [];
@@ -105,24 +105,24 @@ else
         figure(ceil(i/2))
         hold on
         for n = 1:size(moveDataMat,1)
-            if strcmp(moveDataMat{n,3},'21')
+            if strcmp(moveDataMat{n,3},'21a')
                 arrowColor = 'r';
                 a{ceil(i/2)}(end+1) = sqrt(moveDataMat{n,7}(i)^2 + moveDataMat{n,7}(i+1)^2);
                 catIdx = 0;
-            elseif strcmp(moveDataMat{n,3},'27')
+            elseif strcmp(moveDataMat{n,3},'27a')
                 b{ceil(i/2)}(end+1) = sqrt(moveDataMat{n,7}(i)^2 + moveDataMat{n,7}(i+1)^2);
-                arrowColor = 'k';
+                arrowColor = 'm';
                 catIdx = 1;
-            elseif strcmp(moveDataMat{n,3},'28')
+            elseif strcmp(moveDataMat{n,3},'28a')
                 arrowColor = 'g';
                 c{ceil(i/2)}(end+1) = sqrt(moveDataMat{n,7}(i)^2 + moveDataMat{n,7}(i+1)^2);
                 catIdx = 2;
-            elseif strcmp(moveDataMat{n,3},'39')
+            elseif strcmp(moveDataMat{n,3},'39a')
                 arrowColor = 'b';
                 d{ceil(i/2)}(end+1) = sqrt(moveDataMat{n,7}(i)^2 + moveDataMat{n,7}(i+1)^2);
                 catIdx = 3;
             else
-                arrowColor = 'm';
+                arrowColor = 'k';
                 e{ceil(i/2)}(end+1) = sqrt(moveDataMat{n,7}(i)^2 + moveDataMat{n,7}(i+1)^2);
                 catIdx = 4;
             end
@@ -137,8 +137,8 @@ else
             brainStdX{catIdx+1}(end+1) = moveDataMat{n,14};
             brainStdY{catIdx+1}(end+1) = moveDataMat{n,15};
         end
-        xlim([-3000 3000])
-        ylim([-3000 3000])
+        xlim([-8000 8000])
+        ylim([-8000 8000])
         plot(0,0,'kx','MarkerSize',12)
         plot(0,-2600,'kx','MarkerSize',12)
         quiver(-2500,2500,1,0,150,'LineWidth',2.5,'MaxHeadSize',40)

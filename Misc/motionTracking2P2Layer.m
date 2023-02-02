@@ -219,10 +219,11 @@ velocity = [];
 surfaceCalibFitX = calibrationValues.(calibrationFileString).surfaceCalibFitX;
 surfaceCalibFitY = calibrationValues.(calibrationFileString).surfaceCalibFitY;
 tifLength = tifFrameBounds(2)-tifFrameBounds(1)+1;
-imageStack = cell(1,tifLength);
+imageStack = [];
 midlineX = round(W/2);
 midlineY = round(H/2);
 secondsPerFrame = 1/framesPerSecond;
+brightnessSum = [];
 if ~exist('commentString','var') || isempty(commentString)
     commentString = 'No comments';
 end
@@ -330,14 +331,19 @@ for i = startFrame:2:tifFrameBounds(2)
 
     TargetRect = [pos.template_orig-Offset, pos.template_size];
     SearchRegionRect = [SearchRegion, pos.template_size + 2*pos.search_border];
+%     brightnessSum(end+1) = sum(input(SearchRegionRect(1):SearchRegionRect(1)+SearchRegionRect(3),SearchRegionRect(2):SearchRegionRect(2)+SearchRegionRect(4)),'all');
 
     % Draw rectangles on input to show target and search region
-    input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
-                        'Color', 'white');
+%     input = insertShape(input, 'Rectangle', [TargetRect; SearchRegionRect],...
+%                         'Color', 'white');
+    input = insertShape(input, 'Rectangle', SearchRegionRect,...
+        'Color', [58 58 58], 'LineWidth', 2);
+    input = insertShape(input, 'Rectangle', TargetRect,...
+        'Color', 'white');
     % Display the offset (displacement) values on the input image
-    txt = sprintf('(%+05.1f pixels,%+05.1f pixels)', Offset);
-    input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
-                    'TextColor', 'white', 'BoxOpacity', 0);
+%     txt = sprintf('(%+05.1f pixels,%+05.1f pixels)', Offset);
+%     input = insertText(input(:,:,1),[1 1],txt,'FontSize',16, ...
+%                     'TextColor', 'white', 'BoxOpacity', 0);
     % Display video
     hVideoOut([input(:,:,1) Stabilized]);
     if firstTime
@@ -346,8 +352,14 @@ for i = startFrame:2:tifFrameBounds(2)
     
     % Save output video to variable
     if saveOutputVideoTF
-        imageStack{1,n} = [input(:,:,1) Stabilized];
-        n = n + 1;
+        imageStack = [input(:,:,1) Stabilized];
+        if firstTime
+            tiffFileNameOutput = [tifFileName(1:end-4) '_output.tif'];
+            imwrite(imageStack,tiffFileNameOutput)
+        else
+            imwrite(imageStack,tiffFileNameOutput,'WriteMode','append')
+        end
+        
     end
     
     % Add pixel motion to data
@@ -400,26 +412,31 @@ close(f)
 
 % Save output video to AVI file
 if saveOutputVideoTF
-    close all
-    [HOut,WOut] = size(imageStack{1,1});
-    imageStackMat = cell2mat(imageStack);
-    imageStackMat = double(reshape(imageStackMat,HOut,WOut,tifLength));
-    aviFileNameOutput = [tifFileName(1:end-4) '_output.avi'];
-    if exist(aviFileNameOutput,'file')
-        delete(aviFileNameOutput)
-    end
-    aviObject = VideoWriter(aviFileNameOutput,'Uncompressed AVI');
-    aviObject.FrameRate = 10;
-    open(aviObject);
-    f = waitbar(0,'Creating output AVI file');
-    for k = 1:tifLength
-        waitbar(round(k/tifLength,2),f,'Creating output AVI file');
-        %     imagesc(filteredData(:,:,k));
-        %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
-        writeVideo(aviObject,imageStackMat(:,:,k));
-    end
-    close(f)
-    close(aviObject);
+%     close all
+%     [HOut,WOut] = size(imageStack{1,1});
+%     imageStackMat = cell2mat(imageStack);
+%     imageStackMat = double(reshape(imageStackMat,HOut,WOut,tifLength));
+%     aviFileNameOutput = [tifFileName(1:end-4) '_output.avi'];
+%     if exist(aviFileNameOutput,'file')
+%         delete(aviFileNameOutput)
+%     end
+%     aviObject = VideoWriter(aviFileNameOutput,'Uncompressed AVI');
+%     aviObject.FrameRate = 10;
+%     open(aviObject);
+%     f = waitbar(0,'Creating output AVI file');
+%     for k = 1:tifLength
+%         waitbar(round(k/tifLength,2),f,'Creating output AVI file');
+%         %     imagesc(filteredData(:,:,k));
+%         %     filteredFrame = getframe(fig,[0.05 0.05 0.9 0.9]);
+%         writeVideo(aviObject,imageStackMat(:,:,k));
+%     end
+%     close(f)
+%     close(aviObject);
+%     tiffFileNameOutput = [tifFileName(1:end-4) '_output.tif'];
+%     imwrite(imageStack{1,1},tiffFileNameOutput)
+%     for n = 2:length(imageStack)
+%         imwrite(imageStack{1,n},tiffFileNameOutput,'WriteMode','append')
+%     end
 end
 
 if exist([tifFileName(1:end-4) '_processed_Layer1_1.mat'],'file')
