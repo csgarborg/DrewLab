@@ -2245,8 +2245,8 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
     movementData.targetPosition = targetPositionInSkull;
     save([matFileName1(1:end-21) '_2layerBrainInSkullDataFinal.mat'],'movementData');
     if any(strcmp('xLocMicrons',fieldnames(movementData)))
-        if exist('C:\Workspace\Code\DrewLab\movementDataLog.mat','file')
-            load('C:\Workspace\Code\DrewLab\movementDataLog.mat');
+        if exist('C:\Workspace\Code\DrewLab\movementDataLogManip.mat','file')
+            load('C:\Workspace\Code\DrewLab\movementDataLogManip.mat');
             if any(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]))
                 dupRow = find(strcmp(moveDataMat(:,1),[movementData.runDate '_' movementData.runNumber]));
                 moveDataMat(dupRow,:) = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec,stationaryData.meanCIX,stationaryData.meanCIY,stationaryData.stdCIX,stationaryData.stdCIY,movementData.meanCIX,movementData.meanCIY,movementData.stdCIX,movementData.stdCIY};
@@ -2256,7 +2256,7 @@ xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
         else
             moveDataMat = {[movementData.runDate '_' movementData.runNumber],movementData.mouseBreed,movementData.mouseNumber,movementData.xLocMicrons,movementData.yLocMicrons,movementData.zLocMicrons,motionVec,stationaryData.meanCIX,stationaryData.meanCIY,stationaryData.stdCIX,stationaryData.stdCIY,movementData.meanCIX,movementData.meanCIY,movementData.stdCIX,movementData.stdCIY};
         end
-        save('C:\Workspace\Code\DrewLab\movementDataLog.mat','moveDataMat');
+        save('C:\Workspace\Code\DrewLab\movementDataLogManip.mat','moveDataMat');
     end
 end
 end

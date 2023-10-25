@@ -1,5 +1,5 @@
 %load('211216_001_processe_2layerBrainInSkullDataFinal.mat');
-% load('H:\21-12-16_MouseExp\211216_002_processe_2layerBrainInSkullDataFinal.mat');
+load('D:\21-12-16_MouseExp\211216_002_processe_2layerBrainInSkullDataFinal.mat');
 
 figure(444);
 subplot(311)
@@ -15,12 +15,12 @@ movementData.emgDataInterp=zeros(size(movementData.targetPosition));
 movementData.emgDataInterp(:,1)=movement_time;
 movementData.emgDataInterp(:,2)=interp1(movementData.emgData(:,1),movementData.emgData(:,2),movement_time,'linear');
 
-subplot(313)
-% ballData = load('H:\21-12-16_MouseExp\211216_002.txt');
-emgDataOnly = [ballData(:,1) ballData(:,3)];
-emgDataOnly = downsample(emgDataOnly,200);
-plot(emgDataOnly(:,1),emgDataOnly(:,2))
-xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
+% subplot(313)
+% % ballData = load('H:\21-12-16_MouseExp\211216_002.txt');
+% emgDataOnly = [ballData(:,1) ballData(:,3)];
+% emgDataOnly = downsample(emgDataOnly,200);
+% plot(emgDataOnly(:,1),emgDataOnly(:,2))
+% xlim([min(movementData.emgData(:,1)) max(movementData.emgData(:,1))])
 
 %%
 figure(433)
@@ -63,3 +63,17 @@ xlabel('emg')
 ylabel('shift, pixels')
 %%
 
+movementData.locDataInterp=zeros(size(movementData.targetPosition));
+movementData.locDataInterp(:,1)=movement_time;
+movementData.locDataInterp(:,2)=interp1(movementData.ballData(:,1),movementData.ballData(:,2),movement_time,'linear');
+
+figure(700)
+maxlag=500;
+xc_1=xcorr(detrend(movementData.locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),1))',maxlag,'coeff');
+xc_2=xcorr(detrend(movementData.locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),2))',maxlag,'coeff');
+hold off
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1)
+hold on
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2)
+
+best_lag=round(1/movementData.secondsPerFrame)%about 1 second

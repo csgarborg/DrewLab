@@ -93,6 +93,23 @@ else
     c = {[] [] []};
     d = {[] [] []};
     e = {[] [] []};
+    [uniqueLocs,~,locIdx] = unique(cell2mat(moveDataMat(:,4:5)),'rows');
+    moveDataMatOrig = moveDataMat;
+    moveDataMat = {};
+    for n = 1:size(uniqueLocs)
+        k = find(locIdx == n);
+        moveDataMat(end+1,:) = moveDataMatOrig(k(1),:);
+%         xMoveVec = moveDataMatOrig{k,7}(1);
+%         yMoveVec = moveDataMatOrig{k,7}(2);
+        xMoveSum = [];
+        yMoveSum = [];
+        for i = 1:length(k)
+            xMoveSum(end+1) = moveDataMatOrig{k(i),7}(1);
+            yMoveSum(end+1) = moveDataMatOrig{k(i),7}(2);
+        end
+        moveDataMat{end,7}(1) = mean(xMoveSum);
+        moveDataMat{end,7}(2) = mean(yMoveSum);
+    end
     for i = 1:2:5
         skullMeanX = {[],[],[],[],[]};
         skullMeanY = {[],[],[],[],[]};

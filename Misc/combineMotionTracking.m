@@ -18,25 +18,25 @@ for n = 1:length(versionVec)
     end
 end
 
-if brainTF
-    cutoff = 7;
-else
-    cutoff = 3;
-end
-for m = 1:size(targetPositionX,2)
-    for n = 2:size(targetPositionX,1)
-        if abs(targetPositionX(n,m)) > cutoff
-            targetPositionX(n,m) = targetPositionX(n-1,m);
-        end
-    end
-end
-for m = 1:size(targetPositionY,2)
-    for n = 2:size(targetPositionY,1)
-        if abs(targetPositionY(n,m)) > cutoff
-            targetPositionY(n,m) = targetPositionY(n-1,m);
-        end
-    end
-end
+% if brainTF
+%     cutoff = 7;
+% else
+%     cutoff = 3;
+% end
+% for m = 1:size(targetPositionX,2)
+%     for n = 2:size(targetPositionX,1)
+%         if abs(targetPositionX(n,m)) > cutoff
+%             targetPositionX(n,m) = targetPositionX(n-1,m);
+%         end
+%     end
+% end
+% for m = 1:size(targetPositionY,2)
+%     for n = 2:size(targetPositionY,1)
+%         if abs(targetPositionY(n,m)) > cutoff
+%             targetPositionY(n,m) = targetPositionY(n-1,m);
+%         end
+%     end
+% end
 
 if mode == 1
     [combinedTargetPositionX,cIntFillPtsX,meanCIX,stdCIX] = getCIntMeanAndFillPts(targetPositionX,95);

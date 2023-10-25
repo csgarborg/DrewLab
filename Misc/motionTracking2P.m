@@ -161,7 +161,7 @@ SearchRegion = pos.template_orig - pos.search_border - 1;
 Offset = [0 0];
 Target = zeros(length(TargetRowIndices),length(TargetColIndices));
 firstTime = true;
-n = 1;
+nImg = 1;
 targetNum = 0;
 targetSum = zeros(length(TargetRowIndices),length(TargetColIndices));
 moveDist = [];
@@ -217,7 +217,7 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
             if medFiltTF
                 input = im2double(medfilt2(imStack(:,:,i)));
             else
-                input = im2double(imStack(:,:,n));
+                input = im2double(imStack(:,:,i));
             end
         else
             if medFiltTF
@@ -286,8 +286,9 @@ for i = tifFrameBounds(1)+2:tifFrameBounds(2)-2
     
     % Save output video to variable
     if saveOutputVideoTF
-        imageStack{1,n} = [input(:,:,1) Stabilized];
-        n = n + 1;
+%         imageStack{1,n} = [input(:,:,1) Stabilized];
+        imageStack{1,nImg} = input(:,:,1);
+        nImg = nImg + 1;
     end
     
     % Add pixel motion to data
@@ -361,7 +362,10 @@ if saveOutputVideoTF
 %     close(aviObject);
     tiffFileNameOutput = [tifFileName(1:end-4) '_output.tif'];
     imwrite(imageStack{1,1},tiffFileNameOutput)
-    for n = 2:length(imageStack)
+    for n = 2:3:length(imageStack)
+        if isempty(imageStack{1,n})
+            continue
+        end
         imwrite(imageStack{1,n},tiffFileNameOutput,'WriteMode','append')
     end
 end
@@ -378,7 +382,7 @@ if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
 else
     % Get binary ball and EMG data to compare to frame movement data
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
-    ballData = load([tifFileName(1:end-3) '.txt']);
+    ballData = load([tifFileName(1:end-4) '.txt']);
     ballDataIndex = secondsBounds(1)<=ballData(:,1) & ballData(:,1)<= secondsBounds(2);
     if size(ballData,2) > 2
         ballDataOnly = [ballData(ballDataIndex,1) ballData(ballDataIndex,2)];

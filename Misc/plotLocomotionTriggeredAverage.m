@@ -91,8 +91,8 @@ elseif fileOrDataCell == 2
     [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(motionEventsLocationsY,90);
     meanY = -1*meanY;
     cIntFillPtsY = -1*cIntFillPtsY;
-    timeVecX = linspace(round(movementData.motionEvents(1,1)-movementData.motionEvents(1,2)),round(movementData.motionEvents(1,3)-movementData.motionEvents(1,2)),length(meanX));
-    timeVecY = linspace(round(movementData.motionEvents(1,1)-movementData.motionEvents(1,2)),round(movementData.motionEvents(1,3)-movementData.motionEvents(1,2)),length(meanY));
+    timeVecX = linspace(round(dataCellSaveNew{1,2}(1,1)-dataCellSaveNew{1,2}(1,2)),round(dataCellSaveNew{1,2}(1,3)-dataCellSaveNew{1,2}(1,2)),length(meanX));m
+    timeVecY = linspace(round(dataCellSaveNew{1,2}(1,1)-dataCellSaveNew{1,2}(1,2)),round(dataCellSaveNew{1,2}(1,3)-dataCellSaveNew{1,2}(1,2)),length(meanY));
 end
 
 h(1) = figure('Color','White');
@@ -112,7 +112,7 @@ title(['\fontsize{20pt}\bf{Mean Motion During Locomotion Events, n = ' num2str(s
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 %ylim([-maxMeanVal maxMeanVal])
-ylim([-1 3])
+ylim([-5 5])
 grid on
 subplot(2,1,2)
 plot(timeVecY,meanY,'k')
@@ -128,9 +128,34 @@ hold off
 xlabel('Time (s)')
 ylabel('Y Position (\mum)')
 %ylim([-maxMeanVal maxMeanVal])
-ylim([-1 3])
+ylim([-5 5])
 grid on
 clear movementData
+
+h(2) = figure('Color','White');
+varX = var(motionEventsLocationsX);
+varY = var(motionEventsLocationsY);
+subplot(2,1,1)
+plot(timeVecX,varX)
+xlabel('Time (s)')
+ylabel('X Position Variance (\mum)')
+title('Variance of motion events')
+%ylim([-maxMeanVal maxMeanVal])
+ylim([0 2])
+grid on
+hold on
+plot([0 0],[-1 1],'r')
+hold off
+subplot(2,1,2)
+plot(timeVecY,varY)
+xlabel('Time (s)')
+ylabel('Y Position Variance (\mum)')
+%ylim([-maxMeanVal maxMeanVal])
+ylim([0 2])
+grid on
+hold on
+plot([0 0],[-1 1],'r')
+hold off
 
 
 stopMotionEventsLocationsX = [];
@@ -198,7 +223,7 @@ if fileOrDataCell == 1
 elseif fileOrDataCell == 2
     load('LTADataCell.mat')
     for n = 1:size(dataCellSaveNew)
-        if isnan(dataCellSaveNew{n,3})
+        if isnan(dataCellSaveNew{n,6})
             continue
         end
         stopMotionVectorX = dataCellSaveNew{n,6}(2,:);
@@ -223,11 +248,11 @@ elseif fileOrDataCell == 2
     [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(stopMotionEventsLocationsY,90);
     meanY = -1*meanY;
     cIntFillPtsY = -1*cIntFillPtsY;
-    timeVecX = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanX));
-    timeVecY = linspace(round(movementData.stopMotionEvents(1,1)-movementData.stopMotionEvents(1,2)),round(movementData.stopMotionEvents(1,3)-movementData.stopMotionEvents(1,2)),length(meanY));
+    timeVecX = linspace(round(dataCellSaveNew{1,5}(1,1)-dataCellSaveNew{1,5}(1,2)),round(dataCellSaveNew{1,5}(1,3)-dataCellSaveNew{1,5}(1,2)),length(meanX));
+    timeVecY = linspace(round(dataCellSaveNew{1,5}(1,1)-dataCellSaveNew{1,5}(1,2)),round(dataCellSaveNew{1,5}(1,3)-dataCellSaveNew{1,5}(1,2)),length(meanY));
 end
 
-h(2) = figure('Color','White');
+h(3) = figure('Color','White');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -244,7 +269,7 @@ title(['\fontsize{20pt}\bf{Mean Motion During Stopping Locomotion Events, n = ' 
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 %ylim([-maxMeanVal maxMeanVal])
-ylim([-3 1])
+ylim([-5 5])
 grid on
 subplot(2,1,2)
 plot(timeVecY,meanY,'k')
@@ -260,6 +285,31 @@ hold off
 xlabel('Time (s)')
 ylabel('Y Position (\mum)')
 %ylim([-maxMeanVal maxMeanVal])
-ylim([-3 1])
+ylim([-5 5])
 grid on
 clear movementData
+
+h(4) = figure('Color','White');
+varX = var(stopMotionEventsLocationsX);
+varY = var(stopMotionEventsLocationsY);
+subplot(2,1,1)
+plot(timeVecX,varX)
+xlabel('Time (s)')
+ylabel('X Position Variance (\mum)')
+title('Variance of stop motion events')
+%ylim([-maxMeanVal maxMeanVal])
+ylim([0 2])
+grid on
+hold on
+plot([0 0],[-1 1],'r')
+hold off
+subplot(2,1,2)
+plot(timeVecY,varY)
+xlabel('Time (s)')
+ylabel('Y Position Variance (\mum)')
+%ylim([-maxMeanVal maxMeanVal])
+ylim([0 2])
+grid on
+hold on
+plot([0 0],[-1 1],'r')
+hold off
