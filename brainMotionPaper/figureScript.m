@@ -21,8 +21,8 @@ plotMovementQuiver_FS
 
 combinedMovementDataBrain_2c = combineMotionTracking_FS('211216_002_Layer1_',1:5);
 combinedMovementDataSkull_2c = combineMotionTracking_FS('211216_002_Layer2_',1:5);
-% rawData = load('211216_002.txt');
-% plotThermoCoherence_FS(combinedMovementDataBrain_2c,combinedMovementDataSkull_2c,rawData)
+load('211216_002_rawData.mat');
+plotThermoCoherence_FS(combinedMovementDataBrain_2c,combinedMovementDataSkull_2c,rawData)
 
 %% figure 2d
 
@@ -34,7 +34,7 @@ plotLocomotionXCorr_FS(combinedMovementDataBrain_2d,combinedMovementDataSkull_2d
 
 combinedMovementDataBrain_3c = combinedMovementDataBrain_2d;
 combinedMovementDataSkull_3c = combinedMovementDataSkull_2d;
-% plotMovementBrainInSkull_FS(combinedMovementDataBrain_3c,combinedMovementDataSkull_3c,rawData)
+plotMovementBrainInSkull_FS(combinedMovementDataBrain_3c,combinedMovementDataSkull_3c,rawData)
 
 %% figure 3d
 
@@ -390,7 +390,7 @@ params.err = [2,0.05];
 targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
 movementData.targetPosition = targetPositionInSkull;
 % load('D:\21-12-16_MouseExp\211216_002_processed_Layer1_combined.mat');
-Thermo = rawData(:,[1 3]); % load raw thermo data
+Thermo = rawData(:,[1 2]); % load raw thermo data
 resp = filterThermoDataHz_FS(Thermo,10000); % filter and resample thermo data from 10000 to 20 Hz
 % resp = movementData.thermoData;
 resp(:,2) = resp(:,2) - mean(resp(:,2));
@@ -649,7 +649,7 @@ else
 end
 subplot(4,1,4)
 plot(rawData(:,1),rawData(:,3),'b')
-axis([0 600 -5 5])
+axis([0 600 -1 1])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
