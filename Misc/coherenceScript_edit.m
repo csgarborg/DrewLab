@@ -9,7 +9,7 @@ params.err = [2,0.05];
 
 % input data as time (1st dimension, vertical) by trials (2nd dimension, horizontal)
 % ballData = load('H:\21-12-16_MouseExp\211216_002.txt');
-load('H:\21-12-16_MouseExp\211216_002_processed_Layer1_combined.mat');
+load('D:\21-12-16_MouseExp\211216_002_processed_Layer1_combined.mat');
 Thermo = ballData(:,[1 3]); % load raw thermo data
 resp = filterThermoDataHz(Thermo,10000); % filter and resample thermo data from 10000 to 20 Hz
 % resp = movementData.thermoData;
