@@ -63,33 +63,48 @@ while newSelections
             pixelMidpointY = inputCoordTargetY(1)+((inputCoordTargetY(2)-inputCoordTargetY(1))/2);
             peakSelection = [];
             cont = true;
-            h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
-            while cont
-                plot(pixelRangeX,pixelRangeInt,'b');
-                hold on
-                %     if length(frameSelection) == 1
-                %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
-                %     end
-                for n = 1:length(peakSelection)
-                    line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+            [pks,locs] = findpeaks(pixelRangeInt,'MinPeakDistance',20);
+            plot(pixelRangeX(locs),pks,'o')
+            hold on
+            plot(pixelRangeX,pixelRangeInt)
+            title('If automation looks correct, enter 1, if manual is needed, enter any other number (automatic peak selection can be fine tuned by chnanging MinPeakDistance to match data')
+            autoTF = input('Enter 1 if auto is correct: ');
+            close
+            if autoTF == 1
+                peakSelection(1) = pixelRangeX(locs(1));
+                for i = 2:length(locs)-1
+                    peakSelection(end+1:end+2) = pixelRangeX(locs(i));
                 end
-                hold off
-                %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
-                xlabel('X Position (Pixels)')
-                ylabel('Mean Pixel Intensity')
-                axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
-                grid on
-                
-                [selectedCoordX,~,arrowKey] = ginput(1);
-                
-                if isempty(arrowKey)
-                    cont = false;
-                    close(h(1))
-                elseif arrowKey == 1
-                    if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
-                        peakSelection = peakSelection(1:end-1);
-                    else
-                        peakSelection(end+1) = round(selectedCoordX);
+                peakSelection(end+1) = pixelRangeX(locs(end));
+            else
+                h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
+                while cont
+                    plot(pixelRangeX,pixelRangeInt,'b');
+                    hold on
+                    %     if length(frameSelection) == 1
+                    %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
+                    %     end
+                    for n = 1:length(peakSelection)
+                        line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+                    end
+                    hold off
+                    %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
+                    xlabel('X Position (Pixels)')
+                    ylabel('Mean Pixel Intensity')
+                    axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
+                    grid on
+                    
+                    [selectedCoordX,~,arrowKey] = ginput(1);
+                    
+                    if isempty(arrowKey)
+                        cont = false;
+                        close(h(1))
+                    elseif arrowKey == 1
+                        if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
+                            peakSelection = peakSelection(1:end-1);
+                        else
+                            peakSelection(end+1) = round(selectedCoordX);
+                        end
                     end
                 end
             end
@@ -111,33 +126,48 @@ while newSelections
             pixelMidpointX = inputCoordTargetX(1)+((inputCoordTargetX(2)-inputCoordTargetX(1))/2);
             peakSelection = [];
             cont = true;
-            h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
-            while cont
-                plot(pixelRangeY,pixelRangeInt,'b');
-                hold on
-                %     if length(frameSelection) == 1
-                %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
-                %     end
-                for n = 1:length(peakSelection)
-                    line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+            [pks,locs] = findpeaks(pixelRangeInt,'MinPeakDistance',20);
+            plot(pixelRangeY(locs),pks,'o')
+            hold on
+            plot(pixelRangeY,pixelRangeInt)
+            title('If automation looks correct, enter 1, if manual is needed, enter any other number (automatic peak selection can be fine tuned by chnanging MinPeakDistance to match data')
+            autoTF = input('Enter 1 if auto is correct: ');
+            close
+            if autoTF == 1
+                peakSelection(1) = pixelRangeY(locs(1));
+                for i = 2:length(locs)-1
+                    peakSelection(end+1:end+2) = pixelRangeY(locs(i));
                 end
-                hold off
-                %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
-                xlabel('Y Position (Pixels)')
-                ylabel('Mean Pixel Intensity')
-                axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
-                grid on
-                
-                [selectedCoordX,~,arrowKey] = ginput(1);
-                
-                if isempty(arrowKey)
-                    cont = false;
-                    close(h(1))
-                elseif arrowKey == 1
-                    if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
-                        peakSelection = peakSelection(1:end-1);
-                    else
-                        peakSelection(end+1) = round(selectedCoordX);
+                peakSelection(end+1) = pixelRangeY(locs(end));
+            else
+                h(1) = figure('Color','White','Name','Select frame starts and stops, select behind line to erase, right and left arrow key to move plot, press enter when finished','NumberTitle','off','units','normalized','outerposition',[0 0 1 1]);
+                while cont
+                    plot(pixelRangeY,pixelRangeInt,'b');
+                    hold on
+                    %     if length(frameSelection) == 1
+                    %         line([frameSelection(1) frameSelection(1)],[min(targetPosition(:,1)) max(targetPosition(:,1))],'Color','g','LineStyle','--');
+                    %     end
+                    for n = 1:length(peakSelection)
+                        line([peakSelection(n) peakSelection(n)],[0 max(pixelRangeInt)],'Color','k','LineStyle','--');
+                    end
+                    hold off
+                    %     title(['\fontsize{20pt}\bf{Object Position per Frame}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' commentString '}'])
+                    xlabel('Y Position (Pixels)')
+                    ylabel('Mean Pixel Intensity')
+                    axis([0 512 0 ceil(max(pixelRangeInt)/100)*100])
+                    grid on
+                    
+                    [selectedCoordX,~,arrowKey] = ginput(1);
+                    
+                    if isempty(arrowKey)
+                        cont = false;
+                        close(h(1))
+                    elseif arrowKey == 1
+                        if ~isempty(peakSelection) && round(selectedCoordX) <= peakSelection(end)
+                            peakSelection = peakSelection(1:end-1);
+                        else
+                            peakSelection(end+1) = round(selectedCoordX);
+                        end
                     end
                 end
             end
