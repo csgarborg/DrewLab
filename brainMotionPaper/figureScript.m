@@ -732,7 +732,11 @@ end
 function plotLocomotionTriggeredAvg
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
-load('LTADataCell_FS.mat')
+timeToThreshX = [];
+timeToThreshY = [];
+thresh = 1;
+% load('LTADataCell_FS.mat')
+load('LTAFiltFilt.mat')
 for n = 1:size(locDataCell)
     if isnan(locDataCell{n,3})
         continue
@@ -753,6 +757,17 @@ for n = 1:size(locDataCell)
     end
     motionEventsLocationsX(end+1,:) = motionVectorX;
     motionEventsLocationsY(end+1,:) = motionVectorY;
+    
+    singleTimeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorX));
+    idxToThreshXSingle = find((motionVectorX - motionVectorX(find(singleTimeVecX>0,1))) > thresh & singleTimeVecX>0,1);
+    if ~isempty(idxToThreshXSingle)
+        timeToThreshX(end+1) = singleTimeVecX(idxToThreshXSingle);
+    end
+    singleTimeVecY = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorY));
+    idxToThreshYSingle = find((motionVectorY - motionVectorY(find(singleTimeVecY>0,1))) > thresh & singleTimeVecY>0,1);
+    if ~isempty(idxToThreshYSingle)
+        timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
+    end
 end
 [meanX,cIntFillPtsX] = getCIntMeanAndFillPts_FS(motionEventsLocationsX,90);
 [meanY,cIntFillPtsY] = getCIntMeanAndFillPts_FS(motionEventsLocationsY,90);
@@ -803,7 +818,8 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-load('LTADataCell_FS.mat')
+% load('LTADataCell_FS.mat')
+load('LTAFiltFilt.mat')
 for n = 1:size(locDataCell)
     if isnan(locDataCell{n,6})
         continue
@@ -870,6 +886,21 @@ ylim([-3 3])
 xlim([-2 3])
 grid on
 clear movementData
+
+h(10) = figure('Color','White');
+subplot(2,1,1)
+histfit(timeToThreshX,20,'kernel')
+title('Time for brain to displace laterally 0.5 micrometers following locomotion trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+text(-1.5,5,['thresh = ' num2str(thresh) ', n = ' num2str(length(timeToThreshX))])
+
+subplot(2,1,2)
+histfit(timeToThreshY,20,'kernel')
+title('Time for brain to displace rostrally 0.5 micrometers following locomotion trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+text(-1.5,5,['thresh = ' num2str(thresh) ', n = ' num2str(length(timeToThreshY))])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -877,6 +908,9 @@ end
 function plotEMGTriggeredAvg
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
+timeToThreshX = [];
+timeToThreshY = [];
+thresh = 1;
 load('ETADataCell_FS.mat')
 for n = 1:size(EMGDataCell)
     if isnan(EMGDataCell{n,3})
@@ -898,6 +932,17 @@ for n = 1:size(EMGDataCell)
     end
     motionEventsLocationsX(end+1,:) = motionVectorX;
     motionEventsLocationsY(end+1,:) = motionVectorY;
+    
+    singleTimeVecX = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMGDataCell{1,2}(1,3)-EMGDataCell{1,2}(1,2)),length(motionVectorX));
+    idxToThreshXSingle = find((motionVectorX - motionVectorX(find(singleTimeVecX>0,1))) > thresh & singleTimeVecX>0,1);
+    if ~isempty(idxToThreshXSingle)
+        timeToThreshX(end+1) = singleTimeVecX(idxToThreshXSingle);
+    end
+    singleTimeVecY = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMGDataCell{1,2}(1,3)-EMGDataCell{1,2}(1,2)),length(motionVectorY));
+    idxToThreshYSingle = find((motionVectorY - motionVectorY(find(singleTimeVecY>0,1)))*-1 > thresh & singleTimeVecY>0,1);
+    if ~isempty(idxToThreshYSingle)
+        timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
+    end
 end
 [meanX,cIntFillPtsX] = getCIntMeanAndFillPts_FS(motionEventsLocationsX,90);
 [meanY,cIntFillPtsY] = getCIntMeanAndFillPts_FS(motionEventsLocationsY,90);
@@ -906,7 +951,7 @@ cIntFillPtsY = -1*cIntFillPtsY;
 timeVecX = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMGDataCell{1,2}(1,3)-EMGDataCell{1,2}(1,2)),length(meanX));
 timeVecY = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMGDataCell{1,2}(1,3)-EMGDataCell{1,2}(1,2)),length(meanY));
 
-h(10) = figure('Color','White');
+h(11) = figure('Color','White');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -1015,6 +1060,21 @@ ylim([-3 3])
 xlim([-2 3])
 grid on
 clear movementData
+
+h(12) = figure('Color','White');
+subplot(2,1,1)
+histfit(timeToThreshX,20,'kernel')
+title('Time for brain to displace laterally 0.5 micrometers following locomotion trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+text(-1.5,5,['thresh = ' num2str(thresh) ', n = ' num2str(length(timeToThreshX))])
+
+subplot(2,1,2)
+histfit(timeToThreshY,20,'kernel')
+title('Time for brain to displace rostrally 0.5 micrometers following locomotion trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+text(-1.5,5,['thresh = ' num2str(thresh) ', n = ' num2str(length(timeToThreshY))])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

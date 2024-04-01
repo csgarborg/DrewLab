@@ -61,52 +61,10 @@
 % dateCell = {'221205','221207','221208','221213'};
 % dateCell = {'230404','230405','230410','230414','230421','230524','230527','230620','230622','230623','230624','230627','230630','230802'};
 % dateCell = {'230828','230830'};
-% close all
-% for n = 1:size(dateCell,2)
-%     folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
-%     fileList = dir(folderName);
-%     fileNamesCell = struct2cell(fileList);
-%     fileNames = fileNamesCell(1,:);
-%     maxRun = 0;
-%     for i = 1:size(fileNames,2)
-%         if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
-%              maxRun = str2double(fileNames{i}(8:10));
-%         end
-%     end
-%     for i = 1:maxRun
-%         if i > 9
-%             runNumberStr = num2str(i);
-%         else
-%             runNumberStr = ['0' num2str(i)];
-%         end
-%         if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
-%             for k = 1:2
-%                 fileName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
-%                     
-%                 versionVec = [1 2 3];
-%                 mode = 1;
-%                 if k == 1
-%                     brainTF = true;
-%                 else
-%                     brainTF = false;
-%                 end
-%                 combineMotionTracking(fileName,versionVec,mode,brainTF)
-%             end
-%         end
-%     end
-% end
-
-
-
-
-dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823'};
-% dateCell = {'221205','221207','221208','221213'};
-% dateCell = {'230624','230627','230630','230802'};
-% dateCell = {'230828','230830'};
+dateCell = {'240126'};
 close all
-rerunCell = {};
 for n = 1:size(dateCell,2)
-    folderName = ['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+    folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
     fileList = dir(folderName);
     fileNamesCell = struct2cell(fileList);
     fileNames = fileNamesCell(1,:);
@@ -122,8 +80,52 @@ for n = 1:size(dateCell,2)
         else
             runNumberStr = ['0' num2str(i)];
         end
-        if exist(['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
-            plotMotionTracking2Layer(['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false)
+        if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
+            for k = 1:2
+                fileName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
+                    
+                versionVec = [1 2 3];
+                mode = 1;
+                if k == 1
+                    brainTF = true;
+                else
+                    brainTF = false;
+                end
+                combineMotionTracking(fileName,versionVec,mode,brainTF)
+            end
+        end
+    end
+end
+
+
+
+
+% dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823'};
+% dateCell = {'221205','221207','221208','221213'};
+% dateCell = {'230624','230627','230630','230802'};
+% dateCell = {'230828','230830'};
+dateCell = {'240126'};
+close all
+rerunCell = {};
+for n = 1:size(dateCell,2)
+    folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+    fileList = dir(folderName);
+    fileNamesCell = struct2cell(fileList);
+    fileNames = fileNamesCell(1,:);
+    maxRun = 0;
+    for i = 1:size(fileNames,2)
+        if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
+             maxRun = str2double(fileNames{i}(8:10));
+        end
+    end
+    for i = 1:maxRun
+        if i > 9
+            runNumberStr = num2str(i);
+        else
+            runNumberStr = ['0' num2str(i)];
+        end
+        if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
+            plotMotionTracking2Layer(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_combined.mat'],['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_combined.mat'],false)
             figure(1)
             set(gcf,'units','normalized','outerposition',[0 0.5 .5 .5])
             figure(2)

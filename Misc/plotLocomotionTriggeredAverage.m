@@ -64,7 +64,7 @@ if fileOrDataCell == 1
     timeVecY = linspace(round(movementData.motionEvents(1,1)-movementData.motionEvents(1,2)),round(movementData.motionEvents(1,3)-movementData.motionEvents(1,2)),length(meanY));
     
 elseif fileOrDataCell == 2
-    load('LTADataCell.mat')
+    load('dataCellSaveNew.mat')
     for n = 1:size(dataCellSaveNew)
         if isnan(dataCellSaveNew{n,3})
             continue
@@ -86,12 +86,12 @@ elseif fileOrDataCell == 2
         motionEventsLocationsX(end+1,:) = motionVectorX;
         motionEventsLocationsY(end+1,:) = motionVectorY;
     end
-    load(dataCellSaveNew{1,1});
+%     load(dataCellSaveNew{1,1});
     [meanX,cIntFillPtsX] = getCIntMeanAndFillPts(motionEventsLocationsX,90);
     [meanY,cIntFillPtsY] = getCIntMeanAndFillPts(motionEventsLocationsY,90);
     meanY = -1*meanY;
     cIntFillPtsY = -1*cIntFillPtsY;
-    timeVecX = linspace(round(dataCellSaveNew{1,2}(1,1)-dataCellSaveNew{1,2}(1,2)),round(dataCellSaveNew{1,2}(1,3)-dataCellSaveNew{1,2}(1,2)),length(meanX));m
+    timeVecX = linspace(round(dataCellSaveNew{1,2}(1,1)-dataCellSaveNew{1,2}(1,2)),round(dataCellSaveNew{1,2}(1,3)-dataCellSaveNew{1,2}(1,2)),length(meanX));
     timeVecY = linspace(round(dataCellSaveNew{1,2}(1,1)-dataCellSaveNew{1,2}(1,2)),round(dataCellSaveNew{1,2}(1,3)-dataCellSaveNew{1,2}(1,2)),length(meanY));
 end
 
