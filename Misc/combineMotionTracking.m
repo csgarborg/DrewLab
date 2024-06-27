@@ -1,4 +1,10 @@
-function combineMotionTracking(fileName,versionVec,mode,brainTF)
+function combineMotionTracking(fileName,versionVec,mode,brainTF,centerTF)
+if isempty(brainTF)
+    brainTF = false;
+end
+if isempty(centerTF)
+    centerTF = false;
+end
 close all
 targetPositionX = [];
 targetPositionY = [];
@@ -10,6 +16,10 @@ for n = 1:length(versionVec)
         elseif size(movementData.targetPosition,1) < size(targetPositionX,2)
             targetPositionX = targetPositionX(:,1:size(movementData.targetPosition,1));
         end
+    end
+    if centerTF
+        movementData.targetPosition(:,1) = movementData.targetPosition(:,1) - mean(movementData.targetPosition(1:40,1));
+        movementData.targetPosition(:,2) = movementData.targetPosition(:,2) - mean(movementData.targetPosition(1:40,2));
     end
     targetPositionX(n,:) = movementData.targetPosition(:,1)';
     targetPositionY(n,:) = movementData.targetPosition(:,2)';
