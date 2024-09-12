@@ -11,6 +11,8 @@ micronLengthValWidth(widthData(:,6) == -1,1) = holeSize;
 micronLengthValHeight = ones(size(heightData,1),1);
 micronLengthValHeight(heightData(:,6) == 1,1) = barSize;
 micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
+W = x.imageWidthPixels;
+H = x.imageHeightPixels;
 
 h(1) = figure('Color','White');
 scatter(widthData(:,1),widthData(:,2),50,micronLengthValWidth./widthData(:,3),'filled');
@@ -41,6 +43,34 @@ ax.YAxisLocation = 'origin';
 title(['\fontsize{20pt}\bf{Position of Y Calibration Measurements}'])
 xlabel('Pixels')
 ylabel('Pixels')
+
+% plot 3d surface plot of x calibration values across image
+h(3) = figure('Color','White');
+% micronLengthValWidth = ones(size(widthData,1),1);
+% micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
+% micronLengthValWidth(widthData(:,6) == -1,1) = holeSize;
+% surfaceCalibFitX = fit(widthData(:,1:2),micronLengthValWidth./widthData(:,3),'poly55');
+% plot(x.surfaceCalibFitX,widthData(:,1:2),micronLengthValWidth./widthData(:,3));
+plot(x.surfaceCalibFitX);
+axis([1 W 1 H 0.5 ceil(max(micronLengthValWidth./widthData(:,3)))])
+title(['\fontsize{20pt}\bf{Surface Calibration Fit (X)}' 10 '\fontsize{10pt}\rm{210408_001}' 10 '\fontsize{10pt}\rm{No Comments}'])
+xlabel('Pixels (X)')
+ylabel('Pixels (Y)')
+zlabel('\mum/Pixel')
+
+% plot 3d surface plot of y calibration values across image
+h(4) = figure('Color','White');
+% micronLengthValHeight = ones(size(heightData,1),1);
+% micronLengthValHeight(heightData(:,6) == 1,1) = barSize;
+% micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
+% surfaceCalibFitY = fit(heightData(:,1:2),micronLengthValHeight./heightData(:,3),'poly55');
+% plot(x.surfaceCalibFitY,heightData(:,1:2),micronLengthValHeight./heightData(:,3));
+plot(x.surfaceCalibFitY);
+axis([1 W 1 H 0.5 ceil(max(micronLengthValHeight./heightData(:,3)))])
+title(['\fontsize{20pt}\bf{Surface Calibration Fit (Y)}' 10 '\fontsize{10pt}\rm{210408_001}' 10 '\fontsize{10pt}\rm{No Comments}'])
+xlabel('Pixels (X)')
+ylabel('Pixels (Y)')
+zlabel('\mum/Pixel')
 
 % for n = 1:11
 %     if n < 10

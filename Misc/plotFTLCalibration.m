@@ -73,7 +73,7 @@ plot(0.23,0,'kx','MarkerSize',20)
 hold on
 plot(xFit, yFit, '--', 'LineWidth', 2);
 if exist('inputZVec','var')
-    inputZVec = inputZVec + xFit(1);
+%     inputZVec = inputZVec + xFit(1);
     yFitInput = polyval(coefficients , inputZVec);
     for n = 1:length(yFitInput)
         plot(inputZVec(n),yFitInput(n),'k*','MarkerSize',15);

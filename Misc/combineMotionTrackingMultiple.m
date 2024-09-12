@@ -62,41 +62,42 @@
 % dateCell = {'230404','230405','230410','230414','230421','230524','230527','230620','230622','230623','230624','230627','230630','230802'};
 % dateCell = {'230828','230830'};
 % dateCell = {'240513','240514','240604','240605','240612','240614'};
-% centerTF = true;
-% close all
-% for n = 1:size(dateCell,2)
-%     folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
-%     fileList = dir(folderName);
-%     fileNamesCell = struct2cell(fileList);
-%     fileNames = fileNamesCell(1,:);
-%     maxRun = 0;
-%     for i = 1:size(fileNames,2)
-%         if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
-%              maxRun = str2double(fileNames{i}(8:10));
-%         end
-%     end
-%     for i = 1:maxRun
-%         if i > 9
-%             runNumberStr = num2str(i);
-%         else
-%             runNumberStr = ['0' num2str(i)];
-%         end
-%         if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
-%             for k = 1:2
-%                 fileName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
-%                     
-%                 versionVec = [1 2 3];
-%                 mode = 1;
-%                 if k == 1
-%                     brainTF = true;
-%                 else
-%                     brainTF = false;
-%                 end
-%                 combineMotionTracking(fileName,versionVec,mode,brainTF,centerTF)
-%             end
-%         end
-%     end
-% end
+dateCell = {'240814'};
+centerTF = true;
+close all
+for n = 1:size(dateCell,2)
+    folderName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+    fileList = dir(folderName);
+    fileNamesCell = struct2cell(fileList);
+    fileNames = fileNamesCell(1,:);
+    maxRun = 0;
+    for i = 1:size(fileNames,2)
+        if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
+             maxRun = str2double(fileNames{i}(8:10));
+        end
+    end
+    for i = 1:maxRun
+        if i > 9
+            runNumberStr = num2str(i);
+        else
+            runNumberStr = ['0' num2str(i)];
+        end
+        if exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer1_3.mat'],'file') && exist(['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer2_3.mat'],'file')
+            for k = 1:2
+                fileName = ['H:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processed_Layer' num2str(k) '_'];
+                    
+                versionVec = [1 2 3];
+                mode = 1;
+                if k == 1
+                    brainTF = true;
+                else
+                    brainTF = false;
+                end
+                combineMotionTracking(fileName,versionVec,mode,brainTF,centerTF)
+            end
+        end
+    end
+end
 
 
 
@@ -105,7 +106,7 @@
 % dateCell = {'221205','221207','221208','221213'};
 % dateCell = {'230624','230627','230630','230802'};
 % dateCell = {'230828','230830'};
-dateCell = {'240513','240514','240604','240605','240612','240614'};
+% dateCell = {'240513','240514','240604','240605','240612','240614'};
 close all
 rerunCell = {};
 for n = 1:size(dateCell,2)
