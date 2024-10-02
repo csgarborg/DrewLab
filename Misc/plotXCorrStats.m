@@ -31,6 +31,7 @@ xCorrXEMG = [];
 xCorrYEMG = [];
 maxlag = 500;
 for i = 1:numel(fileName)
+%     load([fileName{i}(1:31) '.txt'])
     load(fileName{i});
     motionVectorX = movementData.targetPosition(:,1);
     motionVectorY = movementData.targetPosition(:,2);
@@ -71,6 +72,21 @@ for i = 1:numel(fileName)
             xCorrYEMG = xCorrYEMG(:,1:length(xc_4));
         end
     end
+%     if min(xc_1) > -.1 && max(xc_1) < .1
+%         disp(fileName{i})
+%         timeVecX = movementData.secondsPerFrame*(-maxlag:maxlag);
+%         plot(timeVecX,xc_1)
+%         figure
+%         plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)))
+%         hold on
+%         plot(locDataInterp(:,1),locDataInterp(:,2))
+%         figure
+%         plot(movementData.emgData(:,1),abs(movementData.emgData(:,2)))
+%         hold on
+%         plot(emgDataInterp(:,1),emgDataInterp(:,2))
+%         disp('check')
+%         close
+%     end
     if ~any(isnan(xc_1))
         xCorrXLoc(end+1,:) = xc_1;
     end

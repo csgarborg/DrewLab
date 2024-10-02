@@ -67,9 +67,9 @@ if vecReverseTF
     motionVec = motionVec * -1;
 end
 
-% Calculate magnitude based on average of furthest 5% of movement data
+% Calculate magnitude based on average of furthest 20% of movement data
 % points from origin
-numMags = ceil(size(positionData,1)*.05);
+numMags = ceil(size(positionData,1)*.2);
 distanceVec = ((positionData(:,1).^2) + (positionData(:,2).^2)).^.5;
 magnitude = mean(maxk(distanceVec,numMags));
 motionVec = [motionVec * magnitude, motionVec * prctile(distanceVec,75), motionVec * prctile(distanceVec,95)];
