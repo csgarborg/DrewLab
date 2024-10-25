@@ -1,102 +1,247 @@
-% Script to generate all figures for paper
-clear;
+%% Script to generate all figures for paper
+
+% clear;
 close all;
+
+%% Process data sets
+
+% combinedMovementDataBrain_221207_010 = combineMotionTracking_FS('221207_010_Layer1_',1:3);
+% combinedMovementDataSkull_221207_010 = combineMotionTracking_FS('221207_010_Layer2_',1:3);
+% 
+% combinedMovementData_210218_006 = combineMotionTracking_FS('210218_006_',1:8);
+% 
+% combinedMovementDataBrain_211216_002 = combineMotionTracking_FS('211216_002_Layer1_',1:5);
+% combinedMovementDataSkull_211216_002 = combineMotionTracking_FS('211216_002_Layer2_',1:5);
+% 
+% combinedMovementDataBrain_220816_004 = combineMotionTracking_FS('220816_004_Layer1_',1:3);
+% combinedMovementDataSkull_220816_004 = combineMotionTracking_FS('220816_004_Layer2_',1:3);
+% 
+% combinedMovementDataBrain_240611_001 = combineMotionTracking_FS('240611_001_Layer1_',1:4);
+% combinedMovementDataSkull_240611_001 = combineMotionTracking_FS('240611_001_Layer2_',1:4);
+% 
+% combinedMovementDataBrain_240612_002 = combineMotionTracking_FS('240612_002_Layer1_',1:3);
+% combinedMovementDataSkull_240612_002 = combineMotionTracking_FS('240612_002_Layer2_',1:3);
+% 
+% combinedMovementDataSkull_240814_006 = combineMotionTracking_FS('240814_006_',1:3);
+% 
+% load('211216_002_rawData.mat');
 
 %% figure 1e    210218_006 221207_010
 
-combinedMovementDataBrain_1e = combineMotionTracking_FS('221207_010_Layer1_',1:3);
-combinedMovementDataSkull_1e = combineMotionTracking_FS('221207_010_Layer2_',1:3);
-plotMotionTrackingBrainAndSkull_FS(combinedMovementDataBrain_1e,combinedMovementDataSkull_1e);
-
-
-combinedMovementData_1e = combineMotionTracking_FS('210218_006_',1:8);
-plotMotionTrackingBrainOnly_FS(combinedMovementData_1e);
+% combinedMovementDataBrain_1e = combineMotionTracking_FS('221207_010_Layer1_',1:3);
+% combinedMovementDataSkull_1e = combineMotionTracking_FS('221207_010_Layer2_',1:3);
+plotMotionTrackingBrainAndSkull_FS(combinedMovementDataBrain_221207_010,combinedMovementDataSkull_221207_010);
 
 %% figure 2a
 
-combinedMovementDataBrain_2a = combineMotionTracking_FS('220203_003_Layer1_',1:3);
-combinedMovementDataSkull_2a = combineMotionTracking_FS('220203_003_Layer2_',1:3);
-plotMotionTracking2P2LPCA_FS(combinedMovementDataBrain_2a,combinedMovementDataSkull_2a);
+% combinedMovementDataBrain_2a = combineMotionTracking_FS('220203_003_Layer1_',1:3);
+% combinedMovementDataSkull_2a = combineMotionTracking_FS('220203_003_Layer2_',1:3);
+% plotMotionTracking2P2LPCA_FS(combinedMovementDataBrain_2a,combinedMovementDataSkull_2a);
+% combinedMovementDataBrain_2a = combineMotionTracking_FS('211216_002_Layer1_',1:5);
+% combinedMovementDataSkull_2a = combineMotionTracking_FS('211216_002_Layer2_',1:5);
+plotMotionTracking2P2LPCA_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002);
 
 %% figure 2b
 
 plotMovementQuiver_FS
-plotSkullQuiver_FS
-plotSqueezeQuiver_FS
 
 %% figure 2c
 
-combinedMovementDataBrain_2c = combineMotionTracking_FS('211216_002_Layer1_',1:5);
-combinedMovementDataSkull_2c = combineMotionTracking_FS('211216_002_Layer2_',1:5);
-load('211216_002_rawData.mat');
-plotThermoCoherence_FS(combinedMovementDataBrain_2c,combinedMovementDataSkull_2c,rawData)
+% combinedMovementDataBrain_2c = combineMotionTracking_FS('211216_002_Layer1_',1:5);
+% combinedMovementDataSkull_2c = combineMotionTracking_FS('211216_002_Layer2_',1:5);
+% rawData = load('211216_002_rawData.mat');
+% combinedMovementDataBrain_2c = combinedMovementDataBrain_2a;
+% combinedMovementDataSkull_2c = combinedMovementDataSkull_2a;
+plotThermoCoherence_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002,rawData)
 
 %% figure 2d
 
-combinedMovementDataBrain_2d = combinedMovementDataBrain_2c;
-combinedMovementDataSkull_2d = combinedMovementDataSkull_2c;
-plotLocomotionXCorr_FS(combinedMovementDataBrain_2d,combinedMovementDataSkull_2d)
+% combinedMovementDataBrain_2d = combinedMovementDataBrain_2c;
+% combinedMovementDataSkull_2d = combinedMovementDataSkull_2c;
+plotLocomotionXCorr_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002)
+
+%% figure 2e
+
+[LTATimeData,LTADispData] = plotLocomotionTriggeredAvg_FS;
+
+%% figure 3b
+
+plotLocomotionTriggeredAvgEMGSingleTrial_FS(combinedMovementDataBrain_211216_002)
 
 %% figure 3c
 
-combinedMovementDataBrain_3c = combinedMovementDataBrain_2d;
-combinedMovementDataSkull_3c = combinedMovementDataSkull_2d;
-plotMovementBrainInSkull_FS(combinedMovementDataBrain_3c,combinedMovementDataSkull_3c,rawData)
+% combinedMovementDataBrain_3f = combinedMovementDataBrain_2d;
+% combinedMovementDataSkull_3f = combinedMovementDataSkull_2d;
+plotLocomotionTriggeredAvgEMG_FS
 
 %% figure 3d
 
-combinedMovementDataBrain_3d = combinedMovementDataBrain_3c;
-combinedMovementDataSkull_3d = combinedMovementDataSkull_3c;
-plotEMGMovement_FS(combinedMovementDataBrain_3d,combinedMovementDataSkull_3d)
+% combinedMovementDataBrain_3c = combinedMovementDataBrain_2d;
+% combinedMovementDataSkull_3c = combinedMovementDataSkull_2d;
+plotMovementBrainInSkull_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002,rawData)
 
 %% figure 3e
 
-combinedMovementDataBrain_3e = combinedMovementDataBrain_3d;
-combinedMovementDataSkull_3e = combinedMovementDataSkull_3d;
-plotEMGXCorr_FS(combinedMovementDataBrain_3e,combinedMovementDataSkull_3e)
+% combinedMovementDataBrain_3d = combinedMovementDataBrain_3c;
+% combinedMovementDataSkull_3d = combinedMovementDataSkull_3c;
+plotEMGMovement_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002)
 
 %% figure 3f
 
-plotLocomotionTriggeredAvg_FS
-plotEMGTriggeredAvg_FS
+% combinedMovementDataBrain_3e = combinedMovementDataBrain_3d;
+% combinedMovementDataSkull_3e = combinedMovementDataSkull_3d;
+plotEMGXCorr_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002)
 
-plotLocomotionTriggeredAvgSkull_FS
-plotEMGTriggeredAvgSkull_FS
+%% figure 3g
 
-plotSqueezeTriggeredAvg_FS
+[ETATimeData,ETADispData] = plotEMGTriggeredAvg_FS;
+
+%% figure 5b
+
+
+
+%% figure 5c
+
+
+
+%% figure 5d
+
+plotSqueezeQuiver_FS
+
+%% figure 5e
+
+[STATimeData,STADispData] = plotSqueezeTriggeredAvg_FS;
+
+%% figure 5f
+
 plotSqueezeTriggeredAvgSkull_FS
 
-plotRespTriggeredAvg_FS
+%% supplementary figure 2b-c
+
+plotCalibration2D_FS
+
+%% supplementary figure 3c
+
+
+
+%% supplementary figure 3f-g
+
+plotCalibrationETL_FS
+
+%% supplementary figure 4b
+
+[RTATimeData,RTADispData] = plotRespTriggeredAvg_FS;
+
+%% supplementary figure 4c
+
 plotRespTriggeredAvgSkull_FS
 
-combinedMovementDataBrain_3f = combinedMovementDataBrain_3e;
+%% supplementary figure 4d
+
+plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001);
+
+%% supplementary figure 4e
+
+plotMotionTrackingBrainAndSkullRespComp_FS(combinedMovementDataBrain_240612_002,combinedMovementDataSkull_240612_002);
+
+%% supplementary figure 6a
+
+plotMotionTrackingSkullBregma_FS(combinedMovementDataSkull_240814_006);
+
+%% supplementary figure 6b
+
+plotSkullQuiver_FS
+
+%% supplementary figure 6c
+
+plotLocomotionTriggeredAvgSkull_FS
+
+%% supplementary figure 6d
+
+plotEMGTriggeredAvgSkull_FS
+
+%% supplementary figure 8a-c
+
+plotMouseStats_FS
+
+%% supplementary figure 9b
+
+plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006)
+
+%% supplementary figure 10a-d
+
+plotLocoEMGHist_FS(LTATimeData,LTADispData,ETATimeData,ETADispData)
+
+%% supplementary figure 11a-d
+
+plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
+
+%% supplementary figure 14a
+
+plotMotionTrackingBrainAndSkullOlf_FS(combinedMovementDataBrain_220816_004,combinedMovementDataSkull_220816_004)
+
+%% supplementary figure 14b
+
+plotLocomotionTriggeredAvgOlf_FS
+
+%% supplementary figure 15b
+
+plotAbdominalCompressionPressure_FS
+
+%% supplementary figure 16a-d
+
+plotXCorrData_FS
+
+%% end
+
+
+
+
+
+
+
+
+
+
+% combinedMovementDataBrain_s8e = combineMotionTracking_FS('220816_004_Layer1_',1:3);
+% combinedMovementDataSkull_s8e = combineMotionTracking_FS('220816_004_Layer2_',1:3);
+
+
+
+
+
+% combinedMovementDataBrain_3f = combinedMovementDataBrain_3e;
 % load('D:\24-05-13_MouseExp\240513_005_processed_Layer1_combined.mat')
 % combinedMovementDataBrain_3f = movementData;
 % plotLocomotionTriggeredAvgSingleTrial_FS(combinedMovementDataBrain_3f)
-plotLocomotionTriggeredAvgEMGSingleTrial_FS(combinedMovementDataBrain_3f)
-plotLocomotionTriggeredAvgEMG_FS
 
-plotCalibration2D_FS
-plotCalibrationETL_FS
 
-combinedMovementDataBrain_s4d = combineMotionTracking_FS('240611_001_Layer1_',1:4);
-combinedMovementDataSkull_s4d = combineMotionTracking_FS('240611_001_Layer2_',1:4);
-plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_s4d,combinedMovementDataSkull_s4d);
 
-combinedMovementDataBrain_s4e = combineMotionTracking_FS('240612_002_Layer1_',1:3);
-combinedMovementDataSkull_s4e = combineMotionTracking_FS('240612_002_Layer2_',1:3);
-plotMotionTrackingBrainAndSkullRespComp_FS(combinedMovementDataBrain_s4e,combinedMovementDataSkull_s4e);
 
-combinedMovementDataSkull_s6a = combineMotionTracking_FS('240814_006_',1:3);
-plotMotionTrackingSkullBregma_FS(combinedMovementDataSkull_s6a);
 
-%% convert all figures to render for vectorization
-h =  findobj('type','figure');
-i = length(h);
-for n = 1:i
-    figure(n)
-    set(gcf,'renderer','Painters')
-end
+
+
+% combinedMovementDataBrain_s4d = combineMotionTracking_FS('240611_001_Layer1_',1:4);
+% combinedMovementDataSkull_s4d = combineMotionTracking_FS('240611_001_Layer2_',1:4);
+
+% combinedMovementDataBrain_s4e = combineMotionTracking_FS('240612_002_Layer1_',1:3);
+% combinedMovementDataSkull_s4e = combineMotionTracking_FS('240612_002_Layer2_',1:3);
+
+% combinedMovementDataSkull_s6a = combineMotionTracking_FS('240814_006_',1:3);
+
+
+
+
+
+% combinedMovementData_1e = combineMotionTracking_FS('210218_006_',1:8);
+
+% convert all figures to render for vectorization
+% h =  findobj('type','figure');
+% i = length(h);
+% for n = 1:i
+%     figure(n)
+%     set(gcf,'renderer','Painters')
+% end
 
 %% SUBFUNCTIONS
 
@@ -111,13 +256,13 @@ end
 movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(3,1,1)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'r')
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'g')
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 grid on
@@ -125,9 +270,9 @@ axis([148 398 -3 6])
 text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(148,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(3,1,2)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'r')
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
 hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'g')
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
 ylabel('Y Position (\mum)')
@@ -138,7 +283,7 @@ text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','Fon
 subplot(3,1,3)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
 xlabel('Time (s)')
-ylabel('m/s')
+ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([148 398 0 .3])
 end
@@ -221,7 +366,7 @@ subtitle = 'Figure 1e';
 yLimitMotion = [-2 15];
 yLimitLocomotion = [0 0.3];
 
-h(1) = figure('Color','White');
+h(1) = figure('Color','White','Name','Figure 9b','NumberTitle','off');
 
 x1 = subplot(3,1,1);
 plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPosition(:,1),'r')
@@ -229,7 +374,7 @@ hold on;
 f = fill([(1:size(movementData.targetPosition,1))*movementData.secondsPerFrame flip((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame)],movementData.cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
 hold off
-title(['\fontsize{20pt}\bf{Figure 1e}'])
+% title(['\fontsize{20pt}\bf{Figure 1e}'])
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 grid on
@@ -258,7 +403,7 @@ ylim(yLimitMotion)
 x3 = subplot(3,1,3);
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
 xlabel('Time (s)')
-ylabel('m/s')
+ylabel('Treadmill Velocity m/s')
 grid on
 ylim(yLimitLocomotion)
 end
@@ -307,8 +452,8 @@ end
 function plotMotionTracking2P2LPCA_FS(movementData,stationaryData)
 targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
 motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
-h(2) = figure('Color','White');
-s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'filled');
+h(2) = figure('Color','White','Name','Figure 2a','NumberTitle','off');
+s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
 s.MarkerFaceAlpha = .1;
 hold on
 drawArrow_FS([0;0],[motionVec(1);motionVec(2)]);
@@ -319,7 +464,7 @@ ax = gca;
 ax.XAxisLocation = 'origin';
 ax.YAxisLocation = 'origin';
 % title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
-title(['\fontsize{20pt}\bf{Figure 2a}'])
+% title(['\fontsize{20pt}\bf{Figure 2a}'])
 xlabel('\mum')
 ylabel('\mum')
 if movementData.hemisphere == 1
@@ -427,7 +572,7 @@ brainMeanX = {[],[],[],[],[]};
 brainMeanY = {[],[],[],[],[]};
 brainStdX = {[],[],[],[],[]};
 brainStdY = {[],[],[],[],[]};
-h(3) = figure('Color','White');
+h(3) = figure('Color','White','Name','Figure 2b','NumberTitle','off');
 hold on
 for n = 1:size(moveDataMat,1)
     if strcmp(moveDataMat{n,3},'21a')
@@ -468,12 +613,16 @@ axis square
 plot(0,0,'kx','MarkerSize',12)
 plot(0,-2600,'kx','MarkerSize',12)
 quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
-title(['Figure 2b' 10 'Rostral, \mum'])
-ylabel('Left, \mum')
-xlabel('Caudal, \mum')
+% title(['Figure 2b' 10 'Rostral, \mum'])
+ylabel('\mum')
+xlabel('\mum')
 text(55,55,'Bregma')
 text(55,-2500,'Lambda')
 text(-2500,2300,'3 \mum')
+text(0,8000,'Rostral')
+text(0,-7500,'Caudal')
+text(8000,0,'Right')
+text(-8000,0,'Left')
 rectangle('Position',[-2650 2000 800 800])
 end
 
@@ -519,7 +668,7 @@ brainMeanX = {[],[],[],[],[]};
 brainMeanY = {[],[],[],[],[]};
 brainStdX = {[],[],[],[],[]};
 brainStdY = {[],[],[],[],[]};
-h(3) = figure('Color','White');
+h(3) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 hold on
 for n = 1:size(moveDataMat,1)
     if strcmp(moveDataMat{n,3},'21a')
@@ -560,12 +709,16 @@ axis square
 plot(0,0,'kx','MarkerSize',12)
 plot(0,-2600,'kx','MarkerSize',12)
 quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
-title(['Figure 2b' 10 'Rostral, \mum'])
-ylabel('Left, \mum')
-xlabel('Caudal, \mum')
+% title(['Figure 2b' 10 'Rostral, \mum'])
+ylabel('\mum')
+xlabel('\mum')
 text(55,55,'Bregma')
 text(55,-2500,'Lambda')
 text(-2500,2300,'3 \mum')
+text(0,8000,'Rostral')
+text(0,-7500,'Caudal')
+text(8000,0,'Right')
+text(-8000,0,'Left')
 rectangle('Position',[-2650 2000 800 800])
 end
 
@@ -610,7 +763,7 @@ brainMeanX = {[],[],[],[],[]};
 brainMeanY = {[],[],[],[],[]};
 brainStdX = {[],[],[],[],[]};
 brainStdY = {[],[],[],[],[]};
-h(3) = figure('Color','White');
+h(3) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 hold on
 for n = 1:size(moveDataMat,1)
     if strcmp(moveDataMat{n,3},'21a')
@@ -651,12 +804,16 @@ axis square
 plot(0,0,'kx','MarkerSize',12)
 plot(0,-2600,'kx','MarkerSize',12)
 quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
-title(['Figure 2b' 10 'Rostral, \mum'])
-ylabel('Left, \mum')
-xlabel('Caudal, \mum')
+% title(['Figure 2b' 10 'Rostral, \mum'])
+ylabel('\mum')
+xlabel('\mum')
 text(55,55,'Bregma')
 text(55,-2500,'Lambda')
 text(-2500,2300,'3 \mum')
+text(0,8000,'Rostral')
+text(0,-7500,'Caudal')
+text(8000,0,'Right')
+text(-8000,0,'Left')
 rectangle('Position',[-2650 2000 800 800])
 end
 
@@ -735,23 +892,23 @@ brainY = [tBrain' brain(:,2)];
 % text(.1,.8,['Conf = ' num2str(confCx)])
 % title('Coherence')
 
-h(4) = figure('Color','White');
+h(4) = figure('Color','White','Name','Figure 2c','NumberTitle','off');
 subplot(3,1,1)
 PowerY = downsample(PowerY,3);
 HzY = downsample(HzY,3);
-semilogx(HzY,PowerY,'k')
+semilogx(HzY,PowerY,'b')
 xlabel('Frequency (Hz)')
-ylabel('Power')
-title(['Figure 2c' 10 'Brain Motion Spectrum (Rostral/Caudal)'])
+ylabel('A.U.')
+title(['Brain Motion (R/C)'])
 % hold on
 % f = fill([HzY flip(HzY)],[ErrorY(1,:) flip(ErrorY(2,:))],'r','Linestyle','none');
 % set(f,'facea',[.2]);
 % hold off
 subplot(3,1,2)
-semilogx(HzT,PowerT,'k')
+semilogx(HzT,PowerT*100,'Color',[0.8549 0.1098 0.3607])
 xlabel('Frequency (Hz)')
-ylabel('Power')
-title('Thermocouple Spectrum')
+ylabel('A.U.')
+title('Thermocouple (Respiration)')
 % hold on
 % f = fill([HzT flip(HzT)],[ErrorT(1,:) flip(ErrorT(2,:))],'r','Linestyle','none');
 % set(f,'facea',[.2]);
@@ -759,17 +916,18 @@ title('Thermocouple Spectrum')
 subplot(3,1,3)
 Cy = downsample(Cy,3);
 fy = downsample(fy,3);
-semilogx(fy,Cy);
+semilogx(fy,Cy,'k');
 ylim([0 1])
 xlabel('Frequency (Hz)')
 ylabel('Coherence')
+title('Thermocouple Motion Coherence')
 hold on
 % f = fill([fy flip(fy)],[cErry(1,:) flip(cErry(2,:))],'r','Linestyle','none');
 % set(f,'facea',[.2]);
 yline(confCx);
 hold off
-text(.1,.8,['Conf = ' num2str(confCy)])
-title('Coherence')
+% text(.1,.8,['Conf = ' num2str(confCy)])
+title('Thermocouple Motion Coherence')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -847,7 +1005,7 @@ if ~exist('plotTF','var')
 end
 
 if plotTF
-    h(1) = figure('Color','White');
+    h(1) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
     semilogy(HzX,PowerX,'k')
     hold on
     f = fill([HzX flip(HzX)],[ErrorX(1,:) flip(ErrorX(2,:))],'r','Linestyle','none');
@@ -857,7 +1015,7 @@ if plotTF
     xlabel('Frequency (Hz)')
     ylabel('Power')
     
-    h(2) = figure('Color','White');
+    h(2) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
     semilogy(HzY,PowerY,'k')
     hold on
     f = fill([HzY flip(HzY)],[ErrorY(1,:) flip(ErrorY(2,:))],'r','Linestyle','none');
@@ -880,24 +1038,24 @@ movementData.locDataInterp=zeros(size(movementData.targetPosition));
 movementData.locDataInterp(:,1)=movement_time;
 movementData.locDataInterp(:,2)=interp1(movementData.ballData(:,1),abs(movementData.ballData(:,2)),movement_time,'linear');
 
-h(5) = figure('Color','White');
+h(5) = figure('Color','White','Name','Figure 2d','NumberTitle','off');
 maxlag=500;
 xc_1=xcorr(detrend(movementData.locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),1))',maxlag,'coeff');
 xc_2=xcorr(detrend(movementData.locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),2))',maxlag,'coeff');
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'b')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'r')
 hold on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'g')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'b')
 hold off
-title(['Figure 2d' 10 'Brain Motion and Locomotion Cross-Correlation'])
+title('Brain Motion and Locomotion Cross-Correlation')
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-legend({'L/M Brain Motion','R/C Brain Motion'})
+legend({'Lateral-Medial','Rostral-Caudal'})
 ylim([0 1])
 axes('Position',[.2 .7 .2 .2])
 box on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'b')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'r')
 hold on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'g')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'b')
 hold off
 axis([-10 10 .4 .7])
 end
@@ -907,12 +1065,12 @@ end
 function plotMovementBrainInSkull_FS(movementData,stationaryData,rawData)
 targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 3d','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
-title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+% title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Brain Shift (\mum)')
 grid on
 axis([0 600 -2 6])
 if movementData.hemisphere == 1
@@ -923,9 +1081,9 @@ else
     text(0,-2,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 end
 subplot(4,1,2)
-plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'g')
+plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Brain Shift (\mum)')
 grid on
 axis([0 600 -2 6])
 text(0,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -934,15 +1092,17 @@ subplot(4,1,3)
 if all(movementData.emgData(:,2) == 0)
     title('\fontsize{20pt}\bf{No EMG Data}')
 else
-    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'b')
+    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
     xlabel('Time (s)')
-    ylabel('EMG Power (A.U.)')
+    ylabel('EMG Power')
     grid on
     xlim([0 600])
 end
 subplot(4,1,4)
-plot(rawData(:,1),rawData(:,3),'k')
+plot(rawData(:,1),rawData(:,3),'Color',[1 0.5 0])
 axis([0 600 -1 1])
+xlabel('Time (s)')
+ylabel('EMG (mV)')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -955,48 +1115,52 @@ movement_time=movementData.secondsPerFrame*(1:length(movementData.targetPosition
 movementData.emgDataInterp=zeros(size(movementData.targetPosition));
 movementData.emgDataInterp(:,1)=movement_time;
 movementData.emgDataInterp(:,2)=interp1(movementData.emgData(:,1),movementData.emgData(:,2),movement_time,'linear');
-emg_bins=.5:.1:3.5;
-pixel_bins=-3:.5:7;
-h(7) = figure('Color','White');
-subplot(2,2,2)
-scatter(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,2))
-title('Figure 3d')
-xlabel('Log EMG Power')
-ylabel('Brain Shift, \mum')
-text(3.5,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-text(3.5,-2,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-ylim([-2 6])
-xlim([0.5 3.5])
+% emg_bins=.5:.1:3.5;
+% pixel_bins=-3:.5:7;
+emg_bins=.5:.025:3.5;
+pixel_bins=-3:.1:7;
+h(7) = figure('Color','White','Name','Figure 3e','NumberTitle','off');
+% % % subplot(2,2,2)
+% % % scatter(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,2))
+% % % title('Figure 3d')
+% % % xlabel('Log EMG Power')
+% % % ylabel('Brain Shift, \mum')
+% % % text(3.5,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+% % % text(3.5,-2,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+% % % ylim([-2 6])
+% % % xlim([0.5 3.5])
 
-subplot(2,2,4)
+subplot(2,1,2)
 hh2=histogram2(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,2), emg_bins, pixel_bins,...
     'DisplayStyle','tile','ShowEmptyBins','on');
 imagesc(emg_bins, pixel_bins,log(hh2.Values'+1))
 axis xy
 colormap hot
-xlabel('Log EMG Power')
+xlabel('EMG Power')
 ylabel('Brain Shift, \mum')
+axis square
 ylim([-2 6])
 xlim([0.5 3.5])
 
-subplot(2,2,1)
-scatter(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,1))
-title('Figure 3d')
-xlabel('Log EMG Power')
-ylabel('Brain Shift, \mum')
-text(3.5,6,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-text(3.5,-2,'Medial','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-ylim([-2 6])
-xlim([0.5 3.5])
+% % % subplot(2,2,1)
+% % % scatter(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,1))
+% % % title('Figure 3d')
+% % % xlabel('Log EMG Power')
+% % % ylabel('Brain Shift, \mum')
+% % % text(3.5,6,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+% % % text(3.5,-2,'Medial','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+% % % ylim([-2 6])
+% % % xlim([0.5 3.5])
 
-subplot(2,2,3)
+subplot(2,1,1)
 hh2=histogram2(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,1), emg_bins, pixel_bins,...
     'DisplayStyle','tile','ShowEmptyBins','on');
 imagesc(emg_bins, pixel_bins,log(hh2.Values'+1))
 axis xy
 colormap hot
-xlabel('Log EMG Power')
+xlabel('EMG Power')
 ylabel('Brain Shift, \mum')
+axis square
 ylim([-2 6])
 xlim([0.5 3.5])
 end
@@ -1012,31 +1176,31 @@ movementData.emgDataInterp=zeros(size(movementData.targetPosition));
 movementData.emgDataInterp(:,1)=movement_time;
 movementData.emgDataInterp(:,2)=interp1(movementData.emgData(:,1),abs(movementData.emgData(:,2)),movement_time,'linear');
 
-h(8) = figure('Color','White');
+h(8) = figure('Color','White','Name','Figure 3f','NumberTitle','off');
 maxlag=500;
 xc_1=xcorr(detrend(movementData.emgDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),1))',maxlag,'coeff');
 xc_2=xcorr(detrend(movementData.emgDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),2))',maxlag,'coeff');
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'b')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'r')
 hold on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'g')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'b')
 hold off
-title(['Figure 3e' 10 'Brain Motion and EMG Cross-Correlation'])
+title('Brain Motion and EMG Cross-Correlation')
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-legend({'L/M Brain Motion','R/C Brain Motion'})
+legend({'Medial-Lateral','Rostral-Caudal'})
 ylim([0 1])
 axes('Position',[.2 .7 .2 .2])
 box on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'b')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_1,'r')
 hold on
-plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'g')
+plot(movementData.secondsPerFrame*(-maxlag:maxlag),xc_2,'b')
 hold off
 axis([-10 10 .5 .8])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotLocomotionTriggeredAvg_FS
+function [LTATimeData, LTADispData] = plotLocomotionTriggeredAvg_FS
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
 timeToThreshX = [];
@@ -1097,22 +1261,23 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 2e','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
-plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Brian Shift (\mum)')
 ylim([-3 3])
@@ -1120,15 +1285,16 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,3)
-plot(timeVecY,meanY,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
-plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
+% plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
 hold off
 text(3,-3,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -1171,18 +1337,19 @@ timeVecY = linspace(round(locDataCell{1,5}(1,1)-locDataCell{1,5}(1,2)),round(loc
 
 subplot(2,2,2)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsX,1)
-    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['\fontsize{20pt}\bf{Mean Motion During Stopping Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+% title(['\fontsize{20pt}\bf{Mean Motion During Stopping Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Brian Shift (\mum)')
 ylim([-3 3])
@@ -1190,11 +1357,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,4)
-plot(timeVecY,meanY,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsY,1)
     plot(timeVecY,-1*stopMotionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -1208,75 +1376,90 @@ xlim([-2 3])
 grid on
 clear movementData
 
-h(10) = figure('Color','White');
-subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
+% h(10) = figure('Color','White','Name','Figure 2e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(timeToThreshX,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*20,'r','LineWidth',2)
-title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*20,'r','LineWidth',2)
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+LTATimeData.timeToThreshX = timeToThreshX;
+LTATimeData.binEdgesTime = binEdgesTime;
+LTATimeData.X_pdfXVals = pdfXVals;
+LTATimeData.X_pdfYVals = pdfYVals*20;
 
-subplot(2,1,2)
-histogram(timeToThreshY,binEdgesTime);
-hold on
+
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
-plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
-title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshY);
-sig = std(timeToThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+LTATimeData.timeToThreshY = timeToThreshY;
+LTATimeData.Y_pdfXVals = pdfXVals;
+LTATimeData.Y_pdfYVals = pdfYVals*40;
 
-h(50) = figure('Color','White');
-subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
-title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+LTADispData.dispTimeThreshX = dispTimeThreshX;
+LTADispData.binEdgesDisp = binEdgesDisp;
+LTADispData.X_pdfXVals = pdfXVals;
+LTADispData.X_pdfYVals = pdfYVals*40;
 
-subplot(2,1,2)
-histogram(dispTimeThreshY,binEdgesDisp);
-hold on
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
-plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
-title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshY);
-sig = std(dispTimeThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+LTADispData.dispTimeThreshY = dispTimeThreshY;
+LTADispData.Y_pdfXVals = pdfXVals;
+LTADispData.Y_pdfYVals = pdfYVals*40;
 
 % timeToThreshX = [];
 % timeToThreshY = [];
@@ -1317,7 +1500,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -1348,7 +1531,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -1382,7 +1565,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotEMGTriggeredAvg_FS
+function [ETATimeData, ETADispData] = plotEMGTriggeredAvg_FS
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
 timeToThreshX = [];
@@ -1443,22 +1626,23 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 3g','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+% plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
-plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During EMG Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During EMG Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Brian Shift (\mum)')
 ylim([-3 3])
@@ -1466,15 +1650,16 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,3)
-plot(timeVecY,meanY,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
-plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
+% plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
 hold off
 text(3,-3,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -1517,18 +1702,19 @@ timeVecY = linspace(round(EMGDataCell{1,5}(1,1)-EMGDataCell{1,5}(1,2)),round(EMG
 
 subplot(2,2,2)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsX,1)
-    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['\fontsize{20pt}\bf{Mean Motion During Stopping EMG Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+% title(['\fontsize{20pt}\bf{Mean Motion During Stopping EMG Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Brian Shift (\mum)')
 ylim([-3 3])
@@ -1536,11 +1722,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,4)
-plot(timeVecY,meanY,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsY,1)
     plot(timeVecY,-1*stopMotionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -1554,75 +1741,89 @@ xlim([-2 3])
 grid on
 clear movementData
 
-h(10) = figure('Color','White');
-subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(timeToThreshX,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
-title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following EMG trigger'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-subplot(2,1,2)
-histogram(timeToThreshY,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following EMG trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+ETATimeData.timeToThreshX = timeToThreshX;
+ETATimeData.binEdgesTime = binEdgesTime;
+ETATimeData.X_pdfXVals = pdfXVals;
+ETATimeData.X_pdfYVals = pdfYVals*25;
+% 
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
-plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
-title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following EMG trigger'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshY);
-sig = std(timeToThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-h(50) = figure('Color','White');
-subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following EMG trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+ETATimeData.timeToThreshY = timeToThreshY;
+ETATimeData.Y_pdfXVals = pdfXVals;
+ETATimeData.Y_pdfYVals = pdfYVals*25;
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
-title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+ETADispData.dispTimeThreshX = dispTimeThreshX;
+ETADispData.binEdgesDisp = binEdgesDisp;
+ETADispData.X_pdfXVals = pdfXVals;
+ETADispData.X_pdfYVals = pdfYVals*35;
 
-subplot(2,1,2)
-histogram(dispTimeThreshY,binEdgesDisp);
-hold on
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
-plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
-title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshY);
-sig = std(dispTimeThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+ETADispData.dispTimeThreshY = dispTimeThreshY;
+ETADispData.Y_pdfXVals = pdfXVals;
+ETADispData.Y_pdfYVals = pdfYVals*35;
 
 % timeToThreshX = [];
 % timeToThreshY = [];
@@ -1663,7 +1864,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -1694,7 +1895,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -1724,6 +1925,340 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
 % hold off
 % text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotLocoEMGHist_FS(LTATimeData,LTADispData,ETATimeData,ETADispData)
+
+h(10) = figure('Color','White','Name','Figure 10a','NumberTitle','off');
+subplot(1,2,1)
+histogram(LTATimeData.timeToThreshX,LTATimeData.binEdgesTime,'FaceColor',[.25 .25 .25],'FaceAlpha',0.5);
+hold on
+histogram(ETATimeData.timeToThreshX,ETATimeData.binEdgesTime,'FaceColor',[1 .5 0],'FaceAlpha',0.5);
+hold off
+% [pdfXVals,pdfYVals] = findKernelPDF(LTATimeData.timeToThreshX,LTATimeData.binEdgesTime);
+% plot(LTATimeData.pdfXVals,LTATimeData.pdfYVals,'r','LineWidth',2)
+title('Time for brain to displace laterally 0.75 micrometers following trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+text(-2,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-2,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+% mu = mean(LTATimeData.timeToThreshX);
+% sig = std(LTATimeData.timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% LTATimeData.timeToThreshX = timeToThreshX;
+% LTATimeData.binEdgesTime = binEdgesTime;
+% LTATimeData.X_pdfXVals = pdfXVals;
+% LTATimeData.X_pdfYVals = pdfYVals*20;
+
+subplot(1,2,2)
+plot(LTATimeData.X_pdfXVals,LTATimeData.X_pdfYVals,'Color',[.25 .25 .25],'LineWidth',2)
+hold on
+plot(ETATimeData.X_pdfXVals,ETATimeData.X_pdfYVals,'Color',[1 .5 0],'LineWidth',2)
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+title(['Time for brain to displace laterally 0.75 micrometers following trigger'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+text(-2,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-2,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+mu = mean(LTATimeData.timeToThreshX);
+sig = std(LTATimeData.timeToThreshX);
+plot([mu mu],[0 60],'Color',[.25 .25 .25],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+text(-2,15,['displacement thresh = 0.75, n = ' num2str(length(LTATimeData.timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[.25 .25 .25])
+mu = mean(ETATimeData.timeToThreshX);
+sig = std(ETATimeData.timeToThreshX);
+plot([mu mu],[0 60],'Color',[1 .5 0],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+text(-2,10,['displacement thresh = 0.75, n = ' num2str(length(ETATimeData.timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[1 .5 0])
+hold off
+% ETATimeData.timeToThreshX = timeToThreshX;
+% ETATimeData.binEdgesTime = binEdgesTime;
+% ETATimeData.X_pdfXVals = pdfXVals;
+% ETATimeData.X_pdfYVals = pdfYVals*25;
+
+h(10) = figure('Color','White','Name','Figure 10b','NumberTitle','off');
+subplot(1,2,1)
+histogram(LTATimeData.timeToThreshY,LTATimeData.binEdgesTime,'FaceColor',[.25 .25 .25],'FaceAlpha',0.5);
+hold on
+histogram(ETATimeData.timeToThreshY,ETATimeData.binEdgesTime,'FaceColor',[1 .5 0],'FaceAlpha',0.5);
+hold off
+% [pdfXVals,pdfYVals] = findKernelPDF(LTATimeData.timeToThreshX,LTATimeData.binEdgesTime);
+% plot(LTATimeData.pdfXVals,LTATimeData.pdfYVals,'r','LineWidth',2)
+title('Time for brain to displace rostrally 0.75 micrometers following trigger')
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+text(-2,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-2,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+% mu = mean(LTATimeData.timeToThreshX);
+% sig = std(LTATimeData.timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% LTATimeData.timeToThreshX = timeToThreshX;
+% LTATimeData.binEdgesTime = binEdgesTime;
+% LTATimeData.X_pdfXVals = pdfXVals;
+% LTATimeData.X_pdfYVals = pdfYVals*20;
+
+subplot(1,2,2)
+plot(LTATimeData.Y_pdfXVals,LTATimeData.Y_pdfYVals,'Color',[.25 .25 .25],'LineWidth',2)
+hold on
+plot(ETATimeData.Y_pdfXVals,ETATimeData.Y_pdfYVals,'Color',[1 .5 0],'LineWidth',2)
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+title(['Time for brain to displace rostrally 0.75 micrometers following trigger'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+text(-2,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-2,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+mu = mean(LTATimeData.timeToThreshY);
+sig = std(LTATimeData.timeToThreshY);
+plot([mu mu],[0 60],'Color',[.25 .25 .25],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+text(-2,15,['displacement thresh = 0.75, n = ' num2str(length(LTATimeData.timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[.25 .25 .25])
+mu = mean(ETATimeData.timeToThreshY);
+sig = std(ETATimeData.timeToThreshY);
+plot([mu mu],[0 60],'Color',[1 .5 0],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+text(-2,10,['displacement thresh = 0.75, n = ' num2str(length(ETATimeData.timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[1 .5 0])
+hold off
+% ETATimeData.timeToThreshX = timeToThreshX;
+% ETATimeData.binEdgesTime = binEdgesTime;
+% ETATimeData.X_pdfXVals = pdfXVals;
+% ETATimeData.X_pdfYVals = pdfYVals*25;
+
+h(50) = figure('Color','White','Name','Figure 10c','NumberTitle','off');
+subplot(1,2,1)
+histogram(LTADispData.dispTimeThreshX,LTADispData.binEdgesDisp,'FaceColor',[.25 .25 .25],'FaceAlpha',0.5);
+hold on
+histogram(ETADispData.dispTimeThreshX,ETADispData.binEdgesDisp,'FaceColor',[1 .5 0],'FaceAlpha',0.5);
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+title('Lateral displacement of brain after 1.5 seconds following trigger')
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+text(-4,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-4,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+plot(LTADispData.X_pdfXVals,LTADispData.X_pdfYVals,'Color',[.25 .25 .25],'LineWidth',2)
+hold on
+plot(ETADispData.X_pdfXVals,ETADispData.X_pdfYVals,'Color',[1 .5 0],'LineWidth',2)
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+title('Lateral displacement of brain after 1.5 seconds following trigger')
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+text(-4,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-4,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+mu = mean(LTADispData.dispTimeThreshX);
+sig = std(LTADispData.dispTimeThreshX);
+plot([mu mu],[0 60],'Color',[.25 .25 .25],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+text(-2,15,['displacement thresh = 0.75, n = ' num2str(length(LTADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[.25 .25 .25])
+mu = mean(ETADispData.dispTimeThreshX);
+sig = std(ETADispData.dispTimeThreshX);
+plot([mu mu],[0 60],'Color',[1 .5 0],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+text(-2,10,['displacement thresh = 0.75, n = ' num2str(length(ETADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[1 .5 0])
+hold off
+
+h(50) = figure('Color','White','Name','Figure 10d','NumberTitle','off');
+subplot(1,2,1)
+histogram(LTADispData.dispTimeThreshY,LTADispData.binEdgesDisp,'FaceColor',[.25 .25 .25],'FaceAlpha',0.5);
+hold on
+histogram(ETADispData.dispTimeThreshY,ETADispData.binEdgesDisp,'FaceColor',[1 .5 0],'FaceAlpha',0.5);
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+title('Rostral displacement of brain after 1.5 seconds following trigger')
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+text(-4,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-4,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+plot(LTADispData.Y_pdfXVals,LTADispData.Y_pdfYVals,'Color',[.25 .25 .25],'LineWidth',2)
+hold on
+plot(ETADispData.Y_pdfXVals,ETADispData.Y_pdfYVals,'Color',[1 .5 0],'LineWidth',2)
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+title('Rostral displacement of brain after 1.5 seconds following trigger')
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+text(-4,55,'Locomotion Trigger','Color',[.25 .25 .25],'FontSize',12)
+text(-4,50,'EMG Trigger','Color',[1 .5 0],'FontSize',12)
+mu = mean(LTADispData.dispTimeThreshY);
+sig = std(LTADispData.dispTimeThreshY);
+plot([mu mu],[0 60],'Color',[.25 .25 .25],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[.25 .25 .25],'LineStyle','--','LineWidth',2);
+text(-2,15,['displacement thresh = 0.75, n = ' num2str(length(LTADispData.dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[.25 .25 .25])
+mu = mean(ETADispData.dispTimeThreshY);
+sig = std(ETADispData.dispTimeThreshY);
+plot([mu mu],[0 60],'Color',[1 .5 0],'LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'Color',[1 .5 0],'LineStyle','--','LineWidth',2);
+text(-2,10,['displacement thresh = 0.75, n = ' num2str(length(ETADispData.dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[1 .5 0])
+hold off
+
+% histogram(timeToThreshY,binEdgesTime);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % LTATimeData.timeToThreshY = timeToThreshY;
+% % LTATimeData.Y_pdfXVals = pdfXVals;
+% % LTATimeData.Y_pdfYVals = pdfYVals*40;
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Lateral displacement of brain after 1.5 seconds following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % LTADispData.dispTimeThreshX = dispTimeThreshX;
+% % LTADispData.binEdgesDisp = binEdgesDisp;
+% % LTADispData.X_pdfXVals = pdfXVals;
+% % LTADispData.X_pdfYVals = pdfYVals*40;
+% 
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % LTADispData.dispTimeThreshY = dispTimeThreshY;
+% % LTADispData.Y_pdfXVals = pdfXVals;
+% % LTADispData.Y_pdfYVals = pdfYVals*40;
+% 
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
+% plot(pdfXVals,pdfYVals*25,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following EMG trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % ETATimeData.timeToThreshY = timeToThreshY;
+% % ETATimeData.Y_pdfXVals = pdfXVals;
+% % ETATimeData.Y_pdfYVals = pdfYVals*25;
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % ETADispData.dispTimeThreshX = dispTimeThreshX;
+% % ETADispData.binEdgesDisp = binEdgesDisp;
+% % ETADispData.X_pdfXVals = pdfXVals;
+% % ETADispData.X_pdfYVals = pdfYVals*35;
+% 
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*35,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following EMG trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % ETADispData.dispTimeThreshY = dispTimeThreshY;
+% % ETADispData.Y_pdfXVals = pdfXVals;
+% % ETADispData.Y_pdfYVals = pdfYVals*35;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1788,22 +2323,23 @@ timeVecY = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(loc
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 6c','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Skull Motion During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Skull Motion During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Skull Shift (\mum)')
 ylim([-3 3])
@@ -1811,11 +2347,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,3)
-plot(timeVecY,meanY,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -1862,18 +2399,19 @@ timeVecY = linspace(round(locDataCell{1,5}(1,1)-locDataCell{1,5}(1,2)),round(loc
 
 subplot(2,2,2)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsX,1)
-    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['\fontsize{20pt}\bf{Mean Skull Motion During Stopping Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+% title(['\fontsize{20pt}\bf{Mean Skull Motion During Stopping Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Skull Shift (\mum)')
 ylim([-3 3])
@@ -1881,11 +2419,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,4)
-plot(timeVecY,meanY,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsY,1)
     plot(timeVecY,-1*stopMotionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -1899,7 +2438,7 @@ xlim([-2 3])
 grid on
 clear movementData
 
-% h(10) = figure('Color','White');
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for skull to displace laterally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
@@ -1930,7 +2469,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of skull after ' num2str(timeThresh) ' s following locomotion trigger'])
@@ -2000,7 +2539,7 @@ clear movementData
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -2031,7 +2570,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -2125,22 +2664,23 @@ timeVecY = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMG
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 6d','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Skull Motion During EMG Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Skull Motion During EMG Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Skull Shift (\mum)')
 ylim([-3 3])
@@ -2148,11 +2688,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,3)
-plot(timeVecY,meanY,'k')
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -2199,18 +2740,19 @@ timeVecY = linspace(round(EMGDataCell{1,5}(1,1)-EMGDataCell{1,5}(1,2)),round(EMG
 
 subplot(2,2,2)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsX,1)
-    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 hold off
 text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['\fontsize{20pt}\bf{Mean Skull Motion During Stopping EMG Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+% title(['\fontsize{20pt}\bf{Mean Skull Motion During Stopping EMG Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Skull Shift (\mum)')
 ylim([-3 3])
@@ -2218,11 +2760,12 @@ xlim([-2 3])
 grid on
 
 subplot(2,2,4)
-plot(timeVecY,meanY,'k')
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[-3 3],'r')
+%plot([0 0],[-3 3],'r')
 for n = 1:size(stopMotionEventsLocationsY,1)
     plot(timeVecY,-1*stopMotionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
@@ -2236,7 +2779,7 @@ xlim([-2 3])
 grid on
 clear movementData
 
-% h(10) = figure('Color','White');
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for skull to displace laterally ' num2str(moveThresh) ' micrometers following EMG trigger'])
@@ -2267,7 +2810,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of skull after ' num2str(timeThresh) ' s following EMG trigger'])
@@ -2337,7 +2880,7 @@ clear movementData
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -2368,7 +2911,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -2402,7 +2945,558 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotSqueezeTriggeredAvg_FS
+function plotLocomotionTriggeredAvgOlf_FS
+motionEventsLocationsX = [];
+motionEventsLocationsY = [];
+timeToThreshX = [];
+timeToThreshY = [];
+dispTimeThreshX = [];
+dispTimeThreshY = [];
+moveThresh = .75;
+timeThresh = 1.5;
+binEdgesTime = -2:.25:3;
+binEdgesDisp = -4:.25:4;
+load('LTADataCellOlf_FS.mat')
+for n = 1:size(locDataCellOlf)
+    if isnan(locDataCellOlf{n,3})
+        continue
+    end
+    motionVectorX = locDataCellOlf{n,3}(2,:);
+    motionVectorY = locDataCellOlf{n,4}(2,:);
+    if n > 1
+        if length(motionVectorX) > size(motionEventsLocationsX,2)
+            motionVectorX = motionVectorX(1:size(motionEventsLocationsX,2));
+        elseif length(motionVectorX) < size(motionEventsLocationsX,2)
+            motionEventsLocationsX = motionEventsLocationsX(:,1:length(motionVectorX));
+        end
+        if length(motionVectorY) > size(motionEventsLocationsY,2)
+            motionVectorY = motionVectorY(1:size(motionEventsLocationsY,2));
+        elseif length(motionVectorY) < size(motionEventsLocationsY,2)
+            motionEventsLocationsY = motionEventsLocationsY(:,1:length(motionVectorY));
+        end
+    end
+    motionEventsLocationsX(end+1,:) = motionVectorX;
+    motionEventsLocationsY(end+1,:) = motionVectorY;
+    
+    singleTimeVecX = linspace(round(locDataCellOlf{1,2}(1,1)-locDataCellOlf{1,2}(1,2)),round(locDataCellOlf{1,2}(1,3)-locDataCellOlf{1,2}(1,2)),length(motionVectorX));
+    dispTimeThreshX(end+1) = motionVectorX((find(singleTimeVecX>timeThresh,1))) - motionVectorX((find(singleTimeVecX>0,1)));
+    idxToThreshXSingle = find((motionVectorX - motionVectorX(find(singleTimeVecX>0,1))) > moveThresh & singleTimeVecX>0 & singleTimeVecX<=3,1);
+    if ~isempty(idxToThreshXSingle)
+        timeToThreshX(end+1) = singleTimeVecX(idxToThreshXSingle);
+    end
+    singleTimeVecY = linspace(round(locDataCellOlf{1,2}(1,1)-locDataCellOlf{1,2}(1,2)),round(locDataCellOlf{1,2}(1,3)-locDataCellOlf{1,2}(1,2)),length(motionVectorY));
+    dispTimeThreshY(end+1) =  (motionVectorY((find(singleTimeVecY>timeThresh,1))) - motionVectorY((find(singleTimeVecY>0,1))))*-1;
+    idxToThreshYSingle = find((motionVectorY - motionVectorY(find(singleTimeVecY>0,1)))*-1 > moveThresh & singleTimeVecY>0 & singleTimeVecY<=3,1);
+    if ~isempty(idxToThreshYSingle)
+        timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
+    end
+end
+[meanX,cIntFillPtsX] = getCIntMeanAndFillPts_FS(motionEventsLocationsX,90);
+[meanY,cIntFillPtsY] = getCIntMeanAndFillPts_FS(motionEventsLocationsY,90);
+meanY = -1*meanY;
+cIntFillPtsY = -1*cIntFillPtsY;
+timeVecX = linspace(round(locDataCellOlf{1,2}(1,1)-locDataCellOlf{1,2}(1,2)),round(locDataCellOlf{1,2}(1,3)-locDataCellOlf{1,2}(1,2)),length(meanX));
+timeVecY = linspace(round(locDataCellOlf{1,2}(1,1)-locDataCellOlf{1,2}(1,2)),round(locDataCellOlf{1,2}(1,3)-locDataCellOlf{1,2}(1,2)),length(meanY));
+
+stdWindowSize = 5;
+for n = stdWindowSize+1:length(meanY)
+    if std(meanY(n-stdWindowSize:n)) > .01
+        brainMotionStart = n;
+        break
+    end 
+end
+
+h(9) = figure('Color','White','Name','Figure 14b','NumberTitle','off');
+subplot(2,2,1)
+maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
+plot(timeVecX,meanX,'k')
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+set(f,'facea',[.2]);
+%plot([0 0],[-3 3],'r')
+for n = 1:size(motionEventsLocationsX,1)
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
+end
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
+hold off
+text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Olfactory Motion During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+xlabel('Time (s)')
+ylabel('\Delta Brian Shift (\mum)')
+ylim([-3 3])
+xlim([-2 3])
+grid on
+
+subplot(2,2,3)
+f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
+plot(timeVecY,meanY,'k')
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+set(f,'facea',[.2]);
+%plot([0 0],[-3 3],'r')
+for n = 1:size(motionEventsLocationsY,1)
+    plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
+end
+% plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
+hold off
+text(3,-3,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(3,3,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+xlabel('Time (s)')
+ylabel('\Delta Brian Shift (\mum)')
+ylim([-3 3])
+xlim([-2 3])
+grid on
+clear movementData
+
+stopMotionEventsLocationsX = [];
+stopMotionEventsLocationsY = [];
+for n = 1:size(locDataCellOlf)
+    if isnan(locDataCellOlf{n,6})
+        continue
+    end
+    stopMotionVectorX = locDataCellOlf{n,6}(2,:);
+    stopMotionVectorY = locDataCellOlf{n,7}(2,:);
+    if n > 1
+        if length(stopMotionVectorX) > size(stopMotionEventsLocationsX,2)
+            stopMotionVectorX = stopMotionVectorX(1:size(stopMotionEventsLocationsX,2));
+        elseif length(stopMotionVectorX) < size(stopMotionEventsLocationsX,2)
+            stopMotionEventsLocationsX = stopMotionEventsLocationsX(:,1:length(stopMotionVectorX));
+        end
+        if length(stopMotionVectorY) > size(stopMotionEventsLocationsY,2)
+            stopMotionVectorY = stopMotionVectorY(1:size(stopMotionEventsLocationsY,2));
+        elseif length(stopMotionVectorY) < size(stopMotionEventsLocationsY,2)
+            stopMotionEventsLocationsY = stopMotionEventsLocationsY(:,1:length(stopMotionVectorY));
+        end
+    end
+    stopMotionEventsLocationsX(end+1,:) = stopMotionVectorX;
+    stopMotionEventsLocationsY(end+1,:) = stopMotionVectorY;
+end
+[meanX,cIntFillPtsX] = getCIntMeanAndFillPts_FS(stopMotionEventsLocationsX,90);
+[meanY,cIntFillPtsY] = getCIntMeanAndFillPts_FS(stopMotionEventsLocationsY,90);
+meanY = -1*meanY;
+cIntFillPtsY = -1*cIntFillPtsY;
+timeVecX = linspace(round(locDataCellOlf{1,5}(1,1)-locDataCellOlf{1,5}(1,2)),round(locDataCellOlf{1,5}(1,3)-locDataCellOlf{1,5}(1,2)),length(meanX));
+timeVecY = linspace(round(locDataCellOlf{1,5}(1,1)-locDataCellOlf{1,5}(1,2)),round(locDataCellOlf{1,5}(1,3)-locDataCellOlf{1,5}(1,2)),length(meanY));
+
+subplot(2,2,2)
+maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
+plot(timeVecX,meanX,'k')
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+set(f,'facea',[.2]);
+%plot([0 0],[-3 3],'r')
+for n = 1:size(stopMotionEventsLocationsX,1)
+    plot(timeVecX,stopMotionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
+end
+hold off
+text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% title(['\fontsize{20pt}\bf{Mean Motion During Stopping Locomotion Events, n = ' num2str(size(stopMotionEventsLocationsX,1)) '}'])
+xlabel('Time (s)')
+ylabel('\Delta Brian Shift (\mum)')
+ylim([-3 3])
+xlim([-2 3])
+grid on
+
+subplot(2,2,4)
+f = fill([-2 0 0 -2],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
+plot(timeVecY,meanY,'k')
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
+set(f,'facea',[.2]);
+%plot([0 0],[-3 3],'r')
+for n = 1:size(stopMotionEventsLocationsY,1)
+    plot(timeVecY,-1*stopMotionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
+end
+hold off
+text(3,-3,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(3,3,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+xlabel('Time (s)')
+ylabel('\Delta Brian Shift (\mum)')
+ylim([-3 3])
+xlim([-2 3])
+grid on
+clear movementData
+% 
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(timeToThreshX,binEdgesTime);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% plot(pdfXVals,pdfYVals*20,'r','LineWidth',2)
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesTime);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following locomotion trigger'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
+% plot(pdfXVals,pdfYVals*40,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following locomotion trigger'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+% timeToThreshX = [];
+% timeToThreshY = [];
+% dispTimeThreshX = [];
+% dispTimeThreshY = [];
+% for n = 1:size(locDataCell)
+%     if isnan(locDataCell{n,3})
+%         continue
+%     end
+%     motionVectorX = locDataCell{n,3}(2,:);
+%     motionVectorY = locDataCell{n,4}(2,:);
+%     if n > 1
+%         if length(motionVectorX) > size(motionEventsLocationsX,2)
+%             motionVectorX = motionVectorX(1:size(motionEventsLocationsX,2));
+%         elseif length(motionVectorX) < size(motionEventsLocationsX,2)
+%             motionEventsLocationsX = motionEventsLocationsX(:,1:length(motionVectorX));
+%         end
+%         if length(motionVectorY) > size(motionEventsLocationsY,2)
+%             motionVectorY = motionVectorY(1:size(motionEventsLocationsY,2));
+%         elseif length(motionVectorY) < size(motionEventsLocationsY,2)
+%             motionEventsLocationsY = motionEventsLocationsY(:,1:length(motionVectorY));
+%         end
+%     end
+%     motionEventsLocationsX(end+1,:) = motionVectorX;
+%     motionEventsLocationsY(end+1,:) = motionVectorY;
+%     
+%     singleTimeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorX));
+%     timeThreshIdx = find(singleTimeVecX>(singleTimeVecX(brainMotionStart)+timeThresh),1);
+%     dispTimeThreshX(end+1) = motionVectorX(timeThreshIdx) - motionVectorX(brainMotionStart);
+%     idxToThreshXSingle = find((motionVectorX - motionVectorX(brainMotionStart)) > moveThresh & singleTimeVecX>singleTimeVecX(brainMotionStart) & singleTimeVecX<=3,1);
+%     if ~isempty(idxToThreshXSingle)
+%         timeToThreshX(end+1) = singleTimeVecX(idxToThreshXSingle);
+%     end
+%     singleTimeVecY = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorY));
+%     dispTimeThreshY(end+1) = (motionVectorY(timeThreshIdx) - motionVectorY(brainMotionStart))*-1;
+%     idxToThreshYSingle = find((motionVectorY - motionVectorY(brainMotionStart))*-1 > moveThresh & singleTimeVecY>singleTimeVecY(brainMotionStart) & singleTimeVecY<=3,1);
+%     if ~isempty(idxToThreshYSingle)
+%         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
+%     end
+% end
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histfit(timeToThreshX,numBins,'kernel')
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 25])
+% hold on
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 40],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 40],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% subplot(2,1,2)
+% histfit(timeToThreshY,numBins,'kernel')
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following brain motion start'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 25])
+% hold on
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 40],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 40],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histfit(dispTimeThreshX,numBins,'kernel')
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
+% xlabel('Displacement (\mum)')
+% xlim([-3 4])
+% ylim([0 40])
+% hold on
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 40],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 40],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% 
+% subplot(2,1,2)
+% histfit(dispTimeThreshY,numBins,'kernel')
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
+% xlabel('Time (s)')
+% xlim([-3 4])
+% ylim([0 40])
+% hold on
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 40],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 40],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMotionTrackingBrainAndSkullOlf_FS(movementData,stationaryData)
+[movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+if movementData.hemisphere == 2
+    movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
+    stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)*-1;
+end
+movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
+stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
+% movementData.targetPosition(:,1) = movementData.targetPosition(:,1)-mean(movementData.targetPosition(2480:2530,1));
+% movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movementData.targetPosition(2480:2530,2));
+% stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
+% stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
+movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Figure 14a','NumberTitle','off');
+subplot(3,1,1)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([295 595 -5 5])
+text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(62,-6,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(3,1,2)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([295 595 -5 5])
+text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([62 272 0.5 3])
+subplot(3,1,3)
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+xlabel('Time (s)')
+ylabel('Treadmill Velocity (m/s)')
+grid on
+axis([295 595 0 0.3])
+
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(4,1,1)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+% hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% xlabel('Time (s)')
+% ylabel('X Position (\mum)')
+% grid on
+% axis([66 76 -6 6])
+% text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(62,-6,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,2)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+% hold off
+% xlabel('Time (s)')
+% ylabel('Y Position (\mum)')
+% grid on
+% axis([66 76 -6 6])
+% text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([66 76 0.5 3])
+% subplot(4,1,4)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'r')
+% xlabel('Time (s)')
+% ylabel('Locomotion (m/s)')
+% grid on
+% axis([66 76 0 0.2])
+% 
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(4,1,1)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+% hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% xlabel('Time (s)')
+% ylabel('X Position (\mum)')
+% grid on
+% axis([150 160 -6 6])
+% text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(62,-6,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,2)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+% hold off
+% xlabel('Time (s)')
+% ylabel('Y Position (\mum)')
+% grid on
+% axis([150 160 -6 6])
+% text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([150 160 0.5 3])
+% subplot(4,1,4)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'r')
+% xlabel('Time (s)')
+% ylabel('Locomotion (m/s)')
+% grid on
+% axis([150 160 0 0.2])
+
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(4,1,1)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+% hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% xlabel('Time (s)')
+% ylabel('X Position (\mum)')
+% grid on
+% axis([15 25 -3 3])
+% text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(148,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,2)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+% hold off
+% xlabel('Time (s)')
+% ylabel('Y Position (\mum)')
+% grid on
+% axis([15 25 -3 3])
+% text(148,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([15 25 0.5 2])
+% subplot(4,1,4)
+% plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Respiration (mean pixel intensity)')
+% grid on
+% axis([15 25 50 100])
+% 
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(4,1,1)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+% hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% xlabel('Time (s)')
+% ylabel('X Position (\mum)')
+% grid on
+% axis([135 145 -3 3])
+% text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(148,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,2)
+% plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+% hold on
+% plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+% hold off
+% xlabel('Time (s)')
+% ylabel('Y Position (\mum)')
+% grid on
+% axis([135 145 -3 3])
+% text(148,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([135 145 0.5 2])
+% subplot(4,1,4)
+% plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Respiration (mean pixel intensity)')
+% grid on
+% axis([135 145 50 100])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [STATimeData,STADispData] = plotSqueezeTriggeredAvg_FS
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
 timeToThreshX = [];
@@ -2463,22 +3557,22 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([2 0 0 2],[4.9 4.9 -.9 -.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
-plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
-f = fill([0 2 2 0],[4.9 4.9 -.9 -.9],'g','Linestyle','none','FaceAlpha',0.1);
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(5,-1,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During Squeeze Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean Motion During Squeeze Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
 ylabel('\Delta Brian Shift (\mum)')
 ylim([-1 5])
@@ -2486,6 +3580,8 @@ xlim([-2 6])
 grid on
 
 subplot(2,1,2)
+f = fill([2 0 0 2],[4.9 4.9 -.9 -.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
 plot(timeVecY,meanY,'k')
 hold on
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
@@ -2493,8 +3589,7 @@ set(f,'facea',[.2]);
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
-plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
-f = fill([0 2 2 0],[4.9 4.9 -.9 -.9],'g','Linestyle','none','FaceAlpha',0.1);
+% plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
 hold off
 text(5,-1,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -2505,75 +3600,89 @@ xlim([-2 6])
 grid on
 clear movementData
 
-h(10) = figure('Color','White');
-subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(timeToThreshX,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*18,'r','LineWidth',2)
-title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following squeeze'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-subplot(2,1,2)
-histogram(timeToThreshY,binEdgesTime);
-hold on
+% plot(pdfXVals,pdfYVals*18,'r','LineWidth',2)
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following squeeze'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+STATimeData.timeToThreshX = timeToThreshX;
+STATimeData.binEdgesTime = binEdgesTime;
+STATimeData.X_pdfXVals = pdfXVals;
+STATimeData.X_pdfYVals = pdfYVals*18;
+% 
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
-plot(pdfXVals,pdfYVals*30,'r','LineWidth',2)
-title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following squeeze'])
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshY);
-sig = std(timeToThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-h(50) = figure('Color','White');
-subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*30,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following squeeze'])
+% xlabel('Time (s)')
+% xlim([-2 3])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+STATimeData.timeToThreshY = timeToThreshY;
+STATimeData.Y_pdfXVals = pdfXVals;
+STATimeData.Y_pdfYVals = pdfYVals*30;
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*32,'r','LineWidth',2)
-title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-subplot(2,1,2)
-histogram(dispTimeThreshY,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*32,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+STADispData.dispTimeThreshX = dispTimeThreshX;
+STADispData.binEdgesDisp = binEdgesDisp;
+STADispData.X_pdfXVals = pdfXVals;
+STADispData.X_pdfYVals = pdfYVals*32;
+% 
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
-plot(pdfXVals,pdfYVals*32,'r','LineWidth',2)
-title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
-xlabel('Displacement (\mum)')
-xlim([-4 4])
-ylim([0 60])
-mu = mean(dispTimeThreshY);
-sig = std(dispTimeThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*32,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+% xlabel('Displacement (\mum)')
+% xlim([-4 4])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+STADispData.dispTimeThreshY = dispTimeThreshY;
+STADispData.Y_pdfXVals = pdfXVals;
+STADispData.Y_pdfYVals = pdfYVals*32;
 
 % timeToThreshX = [];
 % timeToThreshY = [];
@@ -2614,7 +3723,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -2645,7 +3754,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -2675,6 +3784,154 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % plot([mu-sig mu-sig],[0 40],'k--','LineWidth',2);
 % hold off
 % text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
+timeThresh = 1.5;
+moveThresh = 0.75;
+h(10) = figure('Color','White','Name','Figure 11a','NumberTitle','off');
+subplot(1,2,1)
+histogram(STATimeData.timeToThreshX,STATimeData.binEdgesTime,'FaceColor',[1 0 0]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+plot(STATimeData.X_pdfXVals,STATimeData.X_pdfYVals,'r','LineWidth',2)
+title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following squeeze'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+mu = mean(STATimeData.timeToThreshX);
+sig = std(STATimeData.timeToThreshX);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(STATimeData.timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+histogram(STADispData.dispTimeThreshX,STADispData.binEdgesDisp,'FaceColor',[1 0 0]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+plot(STADispData.X_pdfXVals,STADispData.X_pdfYVals,'r','LineWidth',2)
+title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+mu = mean(STADispData.dispTimeThreshX);
+sig = std(STADispData.dispTimeThreshX);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+h(50) = figure('Color','White','Name','Figure 11b','NumberTitle','off');
+subplot(1,2,1)
+histogram(STATimeData.timeToThreshY,STATimeData.binEdgesTime,'FaceColor',[0 0 1]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
+plot(STATimeData.Y_pdfXVals,STATimeData.Y_pdfYVals,'r','LineWidth',2)
+title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following squeeze'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+mu = mean(STATimeData.timeToThreshY);
+sig = std(STATimeData.timeToThreshY);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(STATimeData.timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+histogram(STADispData.dispTimeThreshY,STADispData.binEdgesDisp,'FaceColor',[0 0 1]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
+plot(STADispData.Y_pdfXVals,STADispData.Y_pdfYVals,'r','LineWidth',2)
+title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+mu = mean(STADispData.dispTimeThreshY);
+sig = std(STADispData.dispTimeThreshY);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADispData.dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+timeThresh = 0.4;
+moveThresh = 0.25;
+h(10) = figure('Color','White','Name','Figure 11c','NumberTitle','off');
+subplot(1,2,1)
+histogram(RTATimeData.timeToThreshX,RTATimeData.binEdgesTime,'FaceColor',[1 0 0]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+plot(RTATimeData.X_pdfXVals,RTATimeData.X_pdfYVals,'r','LineWidth',2)
+title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following squeeze'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+mu = mean(RTATimeData.timeToThreshX);
+sig = std(RTATimeData.timeToThreshX);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(RTATimeData.timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+histogram(RTADispData.dispTimeThreshX,RTADispData.binEdgesDisp,'FaceColor',[1 0 0]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+plot(RTADispData.X_pdfXVals,RTADispData.X_pdfYVals,'r','LineWidth',2)
+title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+mu = mean(RTADispData.dispTimeThreshX);
+sig = std(RTADispData.dispTimeThreshX);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(RTADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+h(50) = figure('Color','White','Name','Figure 11d','NumberTitle','off');
+subplot(1,2,1)
+histogram(RTATimeData.timeToThreshY,RTATimeData.binEdgesTime,'FaceColor',[0 0 1]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
+plot(RTATimeData.Y_pdfXVals,RTATimeData.Y_pdfYVals,'r','LineWidth',2)
+title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following squeeze'])
+xlabel('Time (s)')
+xlim([-2 3])
+ylim([0 60])
+mu = mean(RTATimeData.timeToThreshY);
+sig = std(RTATimeData.timeToThreshY);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(RTATimeData.timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+
+subplot(1,2,2)
+histogram(RTADispData.dispTimeThreshY,RTADispData.binEdgesDisp,'FaceColor',[0 0 1]);
+hold on
+% [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
+plot(RTADispData.Y_pdfXVals,RTADispData.Y_pdfYVals,'r','LineWidth',2)
+title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following squeeze'])
+xlabel('Displacement (\mum)')
+xlim([-4 4])
+ylim([0 60])
+mu = mean(RTADispData.dispTimeThreshY);
+sig = std(RTADispData.dispTimeThreshY);
+plot([mu mu],[0 60],'k','LineWidth',2);
+plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+hold off
+text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(RTADispData.dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2739,18 +3996,18 @@ timeVecY = linspace(round(squeezeDataCell{1,2}(1,1)-squeezeDataCell{1,2}(1,2)),r
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([2 0 0 2],[4.9 4.9 -.9 -.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
-f = fill([0 2 2 0],[4.9 4.9 -.9 -.9],'g','Linestyle','none','FaceAlpha',0.1);
 hold off
 text(5,-1,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -2762,15 +4019,15 @@ xlim([-2 6])
 grid on
 
 subplot(2,1,2)
-plot(timeVecY,meanY,'k')
+f = fill([2 0 0 2],[4.9 4.9 -.9 -.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecY,meanY,'k')
 f = fill([timeVecY flip(timeVecY)],cIntFillPtsY,'r','Linestyle','none');
 set(f,'facea',[.2]);
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
 % plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
-f = fill([0 2 2 0],[4.9 4.9 -.9 -.9],'g','Linestyle','none','FaceAlpha',0.1);
 hold off
 text(5,-1,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -2781,7 +4038,7 @@ xlim([-2 6])
 grid on
 clear movementData
 
-% h(10) = figure('Color','White');
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for skull to displace laterally ' num2str(moveThresh) ' micrometers following squeeze'])
@@ -2812,7 +4069,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of skull after ' num2str(timeThresh) ' s following squeeze'])
@@ -2846,7 +4103,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotRespTriggeredAvg_FS
+function [RTATimeData,RTADispData] = plotRespTriggeredAvg_FS
 motionEventsLocationsX = [];
 motionEventsLocationsY = [];
 timeToThreshX = [];
@@ -2907,7 +4164,7 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -2916,9 +4173,9 @@ f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
 plot([0 0],[-1 3],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
-plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 text(5,-1,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -2938,7 +4195,7 @@ plot([0 0],[-1 3],'r')
 for n = 1:size(motionEventsLocationsY,1)
     plot(timeVecY,-1*motionEventsLocationsY(n,:),'Color',[0,0,1,0.1])
 end
-plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
+% plot(timeVecY(brainMotionStart),meanY(brainMotionStart),'rx')
 hold off
 text(5,-1,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(5,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
@@ -2949,75 +4206,89 @@ xlim([-.25 1])
 grid on
 clear movementData
 
-h(10) = figure('Color','White');
-subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(timeToThreshX,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*5,'r','LineWidth',2)
-title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following respiration'])
-xlabel('Time (s)')
-xlim([-.25 1])
-ylim([0 60])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-subplot(2,1,2)
-histogram(timeToThreshY,binEdgesTime);
-hold on
+% plot(pdfXVals,pdfYVals*5,'r','LineWidth',2)
+% title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following respiration'])
+% xlabel('Time (s)')
+% xlim([-.25 1])
+% ylim([0 60])
+% mu = mean(timeToThreshX);
+% sig = std(timeToThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+RTATimeData.timeToThreshX = timeToThreshX;
+RTATimeData.binEdgesTime = binEdgesTime;
+RTATimeData.X_pdfXVals = pdfXVals;
+RTATimeData.X_pdfYVals = pdfYVals*5;
+% 
+% subplot(2,1,2)
+% histogram(timeToThreshY,binEdgesTime);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshY,binEdgesTime);
-plot(pdfXVals,pdfYVals*5,'r','LineWidth',2)
-title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following respiration'])
-xlabel('Time (s)')
-xlim([-.25 1])
-ylim([0 60])
-mu = mean(timeToThreshY);
-sig = std(timeToThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-h(50) = figure('Color','White');
-subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*5,'r','LineWidth',2)
+% title(['Time for brain to displace rostrally ' num2str(moveThresh) ' micrometers following respiration'])
+% xlabel('Time (s)')
+% xlim([-.25 1])
+% ylim([0 60])
+% mu = mean(timeToThreshY);
+% sig = std(timeToThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+RTATimeData.timeToThreshY = timeToThreshY;
+RTATimeData.Y_pdfXVals = pdfXVals;
+RTATimeData.Y_pdfYVals = pdfYVals*5;
+% 
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% subplot(2,1,1)
+% histogram(dispTimeThreshX,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
-title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following respiration'])
-xlabel('Displacement (\mum)')
-xlim([-2.5 2.5])
-ylim([0 60])
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
-
-subplot(2,1,2)
-histogram(dispTimeThreshY,binEdgesDisp);
-hold on
+% plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
+% title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following respiration'])
+% xlabel('Displacement (\mum)')
+% xlim([-2.5 2.5])
+% ylim([0 60])
+% mu = mean(dispTimeThreshX);
+% sig = std(dispTimeThreshX);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+RTADispData.dispTimeThreshX = dispTimeThreshX;
+RTADispData.binEdgesDisp = binEdgesDisp;
+RTADispData.X_pdfXVals = pdfXVals;
+RTADispData.X_pdfYVals = pdfYVals*12;
+% 
+% subplot(2,1,2)
+% histogram(dispTimeThreshY,binEdgesDisp);
+% hold on
 [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshY,binEdgesDisp);
-plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
-title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following respiration'])
-xlabel('Displacement (\mum)')
-xlim([-2.5 2.5])
-ylim([0 60])
-mu = mean(dispTimeThreshY);
-sig = std(dispTimeThreshY);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
+% title(['Rostral displacement of brain after ' num2str(timeThresh) ' s following respiration'])
+% xlabel('Displacement (\mum)')
+% xlim([-2.5 2.5])
+% ylim([0 60])
+% mu = mean(dispTimeThreshY);
+% sig = std(dispTimeThreshY);
+% plot([mu mu],[0 60],'k','LineWidth',2);
+% plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% hold off
+% text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+RTADispData.dispTimeThreshY = dispTimeThreshY;
+RTADispData.Y_pdfXVals = pdfXVals;
+RTADispData.Y_pdfYVals = pdfYVals*12;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3082,7 +4353,7 @@ timeVecY = linspace(round((respDataCell{1,2}(1,1)-respDataCell{1,2}(1,2))*4)/4,r
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -3091,7 +4362,7 @@ f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 plot([0 0],[-1 3],'r')
 set(f,'facea',[.2]);
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
@@ -3124,7 +4395,7 @@ xlim([-.25 1])
 grid on
 clear movementData
 
-% h(10) = figure('Color','White');
+% h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for skull to displace laterally ' num2str(moveThresh) ' micrometers following respiration'])
@@ -3155,7 +4426,7 @@ clear movementData
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of skull after ' num2str(timeThresh) ' s following respiration'])
@@ -3252,26 +4523,49 @@ timeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(loc
 %     end 
 % end
 
-h(9) = figure('Color','White');
-% subplot(2,1,1)
+h(9) = figure('Color','White','Name','Figure 3c','NumberTitle','off');
+subplot(1,2,1)
 % maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[3.9 3.9 .1 .1],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[0 4],'r')
+% plot([0 0],[0 4],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0.5,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 % text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 % text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean EMG During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean EMG During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
-ylabel('EKG Power (au)')
+ylabel('EMG Power (au)')
 ylim([0 4])
 xlim([-2 3])
+grid on
+
+subplot(1,2,2)
+% maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
+f = fill([.25 0 0 .25],[3.9 3.9 .1 .1],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
+hold on
+plot(timeVecX,meanX,'k')
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
+set(f,'facea',[.2]);
+% plot([0 0],[0 4],'r')
+for n = 1:size(motionEventsLocationsX,1)
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0.5,0,0.1])
+end
+% plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
+hold off
+% text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean EMG During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+xlabel('Time (s)')
+ylabel('EMG Power (au)')
+ylim([0 4])
+xlim([-1 .25])
 grid on
 
 % subplot(2,2,3)
@@ -3363,23 +4657,23 @@ timeVecX = linspace(round(locDataCell{2,4}(1,1)-locDataCell{2,4}(1,2)),round(loc
 % grid on
 % clear movementData
 
-h(10) = figure('Color','White');
-% subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
-[pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*10,'r','LineWidth',2)
-title('Time for EMG power increase one-half order of magnitude in relation to locomotion trigger')
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 60])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % % h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % % % subplot(2,1,1)
+% % % histogram(timeToThreshX,binEdgesTime);
+% % % hold on
+% % % [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% % % plot(pdfXVals,pdfYVals*10,'r','LineWidth',2)
+% % % title('Time for EMG power increase one-half order of magnitude in relation to locomotion trigger')
+% % % xlabel('Time (s)')
+% % % xlim([-2 3])
+% % % ylim([0 60])
+% % % mu = mean(timeToThreshX);
+% % % sig = std(timeToThreshX);
+% % % plot([mu mu],[0 60],'k','LineWidth',2);
+% % % plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% % % plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% % % hold off
+% % % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
 % subplot(2,1,2)
 % histfit(timeToThreshY,numBins,'kernel')
@@ -3396,24 +4690,24 @@ text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White');
-% subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
-[pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
-title('EMG power 0.25s before locomotion trigger')
-xlabel('Power (au)')
-xlim([0 4])
-ylim([0 60])
-hold on
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % % h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % % % subplot(2,1,1)
+% % % histogram(dispTimeThreshX,binEdgesDisp);
+% % % hold on
+% % % [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% % % plot(pdfXVals,pdfYVals*12,'r','LineWidth',2)
+% % % title('EMG power 0.25s before locomotion trigger')
+% % % xlabel('Power (au)')
+% % % xlim([0 4])
+% % % ylim([0 60])
+% % % hold on
+% % % mu = mean(dispTimeThreshX);
+% % % sig = std(dispTimeThreshX);
+% % % plot([mu mu],[0 60],'k','LineWidth',2);
+% % % plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% % % plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% % % hold off
+% % % text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
 % subplot(2,1,2)
 % histfit(dispTimeThreshY,numBins,'kernel')
@@ -3469,7 +4763,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -3500,7 +4794,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -3704,24 +4998,25 @@ timeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(loc
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 3b','NumberTitle','off');
 % subplot(2,1,1)
 % maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
-plot(timeVecX,meanX,'k')
+f = fill([3 0 0 3],[3.9 3.9 .1 .1],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
 hold on
+plot(timeVecX,meanX,'k')
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[0 4],'r')
+% plot([0 0],[0 4],'r')
 for n = 1:size(motionEventsLocationsX,1)
-    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
+    plot(timeVecX,motionEventsLocationsX(n,:),'Color',[1,0.5,0,0.1])
 end
 % plot(timeVecX(brainMotionStart),meanX(brainMotionStart),'rx')
 hold off
 % text(3,-3,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 % text(3,3,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean EMG During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
+% title(['Figure 3f(1)' 10 '\fontsize{20pt}\bf{Mean EMG During Locomotion Events, n = ' num2str(size(motionEventsLocationsX,1)) '}'])
 xlabel('Time (s)')
-ylabel('EKG Power (au)')
+ylabel('EMG Power (au)')
 ylim([0 4])
 xlim([-2 3])
 grid on
@@ -3815,23 +5110,23 @@ timeVecX = linspace(round(locDataCell{2,4}(1,1)-locDataCell{2,4}(1,2)),round(loc
 % grid on
 % clear movementData
 
-h(10) = figure('Color','White');
-% subplot(2,1,1)
-histogram(timeToThreshX,binEdgesTime);
-hold on
-[pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
-plot(pdfXVals,pdfYVals*2,'r','LineWidth',2)
-title('Time for EMG power increase one-half order of magnitude in relation to locomotion trigger')
-xlabel('Time (s)')
-xlim([-2 3])
-ylim([0 20])
-mu = mean(timeToThreshX);
-sig = std(timeToThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % % h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % % % subplot(2,1,1)
+% % % histogram(timeToThreshX,binEdgesTime);
+% % % hold on
+% % % [pdfXVals,pdfYVals] = findKernelPDF(timeToThreshX,binEdgesTime);
+% % % plot(pdfXVals,pdfYVals*2,'r','LineWidth',2)
+% % % title('Time for EMG power increase one-half order of magnitude in relation to locomotion trigger')
+% % % xlabel('Time (s)')
+% % % xlim([-2 3])
+% % % ylim([0 20])
+% % % mu = mean(timeToThreshX);
+% % % sig = std(timeToThreshX);
+% % % plot([mu mu],[0 60],'k','LineWidth',2);
+% % % plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% % % plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% % % hold off
+% % % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
 % subplot(2,1,2)
 % histfit(timeToThreshY,numBins,'kernel')
@@ -3848,24 +5143,24 @@ text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White');
-% subplot(2,1,1)
-histogram(dispTimeThreshX,binEdgesDisp);
-hold on
-[pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
-plot(pdfXVals,pdfYVals*2,'r','LineWidth',2)
-title('EMG power 0.25s before locomotion trigger')
-xlabel('Power (au)')
-xlim([0 4])
-ylim([0 20])
-hold on
-mu = mean(dispTimeThreshX);
-sig = std(dispTimeThreshX);
-plot([mu mu],[0 60],'k','LineWidth',2);
-plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
-plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
-hold off
-text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
+% % % h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % % % subplot(2,1,1)
+% % % histogram(dispTimeThreshX,binEdgesDisp);
+% % % hold on
+% % % [pdfXVals,pdfYVals] = findKernelPDF(dispTimeThreshX,binEdgesDisp);
+% % % plot(pdfXVals,pdfYVals*2,'r','LineWidth',2)
+% % % title('EMG power 0.25s before locomotion trigger')
+% % % xlabel('Power (au)')
+% % % xlim([0 4])
+% % % ylim([0 20])
+% % % hold on
+% % % mu = mean(dispTimeThreshX);
+% % % sig = std(dispTimeThreshX);
+% % % plot([mu mu],[0 60],'k','LineWidth',2);
+% % % plot([mu+sig mu+sig],[0 60],'k--','LineWidth',2);
+% % % plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
+% % % hold off
+% % % text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
 % subplot(2,1,2)
 % histfit(dispTimeThreshY,numBins,'kernel')
@@ -3921,7 +5216,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -3952,7 +5247,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -3987,7 +5282,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotLocomotionTriggeredAvgSingleTrial_FS(movementData)
-% load('squeezeDataCell_FS.mat')
+load('squeezeDataCell_FS.mat')
 %     locIdx = find(strcmp(squeezeDataCell(:,1),'D:/21-12-16_MouseExp/211216_002_processe_2layerBrainInSkullDataFinal.mat'));
 locIdx = 1;
 %     targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
@@ -3999,8 +5294,8 @@ locIdx = 1;
 %     motionEventsLocationsY = [];
 %     deleteRows = [];
 % movementData.secondsPerFrame = 0.0252*2;
-    for n = 1:size(emgDataCell{locIdx,2},1)
-        locTriggerTime = emgDataCell{locIdx,2}(n,2);
+    for n = 1:size(locDataCell{locIdx,2},1)
+        locTriggerTime = locDataCell{locIdx,2}(n,2);
 %         locEMGOverlapCheck = find(abs(locTriggerTime - EMGDataCell{emgIdx,2}(:,2)) < timeOverlapThresh);
 %         if isempty(locEMGOverlapCheck)
 %             badOn = badOn+1;
@@ -4159,14 +5454,14 @@ timeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(loc
 %     end 
 % end
 
-h(9) = figure('Color','White');
+h(9) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
 hold on
 f = fill([timeVecX flip(timeVecX)],cIntFillPtsX,'r','Linestyle','none');
 set(f,'facea',[.2]);
-plot([0 0],[0 4],'r')
+%plot([0 0],[0 4],'r')
 for n = 1:size(motionEventsLocationsX,1)
     plot(timeVecX,motionEventsLocationsX(n,:),'Color',[0,0,1,0.1])
 end
@@ -4270,7 +5565,7 @@ timeVecX = linspace(round(locDataCell{2,4}(1,1)-locDataCell{2,4}(1,2)),round(loc
 % grid on
 % clear movementData
 
-h(10) = figure('Color','White');
+h(10) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 histogram(timeToThreshX,binEdgesTime);
 hold on
@@ -4303,7 +5598,7 @@ text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White');
+h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 histogram(dispTimeThreshX,binEdgesDisp);
 hold on
@@ -4376,7 +5671,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
 %     end
 % end
-% h(13) = figure('Color','White');
+% h(13) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(timeToThreshX,numBins,'kernel')
 % title(['Time for brain to displace laterally ' num2str(moveThresh) ' micrometers following brain motion start'])
@@ -4407,7 +5702,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(dispTim
 % hold off
 % text(-2,15,['displacement thresh = ' num2str(moveThresh) ', n = ' num2str(length(timeToThreshY)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 % 
-% h(50) = figure('Color','White');
+% h(50) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(2,1,1)
 % histfit(dispTimeThreshX,numBins,'kernel')
 % title(['Lateral displacement of brain after ' num2str(timeThresh) ' s following brain motion start'])
@@ -4457,7 +5752,8 @@ micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
 W = x.imageWidthPixels;
 H = x.imageHeightPixels;
 
-h(1) = figure('Color','White');
+h(1) = figure('Color','White','Name','Figure 2b','NumberTitle','off');
+subplot(1,2,1)
 scatter(widthData(:,1),widthData(:,2),50,micronLengthValWidth./widthData(:,3),'filled');
 hold on
 rectangle('Position',[125 60 265 385])
@@ -4475,7 +5771,8 @@ title(['\fontsize{20pt}\bf{Position of X Calibration Measurements}'])
 xlabel('Pixels')
 ylabel('Pixels')
 
-h(2) = figure('Color','White');
+subplot(1,2,2)
+% h(2) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 scatter(heightData(:,1),heightData(:,2),50,micronLengthValHeight./heightData(:,3),'filled');
 hold on
 rectangle('Position',[125 60 265 385])
@@ -4494,7 +5791,8 @@ xlabel('Pixels')
 ylabel('Pixels')
 
 % plot 3d surface plot of x calibration values across image
-h(3) = figure('Color','White');
+h(3) = figure('Color','White','Name','Figure 2c','NumberTitle','off');
+subplot(1,2,1)
 % micronLengthValWidth = ones(size(widthData,1),1);
 % micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
 % micronLengthValWidth(widthData(:,6) == -1,1) = holeSize;
@@ -4510,7 +5808,8 @@ ylabel('Pixels (Y)')
 zlabel('\mum/Pixel')
 
 % plot 3d surface plot of y calibration values across image
-h(4) = figure('Color','White');
+% h(4) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+subplot(1,2,2)
 % micronLengthValHeight = ones(size(heightData,1),1);
 % micronLengthValHeight(heightData(:,6) == 1,1) = barSize;
 % micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
@@ -4552,7 +5851,7 @@ for n = 1:length(uniqueX)
     stdYMinus(n) = polyval(coefficients , uniqueX(n)) - yZeroDiff - std(matchingY);
 end
 
-h(1) = figure('Color','White');
+h(1) = figure('Color','White','Name','Figure 3f','NumberTitle','off');
 subplot(2,1,1)
 hold on
 for n = 1:numel(fn)
@@ -4561,9 +5860,9 @@ end
 f = fill([stdX, fliplr(stdX)], [stdYPlus, fliplr(stdYMinus)], 'r','Linestyle','none');
 set(f,'facea',[.2]);
 hold off
-xlabel('Diopter Input (meters^{-1})')
+xlabel('Diopter Input (m^{-1})')
 ylabel('\Delta Z (microns)')
-title('Controller Diopter Values vs. Focal Plane Position in Z')
+% title('Controller Diopter Values vs. Focal Plane Position in Z')
 grid on
 
 subplot(2,1,2)
@@ -4578,9 +5877,9 @@ if exist('inputZVec','var')
     hold off
     text(.25,ceil(max(yFitInput))-.2,['Diopter Values Output: ' num2str(round(yFitInput,2))])
 end
-xlabel('Diopter Input (meters^{-1})')
+xlabel('Diopter Input (m^{-1})')
 ylabel('\Delta Z (microns)')
-title('Controller Diopter Values vs. Focal Plane Position in Z')
+% title('Controller Diopter Values vs. Focal Plane Position in Z')
 grid on
 
 load('calibrationValues_FS.mat');
@@ -4614,24 +5913,24 @@ end
 widthVals = widthVals(i);
 heightVals = heightVals(i);
 
-h(2) = figure('Color','White');
+h(2) = figure('Color','White','Name','Figure 3g','NumberTitle','off');
 subplot(3,1,1)
 plot(diopterVals,widthVals,'mo')
-xlabel('Diopter Input (1/m)')
+xlabel('Diopter Input (m^{-1})')
 ylabel('\mum/Pixel in X')
 xlim([-1.5 2])
 ylim([.7 .9])
 lsline
 subplot(3,1,2)
 plot(diopterVals,heightVals,'go')
-xlabel('Diopter Input (1/m)')
+xlabel('Diopter Input (m^{-1})')
 ylabel('\mum/Pixel in Y')
 xlim([-1.5 2])
 ylim([.5 .7])
 lsline
 subplot(3,1,3)
 plot(diopterValsPower,powerVals,'ko')
-xlabel('Diopter Input (1/m)')
+xlabel('Diopter Input (m^{-1})')
 ylabel('Laser Power Through Objective (mW)')
 xlim([-1.5 2])
 ylim([46 52])
@@ -4652,15 +5951,15 @@ movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movemen
 stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(1:50,1));
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(1:50,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 4d_1','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([15 225 -3 3])
 text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4671,33 +5970,33 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([15 225 -3 3])
 text(148,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([15 225 0.5 2])
 subplot(4,1,4)
-plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'b')
+plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
 xlabel('Time (s)')
 ylabel('Respiration (mean pixel intensity)')
 grid on
 axis([15 225 50 100])
 
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 4d_2','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([15 25 -3 3])
 text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4708,33 +6007,33 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostal-Caudal Shift (\mum)')
 grid on
 axis([15 25 -3 3])
 text(148,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([15 25 0.5 2])
 subplot(4,1,4)
-plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'b')
+plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
 xlabel('Time (s)')
 ylabel('Respiration (mean pixel intensity)')
 grid on
 axis([15 25 50 100])
 
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 4d_3','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([135 145 -3 3])
 text(148,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4745,19 +6044,19 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([135 145 -3 3])
 text(148,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(148,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([135 145 0.5 2])
 subplot(4,1,4)
-plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'b')
+plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
 xlabel('Time (s)')
 ylabel('Respiration (mean pixel intensity)')
 grid on
@@ -4779,15 +6078,15 @@ movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movemen
 stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 4e_1','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Lateral-Medial Shift (\mum)')
 grid on
 axis([62 272 -6 6])
 text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4798,33 +6097,33 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([62 272 -6 6])
 text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([62 272 0.5 3])
 subplot(4,1,4)
-plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'r')
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
 xlabel('Time (s)')
-ylabel('Locomotion (m/s)')
+ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([62 272 0 0.2])
 
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 4e_2','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([66 76 -6 6])
 text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4835,33 +6134,33 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([66 76 -6 6])
 text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([66 76 0.5 3])
 subplot(4,1,4)
-plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'r')
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
 xlabel('Time (s)')
-ylabel('Locomotion (m/s)')
+ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([66 76 0 0.2])
 
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
 hold off
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
-ylabel('X Position (\mum)')
+ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([150 160 -6 6])
 text(62,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
@@ -4872,25 +6171,25 @@ hold on
 plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
 hold off
 xlabel('Time (s)')
-ylabel('Y Position (\mum)')
+ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([150 160 -6 6])
 text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
 axis([150 160 0.5 3])
 subplot(4,1,4)
-plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'r')
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
 xlabel('Time (s)')
-ylabel('Locomotion (m/s)')
+ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([150 160 0 0.2])
 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -4927,7 +6226,7 @@ axis([150 160 0 0.2])
 % grid on
 % axis([15 25 50 100])
 % 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -4965,7 +6264,6 @@ axis([150 160 0 0.2])
 % axis([135 145 50 100])
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotMotionTrackingSkullBregma_FS(movementData)
@@ -4973,10 +6271,10 @@ if movementData.hemisphere == 2
     movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
 end
 movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
-h(6) = figure('Color','White');
+h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 subplot(3,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'r')
-title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
 xlabel('Time (s)')
 ylabel('X Position (\mum)')
 grid on
@@ -4984,7 +6282,7 @@ axis([40 140 -1 5])
 text(40,5,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(40,-1,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(3,1,2)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'b')
 xlabel('Time (s)')
 ylabel('Y Position (\mum)')
 grid on
@@ -4998,7 +6296,7 @@ ylabel('Locomotion (m/s)')
 grid on
 axis([40 140 0 0.2])
 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -5035,7 +6333,7 @@ axis([40 140 0 0.2])
 % grid on
 % axis([66 76 0 0.2])
 % 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -5072,7 +6370,7 @@ axis([40 140 0 0.2])
 % grid on
 % axis([150 160 0 0.2])
 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -5109,7 +6407,7 @@ axis([40 140 0 0.2])
 % grid on
 % axis([15 25 50 100])
 % 
-% h(6) = figure('Color','White');
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
 % subplot(4,1,1)
 % plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 % hold on
@@ -5145,6 +6443,492 @@ axis([40 140 0 0.2])
 % ylabel('Respiration (mean pixel intensity)')
 % grid on
 % axis([135 145 50 100])
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotAbdominalCompressionPressure_FS
+circumMeters = 0.115;
+widthMeters = 0.015;
+surfArea = circumMeters*widthMeters;
+
+forceCalArb = [1800;4400;7300;10000;12000;13700];
+forceCalGrams = [50;100;150;200;250;300];
+% forceCalNewtons = (forceCalGrams./1000)*9.81;
+% forceCalPascals = forceCalNewtons./surfArea;
+% forceCalMMHg = forceCalPascals/133.322;
+% m = forceCalArb\forceCalMMHg;
+% m = forceCalArb\forceCalGrams;
+% plot(forceCalArb,forceCalMMHg)
+% hold on
+% plot([0;forceCalArb],[0;forceCalArb]*m)
+
+h(6) = figure('Color','White','Name','Figure 15b','NumberTitle','off');
+subplot(1,4,1:3)
+load('abdCompressPressureTrial.mat');
+abdCompressPressureTrial(:,1) = (abdCompressPressureTrial(:,1)-abdCompressPressureTrial(1,1))/1000;
+xInd = find(abdCompressPressureTrial(:,1)>150 & abdCompressPressureTrial(:,1)<300);
+xStart = xInd(1);
+plotLineX = abdCompressPressureTrial(xInd,1)-abdCompressPressureTrial(xStart,1);
+% plotLineY = (abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2)).*m;
+pressureMax = max(abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2));
+plotLineY = (abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2))./pressureMax;
+plot(plotLineX,plotLineY)
+xlim([0 150])
+ylim([-0.1 1])
+% title('Abdominal Compression Pressure')
+xlabel('Time (s)')
+ylabel('A.U.')
+
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+subplot(1,4,4)
+load('abdCompressPressureTrial.mat');
+abdCompressPressureTrial(:,1) = (abdCompressPressureTrial(:,1)-abdCompressPressureTrial(1,1))/1000;
+xInd = find(abdCompressPressureTrial(:,1)>150 & abdCompressPressureTrial(:,1)<300);
+xStart = xInd(1);
+plotLineX = abdCompressPressureTrial(xInd,1)-abdCompressPressureTrial(xStart,1);
+% plotLineY = (abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2)).*m;
+pressureMax = max(abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2));
+plotLineY = (abdCompressPressureTrial(xInd,2)-abdCompressPressureTrial(xStart,2))./pressureMax;
+plot(plotLineX,plotLineY)
+xlim([101 106])
+ylim([-0.1 1])
+% title('Abdominal Compression Pressure')
+xlabel('Time (s)')
+ylabel('A.U.')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMouseStats_FS
+% fileName = 'C:\Workspace\Code\DrewLab\movementDataLog.mat';
+load('movementDataLog_FS.mat')
+
+moveMag = [];
+weigth = [];
+age = [];
+sex = [];
+for n = 1:size(moveDataMat,1)
+    moveMag(n) = sqrt(moveDataMat{n,7}(1)^2 + moveDataMat{n,7}(2)^2);
+    weight(n) = str2double(moveDataMat{n,18});
+    age(n) = (datenum(moveDataMat{n,1}(1:6),'yymmdd')-datenum(moveDataMat{n,17},'mm/dd/yy'))/7;
+    if strcmp(moveDataMat{n,16},'M')
+        sex(n) = 1;
+    else
+        sex(n) = 0;
+    end
+end
+
+weightX = min(weight):1:max(weight);
+ageX = min(age):1:max(age);
+
+h(6) = figure('Color','White','Name','Figure 8a','NumberTitle','off');
+% subplot(2,3,1)
+s = scatter(weight(logical(sex)),moveMag(logical(sex)),50,'b','filled',"DisplayName","Male");
+s.MarkerFaceAlpha = .15;
+hold on
+mdl = fitlm(weight(logical(sex)),moveMag(logical(sex)));
+% plot(weight(logical(sex)),mdl.Fitted,"b-","LineWidth",2,"DisplayName","Male Fit") ;
+plot(weightX,mdl.Coefficients{1,1}+(weightX*mdl.Coefficients{2,1}),"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% [~,yCI]=predict(mdl,[min(weight(logical(sex))):1:max(weight(logical(sex)))]',"Prediction","curve");
+[~,yCI]=predict(mdl,weightX',"Prediction","curve");
+% [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% plot([min(weight(logical(sex))):1:max(weight(logical(sex)))]',yCI,"b--","DisplayName","Male CI") ;
+plot(weightX',yCI,"b--","DisplayName","Male CI") ;
+text(26,13,['p: ' num2str(mdl.Coefficients{2,4}) ', R^{2}: ' num2str(mdl.Rsquared.Ordinary)],'Color','b')
+% plot(x,yci_obs,"ro","DisplayName","Prediction bounds") ;
+s = scatter(weight(~logical(sex)),moveMag(~logical(sex)),50,'r','filled',"DisplayName","Female");
+s.MarkerFaceAlpha = .15;
+mdl = fitlm(weight(~logical(sex)),moveMag(~logical(sex)));
+% plot(weight(~logical(sex)),mdl.Fitted,"r-","LineWidth",2,"DisplayName","Female Fit") ;
+plot(weightX,mdl.Coefficients{1,1}+(weightX.*mdl.Coefficients{2,1}),"r-","LineWidth",2,"DisplayName","Female Fit") ;
+% [~,yCI]=predict(mdl,[min(weight(logical(sex))):1:max(weight(logical(sex)))]',"Prediction","curve");
+[~,yCI]=predict(mdl,weightX',"Prediction","curve");
+% [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% plot([min(weight(logical(sex))):1:max(weight(logical(sex)))]',yCI,"r--","DisplayName","Female CI") ;
+plot(weightX',yCI,"r--","DisplayName","Female CI") ;
+text(26,12,['p: ' num2str(mdl.Coefficients{2,4}) ', R^{2}: ' num2str(mdl.Rsquared.Ordinary)],'Color','r')
+% plot(x,yci_obs,"ro","DisplayName","Prediction bounds") ;
+hold off
+% title('Mouse Weight vs Brain Shift')
+xlabel('Mouse Weight (g)')
+ylabel('Brain Shift (\mum)')
+xlim([25 65])
+ylim([0 15])
+legend
+
+h(6) = figure('Color','White','Name','Figure 8b','NumberTitle','off');
+% subplot(2,3,2)
+s = scatter(age(logical(sex)),moveMag(logical(sex)),50,'b','filled',"DisplayName","Male");
+s.MarkerFaceAlpha = .15;
+hold on
+mdl = fitlm(age(logical(sex)),moveMag(logical(sex)));
+% plot(age(logical(sex)),mdl.Fitted,"b-","LineWidth",2,"DisplayName","Male Fit") ;
+plot(ageX,mdl.Coefficients{1,1}+(ageX*mdl.Coefficients{2,1}),"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% [~,yCI]=predict(mdl,[min(age(logical(sex))):1:max(age(logical(sex)))]',"Prediction","curve");
+[~,yCI]=predict(mdl,ageX',"Prediction","curve");
+% [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% plot([min(age(logical(sex))):1:max(age(logical(sex)))]',yCI,"b--","DisplayName","Male CI") ;
+plot(ageX',yCI,"b--","DisplayName","Male CI") ;
+text(1,13,['p: ' num2str(mdl.Coefficients{2,4}) ', R^{2}: ' num2str(mdl.Rsquared.Ordinary)],'Color','b')
+% plot(x,yci_obs,"ro","DisplayName","Prediction bounds") ;
+s = scatter(age(~logical(sex)),moveMag(~logical(sex)),50,'r','filled',"DisplayName","Female");
+s.MarkerFaceAlpha = .15;
+mdl = fitlm(age(~logical(sex)),moveMag(~logical(sex)));
+% plot(age(~logical(sex)),mdl.Fitted,"r-","LineWidth",2,"DisplayName","Female Fit") ;
+plot(ageX,mdl.Coefficients{1,1}+(ageX.*mdl.Coefficients{2,1}),"r-","LineWidth",2,"DisplayName","Female Fit") ;
+% [~,yCI]=predict(mdl,[min(age(logical(sex))):1:max(age(logical(sex)))]',"Prediction","curve");
+[~,yCI]=predict(mdl,ageX',"Prediction","curve");
+% [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% plot([min(age(logical(sex))):1:max(age(logical(sex)))]',yCI,"r--","DisplayName","Female CI") ;
+plot(ageX',yCI,"r--","DisplayName","Female CI") ;
+text(1,12,['p: ' num2str(mdl.Coefficients{2,4}) ', R^{2}: ' num2str(mdl.Rsquared.Ordinary)],'Color','r')
+% plot(x,yci_obs,"ro","DisplayName","Prediction bounds") ;
+hold off
+% title('Mouse Age vs Brain Shift')
+xlabel('Mouse Age (Weeks)')
+ylabel('Brain Shift (\mum)')
+xlim([0 70])
+ylim([0 15])
+legend
+
+h(6) = figure('Color','White','Name','Figure 8c','NumberTitle','off');
+% subplot(2,3,3)
+plotSpread({moveMag(logical(sex)),moveMag(~logical(sex))},'categoryIdx',[zeros(length(moveMag(logical(sex))),1);ones(length(moveMag(~logical(sex))),1)],'categoryColors',{'b','r'},'categoryLabels',{'Male','Female'},'xNames',{'Male','Female'},'showMM',5);
+meanMale = mean(moveMag(logical(sex)));
+stdMale = std(moveMag(logical(sex)));
+meanFemale = mean(moveMag(~logical(sex)));
+stdFemale = std(moveMag(~logical(sex)));
+% text(1,12,['$\bar{x}_{Male}$: ' num2str(meanMale)],'Color','b','Interpreter','latex')
+% text(1,11,['\pm\sigma:' num2str(stdMale)],'Color','b')
+% text(2,12,['$\bar{x}_{Male}$: ' num2str(meanFemale)],'Color','r','Interpreter','latex')
+% text(2,11,['\pm\sigma:' num2str(stdFemale)],'Color','r')
+text(.3,12,['Mean: ' num2str(meanMale) ', \pm\sigma: ' num2str(stdMale)],'Color','b')
+text(1.6,12,['Mean: ' num2str(meanFemale) ', \pm\sigma: ' num2str(stdFemale)],'Color','r')
+[h,p] = kstest2(moveMag(logical(sex)),moveMag(~logical(sex)));
+text(1.2,13,['KS Test: ' num2str(h) ', p: ' num2str(p)])
+% title('Mouse Sex vs Brain Shift')
+ylabel('Brain Shift (\mum)')
+
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % subplot(2,3,4)
+% removeDup = unique([age',weight'],'rows');
+% scatter(removeDup(:,1),removeDup(:,2))
+% title('Mouse Age vs Weight')
+% xlabel('Mouse Age (Weeks)')
+% ylabel('Mouse Weight (g)')
+% xlim([0 70])
+% 
+% h(6) = figure('Color','White','Name','Figure 1e','NumberTitle','off');
+% % subplot(2,3,5)
+% removeDup = unique([sex',weight'],'rows');
+% sexRem = removeDup(:,1);
+% weightRem = removeDup(:,2);
+% plotSpread({weightRem(~logical(sexRem)),weightRem(logical(sexRem))},'categoryIdx',[zeros(length(weightRem(~logical(sexRem))),1);ones(length(weightRem(logical(sexRem))),1)],'categoryColors',{'r','b'},'categoryLabels',{'F','M'});
+% title('Mouse Sex vs Weight')
+% ylabel('Mouse Weight (g)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotXCorrData_FS
+load('xCorrData_FS.mat')
+xCorrXLoc = [];
+xCorrYLoc = [];
+xCorrXEMG = [];
+xCorrYEMG = [];
+xLoc = [];
+yLoc = [];
+mouseNum = [];
+% xCorrData = {};
+maxlag = 500;
+for i = 1:size(xCorrData,1)
+%     load([fileName{i}(1:31) '.txt'])
+%     load(fileName{i});
+    xLoc(i) = xCorrData{i,6};
+    yLoc(i) = xCorrData{i,7};
+    mouseNum(i) = xCorrData{i,8};
+    motionVectorX = xCorrData{i,2};
+    motionVectorY = xCorrData{i,3};
+%     if movementData.hemisphere == 2
+%         movementData.targetPosition(:,1) = movementData.targetPosition(:,1) * -1;
+%     end
+%     movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+locDataInterp = xCorrData{i,4};
+    emgDataInterp = xCorrData{i,5};
+%     movement_time=movementData.secondsPerFrame*(1:length(motionVectorX));
+%     locDataInterp=zeros(size(movementData.targetPosition));
+%     locDataInterp(:,1)=movement_time;
+%     locDataInterp(:,2)=interp1(movementData.ballData(:,1),abs(movementData.ballData(:,2)),movement_time,'linear');
+%     emgDataInterp=zeros(size(movementData.targetPosition));
+%     emgDataInterp(:,1)=movement_time;
+%     emgDataInterp(:,2)=interp1(movementData.emgData(:,1),abs(movementData.emgData(:,2)),movement_time,'linear');
+%     xCorrData(i,:) = {fileName{i},motionVectorX,motionVectorY,locDataInterp(:,2),emgDataInterp(:,2),xLoc(i),yLoc(i),mouseNum(i)};
+%     xc_1=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
+%     xc_2=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
+%     xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
+%     xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
+    xc_1=xcorr(detrend(locDataInterp(1:(end-100)))', detrend(motionVectorX(1:(end-100)))',maxlag,'coeff');
+    xc_2=xcorr(detrend(locDataInterp(1:(end-100)))', detrend(motionVectorY(1:(end-100)))',maxlag,'coeff');
+    xc_3=xcorr(detrend(emgDataInterp(1:(end-100)))', detrend(motionVectorX(1:(end-100)))',maxlag,'coeff');
+    xc_4=xcorr(detrend(emgDataInterp(1:(end-100)))', detrend(motionVectorY(1:(end-100)))',maxlag,'coeff');
+%     xc_1=xcorr(detrend(locDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),1)).^2',maxlag,'coeff');
+%     xc_2=xcorr(detrend(locDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),2)).^2',maxlag,'coeff');
+%     xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),1)).^2',maxlag,'coeff');
+%     xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),2)).^2',maxlag,'coeff');
+    if i > 1
+        if length(xc_1) > size(xCorrXLoc,2)
+            xc_1 = xc_1(1:size(xCorrXLoc,2));
+        elseif length(xc_1) < size(xCorrXLoc,2)
+            xCorrXLoc = xCorrXLoc(:,1:length(xc_1));
+        end
+        if length(xc_2) > size(xCorrYLoc,2)
+            xc_2 = xc_2(1:size(xCorrYLoc,2));
+        elseif length(xc_2) < size(xCorrYLoc,2)
+            xCorrYLoc = xCorrYLoc(:,1:length(xc_2));
+        end
+        if length(xc_3) > size(xCorrXEMG,2)
+            xc_3 = xc_3(1:size(xCorrXEMG,2));
+        elseif length(xc_3) < size(xCorrXEMG,2)
+            xCorrXEMG = xCorrXEMG(:,1:length(xc_3));
+        end
+        if length(xc_4) > size(xCorrYEMG,2)
+            xc_4 = xc_4(1:size(xCorrYEMG,2));
+        elseif length(xc_4) < size(xCorrYEMG,2)
+            xCorrYEMG = xCorrYEMG(:,1:length(xc_4));
+        end
+    end
+%     if min(xc_1) > -.1 && max(xc_1) < .1
+%         disp(fileName{i})
+%         timeVecX = movementData.secondsPerFrame*(-maxlag:maxlag);
+%         plot(timeVecX,xc_1)
+%         figure
+%         plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)))
+%         hold on
+%         plot(locDataInterp(:,1),locDataInterp(:,2))
+%         figure
+%         plot(movementData.emgData(:,1),abs(movementData.emgData(:,2)))
+%         hold on
+%         plot(emgDataInterp(:,1),emgDataInterp(:,2))
+%         disp('check')
+%         close
+%     end
+%     if ~any(isnan(xc_1))
+%         xCorrXLoc(end+1,:) = xc_1;
+%     end
+%     if ~any(isnan(xc_2))
+%         xCorrYLoc(end+1,:) = xc_2;
+%     end
+%     if ~any(isnan(xc_3))
+%         xCorrXEMG(end+1,:) = xc_3;
+%     end
+%     if ~any(isnan(xc_4))
+%         xCorrYEMG(end+1,:) = xc_4;
+%     end
+xCorrXLoc(i,:) = xc_1;
+xCorrYLoc(i,:) = xc_2;
+xCorrXEMG(i,:) = xc_3;
+xCorrYEMG(i,:) = xc_4;
+% if any(xc_2<-.5)
+%     disp('check')
+% end
+    clear movementData
+end
+
+u = 1;
+yLocUnique = [];
+if u == 1
+    % unique locations
+    [~,~,uniRows] = unique([xLoc' yLoc' mouseNum'],'rows');
+    % unique mice
+%     [~,~,uniRows] = unique(mouseNum');
+    xCorrXLocNew = [];
+    xCorrYLocNew = [];
+    xCorrXEMGNew = [];
+    xCorrYEMGNew = [];
+    for n = 1:max(uniRows)
+        xCorrXLocUnique = xCorrXLoc(uniRows == n,:);
+        xCorrYLocUnique = xCorrYLoc(uniRows == n,:);
+        xCorrXEMGUnique = xCorrXEMG(uniRows == n,:);
+        xCorrYEMGUnique = xCorrYEMG(uniRows == n,:);
+        xCorrXLocNew(n,:) = mean(xCorrXLocUnique,1);
+        xCorrYLocNew(n,:) =  mean(xCorrYLocUnique,1);
+        xCorrXEMGNew(n,:) =  mean(xCorrXEMGUnique,1);
+        xCorrYEMGNew(n,:) =  mean(xCorrYEMGUnique,1);
+%         xLocUnique = xLoc(find(uniRows == n),'first');
+        yLocUnique(n) = yLoc(find(uniRows == n,1));
+    end
+    xCorrXLoc = xCorrXLocNew;
+    xCorrYLoc = xCorrYLocNew;
+    xCorrXEMG = xCorrXEMGNew;
+    xCorrYEMG = xCorrYEMGNew;
+end
+
+        
+% load(fileName{1});
+[meanXLoc,cIntFillPtsXLoc] = getCIntMeanAndFillPts(xCorrXLoc,90);
+[meanYLoc,cIntFillPtsYLoc] = getCIntMeanAndFillPts(xCorrYLoc,90);
+[meanXEMG,cIntFillPtsXEMG] = getCIntMeanAndFillPts(xCorrXEMG,90);
+[meanYEMG,cIntFillPtsYEMG] = getCIntMeanAndFillPts(xCorrYEMG,90);
+timeVecX = 0.0253*(-maxlag:maxlag);
+timeVecY = 0.0253*(-maxlag:maxlag);
+
+
+% targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
+% movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+% movementData.targetPosition = targetPositionInSkull;
+% movement_time=movementData.secondsPerFrame*(1:length(movementData.targetPosition));
+% movementData.locDataInterp=zeros(size(movementData.targetPosition));
+% movementData.locDataInterp(:,1)=movement_time;
+% movementData.locDataInterp(:,2)=interp1(movementData.ballData(:,1),abs(movementData.ballData(:,2)),movement_time,'linear');
+
+% % % h(1) = figure('Color','White','Name','Figure 16a','NumberTitle','off');
+% % % % subplot(2,1,1)
+% % % timeInd = find(timeVecX > -1,1);
+% % % corrVsPosLoc = [];
+% % % for n = 1:size(xCorrXLoc,1)
+% % %     corrVsPosLoc(n) = xCorrXLoc(n,timeInd);
+% % % end
+% % % scatter(yLocUnique,corrVsPosLoc)
+% % % hold on
+% % % mdl = fitlm(yLocUnique,corrVsPosLoc);
+% % % % plot(age(logical(sex)),mdl.Fitted,"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% % % plot(-6000:1:4000,mdl.Coefficients{1,1}+((-6000:1:4000)*mdl.Coefficients{2,1}),"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% % % % [~,yCI]=predict(mdl,[min(age(logical(sex))):1:max(age(logical(sex)))]',"Prediction","curve");
+% % % [~,yCI]=predict(mdl,(-6000:1:4000)',"Prediction","curve");
+% % % % [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% % % % plot([min(age(logical(sex))):1:max(age(logical(sex)))]',yCI,"b--","DisplayName","Male CI") ;
+% % % plot((-6000:1:4000)',yCI,"b--","DisplayName","Male CI") ;
+% % % hold off
+% % % ylim([-1 1])
+% % % title('Locomotion xcorr')
+% % % xlabel('<Rostral  Caudal>')
+% % % 
+% % % h(1) = figure('Color','White','Name','Figure 16b','NumberTitle','off');
+% % % % subplot(2,1,2)
+% % % corrVsPosEMG = [];
+% % % for n = 1:size(xCorrXLoc,1)
+% % %     corrVsPosEMG(n) = xCorrXEMG(n,timeInd);
+% % % end
+% % % scatter(yLocUnique,corrVsPosEMG)
+% % % hold on
+% % % mdl = fitlm(yLocUnique,corrVsPosEMG);
+% % % % plot(age(logical(sex)),mdl.Fitted,"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% % % plot(-6000:1:4000,mdl.Coefficients{1,1}+((-6000:1:4000)*mdl.Coefficients{2,1}),"b-","LineWidth",2,"DisplayName","Male Fit") ;
+% % % % [~,yCI]=predict(mdl,[min(age(logical(sex))):1:max(age(logical(sex)))]',"Prediction","curve");
+% % % [~,yCI]=predict(mdl,(-6000:1:4000)',"Prediction","curve");
+% % % % [~,yci_obs]=predict(mdl,x,"Prediction","observation");
+% % % % plot([min(age(logical(sex))):1:max(age(logical(sex)))]',yCI,"b--","DisplayName","Male CI") ;
+% % % plot((-6000:1:4000)',yCI,"b--","DisplayName","Male CI") ;
+% % % hold off
+% % % ylim([-1 1])
+% % % title('EMG xcorr')
+% % % xlabel('<Rostral  Caudal>')
+
+
+h(1) = figure('Color','White','Name','Figure 16a','NumberTitle','off');
+% subplot(2,2,1)
+maxMeanVal = max(abs([meanXLoc meanYLoc cIntFillPtsXLoc cIntFillPtsYLoc]));
+plot(timeVecX,meanXLoc,'k')
+hold on
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsXLoc,'r','Linestyle','none');
+set(f,'facea',[.2]);
+for n = 1:size(xCorrXLoc,1)
+    plot(timeVecX,xCorrXLoc(n,:),'Color',[1,0,0,0.1])
+end
+peak = max(meanXLoc);
+peakTime = timeVecX(meanXLoc == peak);
+plot(peakTime,peak,'kx','MarkerSize',25)
+peakVals = [];
+for n = 1:size(xCorrXLoc,1)
+    peakVals(end+1) = xCorrXLoc(n,timeVecX == peakTime);
+end
+stdPeak = std(peakVals);
+text(-12,-.8,['Mean Peak:' num2str(peakTime) ',' num2str(peak) ', \pm\sigma:' num2str(stdPeak)])
+% plot(timeVecX(brainMotionStart),meanXLoc(brainMotionStart),'rx')
+hold off
+title('Lateral Brain Motion and Locomotion Cross-Correlation')
+ylabel('Noramlized Cross-Correlation')
+xlabel('Lags (s)')
+ylim([-1 1])
+
+h(1) = figure('Color','White','Name','Figure 16b','NumberTitle','off');
+% subplot(2,2,2)
+maxMeanVal = max(abs([meanXLoc meanYLoc cIntFillPtsXLoc cIntFillPtsYLoc]));
+plot(timeVecY,meanYLoc,'k')
+hold on
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsYLoc,'r','Linestyle','none');
+set(f,'facea',[.2]);
+for n = 1:size(xCorrYLoc,1)
+    plot(timeVecY,xCorrYLoc(n,:),'Color',[0,0,1,0.1])
+end
+peak = max(meanYLoc);
+peakTime = timeVecY(meanYLoc == peak);
+plot(peakTime,peak,'kx','MarkerSize',25)
+peakVals = [];
+for n = 1:size(xCorrYLoc,1)
+    peakVals(end+1) = xCorrYLoc(n,timeVecY == peakTime);
+end
+stdPeak = std(peakVals);
+text(-12,-.8,['Mean Peak:' num2str(peakTime) ',' num2str(peak) ', \pm\sigma:' num2str(stdPeak)])
+% plot(timeVecX(brainMotionStart),meanXLoc(brainMotionStart),'rx')
+hold off
+title('Rostral Brain Motion and Locomotion Cross-Correlation')
+ylabel('Noramlized Cross-Correlation')
+xlabel('Lags (s)')
+ylim([-1 1])
+
+h(1) = figure('Color','White','Name','Figure 16c','NumberTitle','off');
+% subplot(2,2,3)
+maxMeanVal = max(abs([meanXEMG meanYEMG cIntFillPtsXEMG cIntFillPtsYEMG]));
+plot(timeVecX,meanXEMG,'k')
+hold on
+f = fill([timeVecX flip(timeVecX)],cIntFillPtsXEMG,'r','Linestyle','none');
+set(f,'facea',[.2]);
+for n = 1:size(xCorrXEMG,1)
+    plot(timeVecX,xCorrXEMG(n,:),'Color',[1,0,0,0.1])
+end
+peak = max(meanXEMG);
+peakTime = timeVecX(meanXEMG == peak);
+plot(peakTime,peak,'kx','MarkerSize',25)
+peakVals = [];
+for n = 1:size(xCorrXEMG,1)
+    peakVals(end+1) = xCorrXEMG(n,timeVecX == peakTime);
+end
+stdPeak = std(peakVals);
+text(-12,-.8,['Mean Peak:' num2str(peakTime) ',' num2str(peak) ', \pm\sigma:' num2str(stdPeak)])
+% plot(timeVecX(brainMotionStart),meanXEMG(brainMotionStart),'rx')
+hold off
+title('Lateral Brain Motion and EMG Cross-Correlation')
+ylabel('Noramlized Cross-Correlation')
+xlabel('Lags (s)')
+ylim([-1 1])
+
+h(1) = figure('Color','White','Name','Figure 16d','NumberTitle','off');
+% subplot(2,2,4)
+maxMeanVal = max(abs([meanYEMG meanYEMG cIntFillPtsYEMG cIntFillPtsYEMG]));
+plot(timeVecY,meanYEMG,'k')
+hold on
+f = fill([timeVecY flip(timeVecY)],cIntFillPtsYEMG,'r','Linestyle','none');
+set(f,'facea',[.2]);
+for n = 1:size(xCorrYEMG,1)
+    plot(timeVecY,xCorrYEMG(n,:),'Color',[0,0,1,0.1])
+end
+peak = max(meanYEMG);
+peakTime = timeVecY(meanYEMG == peak);
+plot(peakTime,peak,'kx','MarkerSize',25)
+peakVals = [];
+for n = 1:size(xCorrYEMG,1)
+    peakVals(end+1) = xCorrYEMG(n,timeVecY == peakTime);
+end
+stdPeak = std(peakVals);
+text(-12,-.8,['Mean Peak:' num2str(peakTime) ',' num2str(peak) ', \pm\sigma:' num2str(stdPeak)])
+% plot(timeVecY(brainMotionStart),meanYEMG(brainMotionStart),'rx')
+hold off
+title('Rostral Brain Motion and EMG Cross-Correlation')
+ylabel('Noramlized Cross-Correlation')
+xlabel('Lags (s)')
+ylim([-1 1])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

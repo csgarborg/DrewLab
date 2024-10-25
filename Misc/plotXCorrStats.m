@@ -1,42 +1,90 @@
-dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823','221205','221207','221208','221213'};
+% dateCell = {'211021','211022','211101','211102','211105','211109','211112','211116','211117','211119','211203','211216','220203','220209','220210','220211','220214','220221','220223','220303','220308','220309','220314','220318','220404','220406','220407','220429','220509','220511','220712','220714','220718','220719','220808','220809','220813','220815','220816','220822','220823','221205','221207','221208','221213'};
 close all
-fileName = {};
-for n = 1:size(dateCell,2)
-    folderName = ['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
-    fileList = dir(folderName);
-    fileNamesCell = struct2cell(fileList);
-    fileNames = fileNamesCell(1,:);
-    maxRun = 0;
-    for i = 1:size(fileNames,2)
-        if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
-             maxRun = str2double(fileNames{i}(8:10));
-        end
-    end
-    for i = 1:maxRun
-        if i > 9
-            runNumberStr = num2str(i);
-        else
-            runNumberStr = ['0' num2str(i)];
-        end
-        if exist(['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processe_2layerBrainInSkullDataFinal.mat'],'file')
-            fileName{end+1} = ['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processe_2layerBrainInSkullDataFinal.mat'];
-        end
-    end
-end
-medFiltSize = 6;
+% fileName = {};
+% for n = 1:size(dateCell,2)
+%     folderName = ['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/'];
+%     fileList = dir(folderName);
+%     fileNamesCell = struct2cell(fileList);
+%     fileNames = fileNamesCell(1,:);
+%     maxRun = 0;
+%     for i = 1:size(fileNames,2)
+%         if contains(fileNames{i},dateCell{n}) && str2double(fileNames{i}(8:10)) > maxRun
+%              maxRun = str2double(fileNames{i}(8:10));
+%         end
+%     end
+%     for i = 1:maxRun
+%         if i > 9
+%             runNumberStr = num2str(i);
+%         else
+%             runNumberStr = ['0' num2str(i)];
+%         end
+%         if exist(['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processe_2layerBrainInSkullDataFinal.mat'],'file')
+%             fileName{end+1} = ['D:/' dateCell{n}(1:2) '-' dateCell{n}(3:4) '-' dateCell{n}(5:6) '_MouseExp/' dateCell{n} '_0' runNumberStr '_processe_2layerBrainInSkullDataFinal.mat'];
+%         end
+%     end
+% end
+% medFiltSize = 6;
 
+% fileName = {};
+% load('LTADataCellEMG_FS.mat')
+% for n = 1:size(locDataCell)
+%     if isnan(locDataCell{n,3})
+%         continue
+%     end
+%     fileName{end+1} = locDataCell{n,1};
+% %     motionVectorX = locDataCell{n,3}(2,:);
+% %     motionVectorY = locDataCell{n,4}(2,:);
+% %     if n > 1
+% %         if length(motionVectorX) > size(motionEventsLocationsX,2)
+% %             motionVectorX = motionVectorX(1:size(motionEventsLocationsX,2));
+% %         elseif length(motionVectorX) < size(motionEventsLocationsX,2)
+% %             motionEventsLocationsX = motionEventsLocationsX(:,1:length(motionVectorX));
+% %         end
+% %         if length(motionVectorY) > size(motionEventsLocationsY,2)
+% %             motionVectorY = motionVectorY(1:size(motionEventsLocationsY,2));
+% %         elseif length(motionVectorY) < size(motionEventsLocationsY,2)
+% %             motionEventsLocationsY = motionEventsLocationsY(:,1:length(motionVectorY));
+% %         end
+% %     end
+% %     motionEventsLocationsX(end+1,:) = motionVectorX;
+% %     motionEventsLocationsY(end+1,:) = motionVectorY;
+%     
+% %     singleTimeVecX = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorX));
+% %     dispTimeThreshX(end+1) = motionVectorX((find(singleTimeVecX>timeThresh,1))) - motionVectorX((find(singleTimeVecX>0,1)));
+% %     dispTimeThreshX(end+1) = motionVectorX((find(singleTimeVecX>timeThresh,1)));
+% %     idxToThreshXSingle = find((motionVectorX - motionVectorX(find(singleTimeVecX>0,1))) > moveThresh & singleTimeVecX>0 & singleTimeVecX<=3,1);
+% %     idxToThreshXSingle = find(motionVectorX > moveThresh & singleTimeVecX<=3,1);
+% %     if ~isempty(idxToThreshXSingle)
+% %         timeToThreshX(end+1) = singleTimeVecX(idxToThreshXSingle);
+% %     end
+% %     singleTimeVecY = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(locDataCell{1,2}(1,3)-locDataCell{1,2}(1,2)),length(motionVectorY));
+% %     dispTimeThreshY(end+1) =  (motionVectorY((find(singleTimeVecY>timeThresh,1))) - motionVectorY((find(singleTimeVecY>0,1))))*-1;
+% %     idxToThreshYSingle = find((motionVectorY - motionVectorY(find(singleTimeVecY>0,1)))*-1 > moveThresh & singleTimeVecY>0 & singleTimeVecY<=3,1);
+% %     if ~isempty(idxToThreshYSingle)
+% %         timeToThreshY(end+1) = singleTimeVecY(idxToThreshYSingle);
+% %     end
+% end
+
+load('xCorrData_FS.mat')
 xCorrXLoc = [];
 xCorrYLoc = [];
 xCorrXEMG = [];
 xCorrYEMG = [];
+xLoc = [];
+yLoc = [];
+mouseNum = [];
+xCorrData = {};
 maxlag = 500;
 for i = 1:numel(fileName)
 %     load([fileName{i}(1:31) '.txt'])
     load(fileName{i});
+    xLoc(i) = movementData.xLocMicrons;
+    yLoc(i) = movementData.yLocMicrons;
+    mouseNum(i) = str2double(movementData.mouseNumber);
     motionVectorX = movementData.targetPosition(:,1);
     motionVectorY = movementData.targetPosition(:,2);
     if movementData.hemisphere == 2
-        movementData.targetPosition(:,1) = movementData.targetPosition(:,1) * -1;
+        motionVectorX = motionVectorX * -1;
     end
 %     movementData.secondsPerFrame = movementData.secondsPerFrame/2;
     movement_time=movementData.secondsPerFrame*(1:length(motionVectorX));
@@ -46,10 +94,19 @@ for i = 1:numel(fileName)
     emgDataInterp=zeros(size(movementData.targetPosition));
     emgDataInterp(:,1)=movement_time;
     emgDataInterp(:,2)=interp1(movementData.emgData(:,1),abs(movementData.emgData(:,2)),movement_time,'linear');
-    xc_1=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
-    xc_2=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
-    xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
-    xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
+    xCorrData(i,:) = {fileName{i},motionVectorX,motionVectorY,locDataInterp(:,2),emgDataInterp(:,2),xLoc(i),yLoc(i),mouseNum(i)};
+%     xc_1=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
+%     xc_2=xcorr(detrend(locDataInterp(1:(end-100),2)-mean(locDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
+%     xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),1)-mean(movementData.targetPosition(1:(end-100),1)))',maxlag,'coeff');
+%     xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2)-mean(emgDataInterp(1:(end-100),2)))', detrend(movementData.targetPosition(1:(end-100),2)-mean(movementData.targetPosition(1:(end-100),2)))',maxlag,'coeff');
+    xc_1=xcorr(detrend(locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),1))',maxlag,'coeff');
+    xc_2=xcorr(detrend(locDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),2))',maxlag,'coeff');
+    xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),1))',maxlag,'coeff');
+    xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2))', detrend(movementData.targetPosition(1:(end-100),2))',maxlag,'coeff');
+%     xc_1=xcorr(detrend(locDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),1)).^2',maxlag,'coeff');
+%     xc_2=xcorr(detrend(locDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),2)).^2',maxlag,'coeff');
+%     xc_3=xcorr(detrend(emgDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),1)).^2',maxlag,'coeff');
+%     xc_4=xcorr(detrend(emgDataInterp(1:(end-100),2)).^2', detrend(movementData.targetPosition(1:(end-100),2)).^2',maxlag,'coeff');
     if i > 1
         if length(xc_1) > size(xCorrXLoc,2)
             xc_1 = xc_1(1:size(xCorrXLoc,2));
@@ -87,20 +144,55 @@ for i = 1:numel(fileName)
 %         disp('check')
 %         close
 %     end
-    if ~any(isnan(xc_1))
-        xCorrXLoc(end+1,:) = xc_1;
-    end
-    if ~any(isnan(xc_2))
-        xCorrYLoc(end+1,:) = xc_2;
-    end
-    if ~any(isnan(xc_3))
-        xCorrXEMG(end+1,:) = xc_3;
-    end
-    if ~any(isnan(xc_4))
-        xCorrYEMG(end+1,:) = xc_4;
-    end
+%     if ~any(isnan(xc_1))
+%         xCorrXLoc(end+1,:) = xc_1;
+%     end
+%     if ~any(isnan(xc_2))
+%         xCorrYLoc(end+1,:) = xc_2;
+%     end
+%     if ~any(isnan(xc_3))
+%         xCorrXEMG(end+1,:) = xc_3;
+%     end
+%     if ~any(isnan(xc_4))
+%         xCorrYEMG(end+1,:) = xc_4;
+%     end
+xCorrXLoc(i,:) = xc_1;
+xCorrYLoc(i,:) = xc_2;
+xCorrXEMG(i,:) = xc_3;
+xCorrYEMG(i,:) = xc_4;
+% if any(xc_2<-.5)
+%     disp('check')
+% end
     clear movementData
 end
+
+u = 1;
+if u == 1
+    % unique locations
+    [~,~,uniRows] = unique([xLoc' yLoc' mouseNum'],'rows');
+    % unique mice
+%     [~,~,uniRows] = unique(mouseNum');
+    xCorrXLocNew = [];
+    xCorrYLocNew = [];
+    xCorrXEMGNew = [];
+    xCorrYEMGNew = [];
+    for n = 1:max(uniRows)
+        xCorrXLocUnique = xCorrXLoc(uniRows == n,:);
+        xCorrYLocUnique = xCorrYLoc(uniRows == n,:);
+        xCorrXEMGUnique = xCorrXEMG(uniRows == n,:);
+        xCorrYEMGUnique = xCorrYEMG(uniRows == n,:);
+        xCorrXLocNew(n,:) = mean(xCorrXLocUnique,1);
+        xCorrYLocNew(n,:) =  mean(xCorrYLocUnique,1);
+        xCorrXEMGNew(n,:) =  mean(xCorrXEMGUnique,1);
+        xCorrYEMGNew(n,:) =  mean(xCorrYEMGUnique,1);
+    end
+    xCorrXLoc = xCorrXLocNew;
+    xCorrYLoc = xCorrYLocNew;
+    xCorrXEMG = xCorrXEMGNew;
+    xCorrYEMG = xCorrYEMGNew;
+end
+
+        
 load(fileName{1});
 [meanXLoc,cIntFillPtsXLoc] = getCIntMeanAndFillPts(xCorrXLoc,90);
 [meanYLoc,cIntFillPtsYLoc] = getCIntMeanAndFillPts(xCorrYLoc,90);
@@ -142,7 +234,7 @@ hold off
 title(['Figure 2d' 10 'Brain Motion and Locomotion Cross-Correlation - X'])
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-ylim([0 1])
+ylim([-1 1])
 
 
 subplot(2,2,2)
@@ -168,7 +260,7 @@ hold off
 title(['Figure 2d' 10 'Brain Motion and Locomotion Cross-Correlation - Y'])
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-ylim([0 1])
+ylim([-1 1])
 
 
 subplot(2,2,3)
@@ -194,7 +286,7 @@ hold off
 title(['Figure 2d' 10 'Brain Motion and EMG Cross-Correlation - X'])
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-ylim([0 1])
+ylim([-1 1])
 
 subplot(2,2,4)
 maxMeanVal = max(abs([meanYEMG meanYEMG cIntFillPtsYEMG cIntFillPtsYEMG]));
@@ -219,7 +311,7 @@ hold off
 title(['Figure 2d' 10 'Brain Motion and EMG Cross-Correlation - Y'])
 ylabel('Noramlized Cross-Correlation')
 xlabel('Lags (s)')
-ylim([0 1])
+ylim([-1 1])
 
 % h(5) = figure('Color','White');
 % maxlag=500;
