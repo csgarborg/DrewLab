@@ -665,7 +665,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotSqueezeQuiver_FS
-load('movementDataLogSqueeze.mat')
+load('movementDataLogSqueeze_FS.mat')
 xLoc = [];
 yLoc = [];
 UMic = [];
