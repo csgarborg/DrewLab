@@ -569,7 +569,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotSkullQuiver_FS
-load('movementDataLogSkull_new.mat')
+load('movementDataLogSkull_FS.mat')
 moveDataMat = moveDataMatSkull;
 xLoc = [];
 yLoc = [];
