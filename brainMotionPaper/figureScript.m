@@ -678,7 +678,7 @@ e = {[] [] []};
 [uniqueLocs,~,locIdx] = unique(cell2mat(moveDataMat(:,4:5)),'rows');
 moveDataMatOrig = moveDataMat;
 moveDataMat = {};
-for n = 1:size(uniqueLocs)
+for n = 1:size(uniqueLocs,1)
     k = find(locIdx == n);
     if moveDataMatOrig{k(1),5} < -4000
         continue
@@ -974,7 +974,7 @@ targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
 movementData.targetPosition = targetPositionInSkull;
 movement_time=movementData.secondsPerFrame*(1:length(movementData.targetPosition));
-movementData.locDataInterp=zeros(size(movementData.targetPosition));
+movementData.locDataInterp=zeros(size(movementData.targetPosition,1));
 movementData.locDataInterp(:,1)=movement_time;
 movementData.locDataInterp(:,2)=interp1(movementData.ballData(:,1),abs(movementData.ballData(:,2)),movement_time,'linear');
 
@@ -1052,7 +1052,7 @@ movementData.targetPosition = combineBrainSkullMovement_FS(movementData,stationa
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
 best_lag=round(1/movementData.secondsPerFrame);
 movement_time=movementData.secondsPerFrame*(1:length(movementData.targetPosition));
-movementData.emgDataInterp=zeros(size(movementData.targetPosition));
+movementData.emgDataInterp=zeros(size(movementData.targetPosition,1));
 movementData.emgDataInterp(:,1)=movement_time;
 movementData.emgDataInterp(:,2)=interp1(movementData.emgData(:,1),movementData.emgData(:,2),movement_time,'linear');
 % emg_bins=.5:.1:3.5;
@@ -1116,7 +1116,7 @@ targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
 movementData.targetPosition = targetPositionInSkull;
 movement_time=movementData.secondsPerFrame*(1:length(movementData.targetPosition));
-movementData.emgDataInterp=zeros(size(movementData.targetPosition));
+movementData.emgDataInterp=zeros(size(movementData.targetPosition,1));
 movementData.emgDataInterp(:,1)=movement_time;
 movementData.emgDataInterp(:,2)=interp1(movementData.emgData(:,1),abs(movementData.emgData(:,2)),movement_time,'linear');
 
@@ -1156,7 +1156,7 @@ timeThresh = 1.5;
 binEdgesTime = -2:.25:3;
 binEdgesDisp = -4:.25:4;
 load('LTADataCell_FS.mat')
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,3})
         continue
     end
@@ -1251,7 +1251,7 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,6})
         continue
     end
@@ -1521,7 +1521,7 @@ timeThresh = 1.5;
 binEdgesTime = -2:.25:3;
 binEdgesDisp = -4:.25:4;
 load('ETADataCell_FS.mat')
-for n = 1:size(EMGDataCell)
+for n = 1:size(EMGDataCell,1)
     if isnan(EMGDataCell{n,3})
         continue
     end
@@ -1616,7 +1616,7 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-for n = 1:size(EMGDataCell)
+for n = 1:size(EMGDataCell,1)
     if isnan(EMGDataCell{n,6})
         continue
     end
@@ -2218,7 +2218,7 @@ moveThresh = .1;
 timeThresh = 1.5;
 numBins = 20;
 load('LTADataCellSkull_FS.mat')
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,3})
         continue
     end
@@ -2313,7 +2313,7 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,6})
         continue
     end
@@ -2559,7 +2559,7 @@ moveThresh = .1;
 timeThresh = 1.5;
 numBins = 20;
 load('ETADataCellSkull_FS.mat')
-for n = 1:size(EMGDataCell)
+for n = 1:size(EMGDataCell,1)
     if isnan(EMGDataCell{n,3})
         continue
     end
@@ -2654,7 +2654,7 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-for n = 1:size(EMGDataCell)
+for n = 1:size(EMGDataCell,1)
     if isnan(EMGDataCell{n,6})
         continue
     end
@@ -2901,7 +2901,7 @@ timeThresh = 1.5;
 binEdgesTime = -2:.25:3;
 binEdgesDisp = -4:.25:4;
 load('LTADataCellOlf_FS.mat')
-for n = 1:size(locDataCellOlf)
+for n = 1:size(locDataCellOlf,1)
     if isnan(locDataCellOlf{n,3})
         continue
     end
@@ -2996,7 +2996,7 @@ clear movementData
 
 stopMotionEventsLocationsX = [];
 stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCellOlf)
+for n = 1:size(locDataCellOlf,1)
     if isnan(locDataCellOlf{n,6})
         continue
     end
@@ -3452,7 +3452,7 @@ timeThresh = 1.5;
 binEdgesTime = -2:.25:3;
 binEdgesDisp = -4:.25:4;
 load('squeezeDataCell_FS.mat')
-for n = 1:size(squeezeDataCell)
+for n = 1:size(squeezeDataCell,1)
     if isnan(squeezeDataCell{n,3})
         continue
     end
@@ -3891,7 +3891,7 @@ moveThresh = .1;
 timeThresh = 1.5;
 numBins = 20;
 load('squeezeDataCellSkull_FS.mat')
-for n = 1:size(squeezeDataCell)
+for n = 1:size(squeezeDataCell,1)
     if isnan(squeezeDataCell{n,3})
         continue
     end
@@ -4059,7 +4059,7 @@ timeThresh = .4;
 binEdgesTime = -.25:.05:1;
 binEdgesDisp = -2.5:.1:2.5;
 load('respDataCell_FS.mat')
-for n = 1:size(respDataCell)
+for n = 1:size(respDataCell,1)
     if isnan(respDataCell{n,3})
         continue
     end
@@ -4248,7 +4248,7 @@ moveThresh = .1;
 timeThresh = .5;
 numBins = 20;
 load('respDataCellSkull_FS.mat')
-for n = 1:size(respDataCell)
+for n = 1:size(respDataCell,1)
     if isnan(respDataCell{n,3})
         continue
     end
@@ -4416,7 +4416,7 @@ timeThresh = -.25;
 binEdgesTime = -2:.1:3;
 binEdgesDisp = 0:.1:4;
 load('LTADataCellEMG_FS.mat')
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,3})
         continue
     end
@@ -4534,7 +4534,7 @@ grid on
 
 stopMotionEventsLocationsX = [];
 % stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,5})
         continue
     end
@@ -4891,7 +4891,7 @@ timeThresh = -.25;
 binEdgesTime = -2:.1:3;
 binEdgesDisp = 0:.1:4;
 load('LTADataCellEMG_FS.mat')
-for n = 1:size(emgEventsLocationsX)
+for n = 1:size(emgEventsLocationsX,1)
 %     if isnan(locDataCell{n,3})
 %         continue
 %     end
@@ -4987,7 +4987,7 @@ grid on
 
 stopMotionEventsLocationsX = [];
 % stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,5})
         continue
     end
@@ -5347,7 +5347,7 @@ timeThresh = -.25;
 binEdgesTime = -2:.1:3;
 binEdgesDisp = 0:.1:4;
 load('LTADataCellEMG_FS.mat')
-for n = 1:size(emgEventsLocationsX)
+for n = 1:size(emgEventsLocationsX,1)
 %     if isnan(locDataCell{n,3})
 %         continue
 %     end
@@ -5442,7 +5442,7 @@ grid on
 
 stopMotionEventsLocationsX = [];
 % stopMotionEventsLocationsY = [];
-for n = 1:size(locDataCell)
+for n = 1:size(locDataCell,1)
     if isnan(locDataCell{n,5})
         continue
     end
