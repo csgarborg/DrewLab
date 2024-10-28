@@ -487,7 +487,7 @@ e = {[] [] []};
 [uniqueLocs,~,locIdx] = unique(cell2mat(moveDataMat(:,4:5)),'rows');
 moveDataMatOrig = moveDataMat;
 moveDataMat = {};
-for n = 1:size(uniqueLocs)
+for n = 1:size(uniqueLocs,1)
     k = find(locIdx == n);
     if moveDataMatOrig{k(1),5} < -4000
         continue
@@ -583,7 +583,7 @@ e = {[] [] []};
 [uniqueLocs,~,locIdx] = unique(cell2mat(moveDataMat(:,4:5)),'rows');
 moveDataMatOrig = moveDataMat;
 moveDataMat = {};
-for n = 1:size(uniqueLocs)
+for n = 1:size(uniqueLocs,1)
     k = find(locIdx == n);
     if moveDataMatOrig{k(1),5} < -4000
         continue
