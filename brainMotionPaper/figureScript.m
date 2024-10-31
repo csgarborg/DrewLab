@@ -536,8 +536,9 @@ for n = 1:size(moveDataMat,1)
         e{1}(end+1) = sqrt(moveDataMat{n,7}(1)^2 + moveDataMat{n,7}(2)^2);
         catIdx = 4;
     end
-    plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
-    quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',2.5,'MaxHeadSize',40)
+%     plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
+    drawArrowQuiver_FS([moveDataMat{n,4},-moveDataMat{n,5}],[moveDataMat{n,4}+(moveDataMat{n,7}(1)*100),-moveDataMat{n,5}+(moveDataMat{n,7}(2)*100)]);
+%     quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',1.5,'MaxHeadSize',20)
     skullMeanX{catIdx+1}(end+1) = moveDataMat{n,8};
     skullMeanY{catIdx+1}(end+1) = moveDataMat{n,9};
     skullStdX{catIdx+1}(end+1) = moveDataMat{n,10};
@@ -550,9 +551,10 @@ end
 xlim([-5000 5000])
 ylim([-5000 5000])
 axis square
-plot(0,0,'kx','MarkerSize',12)
-plot(0,-2600,'kx','MarkerSize',12)
-quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
+plot(0,0,'ko','MarkerSize',5)
+plot(0,-2600,'ko','MarkerSize',5)
+% quiver(-2500,2500,3,0,150,'LineWidth',1.5,'MaxHeadSize',20)
+drawArrowQuiver_FS([-2500,2500],[-2500+(3*100),2500]);
 % title(['Figure 2b' 10 'Rostral, \mum'])
 ylabel('\mum')
 xlabel('\mum')
@@ -632,8 +634,9 @@ for n = 1:size(moveDataMat,1)
         e{1}(end+1) = sqrt(moveDataMat{n,7}(1)^2 + moveDataMat{n,7}(2)^2);
         catIdx = 4;
     end
-    plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
-    quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',2.5,'MaxHeadSize',40)
+%     plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
+    drawArrowQuiver_FS([moveDataMat{n,4},-moveDataMat{n,5}],[moveDataMat{n,4}+(moveDataMat{n,7}(1)*100),-moveDataMat{n,5}+(moveDataMat{n,7}(2)*100)]);
+%     quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',1.5,'MaxHeadSize',20)
     skullMeanX{catIdx+1}(end+1) = moveDataMat{n,8};
     skullMeanY{catIdx+1}(end+1) = moveDataMat{n,9};
     skullStdX{catIdx+1}(end+1) = moveDataMat{n,10};
@@ -646,9 +649,10 @@ end
 xlim([-5000 5000])
 ylim([-5000 5000])
 axis square
-plot(0,0,'kx','MarkerSize',12)
-plot(0,-2600,'kx','MarkerSize',12)
-quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
+plot(0,0,'ko','MarkerSize',5)
+plot(0,-2600,'ko','MarkerSize',5)
+drawArrowQuiver_FS([-2500,2500],[-2500+(3*100),2500]);
+% quiver(-2500,2500,3,0,150,'LineWidth',1.5,'MaxHeadSize',20)
 % title(['Figure 2b' 10 'Rostral, \mum'])
 ylabel('\mum')
 xlabel('\mum')
@@ -727,8 +731,9 @@ for n = 1:size(moveDataMat,1)
         e{1}(end+1) = sqrt(moveDataMat{n,7}(1)^2 + moveDataMat{n,7}(2)^2);
         catIdx = 4;
     end
-    plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
-    quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',2.5,'MaxHeadSize',40)
+%     plot(moveDataMat{n,4},-moveDataMat{n,5},[arrowColor 'o'],'MarkerSize',5)
+    drawArrowQuiver_FS([moveDataMat{n,4},-moveDataMat{n,5}],[moveDataMat{n,4}+(moveDataMat{n,7}(1)*100),-moveDataMat{n,5}+(moveDataMat{n,7}(2)*100)]);
+%     quiver(moveDataMat{n,4},-moveDataMat{n,5},moveDataMat{n,7}(1),moveDataMat{n,7}(2),150,'Color',arrowColor,'LineWidth',1.5,'MaxHeadSize',20)
     skullMeanX{catIdx+1}(end+1) = moveDataMat{n,8};
     skullMeanY{catIdx+1}(end+1) = moveDataMat{n,9};
     skullStdX{catIdx+1}(end+1) = moveDataMat{n,10};
@@ -741,9 +746,10 @@ end
 xlim([-5000 5000])
 ylim([-5000 5000])
 axis square
-plot(0,0,'kx','MarkerSize',12)
-plot(0,-2600,'kx','MarkerSize',12)
-quiver(-2500,2500,3,0,150,'LineWidth',2.5,'MaxHeadSize',40)
+plot(0,0,'ko','MarkerSize',5)
+plot(0,-2600,'ko','MarkerSize',5)
+% quiver(-2500,2500,3,0,150,'LineWidth',1.5,'MaxHeadSize',20)
+drawArrowQuiver_FS([-2500,2500],[-2500+(3*100),2500]);
 % title(['Figure 2b' 10 'Rostral, \mum'])
 ylabel('\mum')
 xlabel('\mum')
@@ -7187,6 +7193,71 @@ Angle = atan2(-dy,dx);
 P = Length*P;   %Scale
 P = [cos(Angle), sin(Angle); -sin(Angle), cos(Angle)]*P;  %Rotate
 P = p0(:)*ones(1,7) + P;  %Shift
+
+% Plot!
+hArrow = patch(P(1,:), P(2,:),color);  axis equal;
+hArrow.EdgeColor = color;
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function hArrow = drawArrowQuiver_FS(p0,p1,color)
+% drawArrow(p0,p1)
+%
+% Draws a simple arrow in 2D, from p0 to p1.
+%
+% INPUTS:
+%   p0 = [x0; y0] = position of the tail
+%   p1 = [x1; y1] = position of the tip
+%   color = arrow color. Optional: default is black 
+%       --> can be 'r','g','b','c','m','y','w', 'k' or a 1x3 color vector
+%
+% OUTPUTS:
+%   hArrow = handle to the patch object representing the arrow
+%
+
+% Defaults:
+if nargin == 2
+   color = 'k'; 
+end
+
+% Parameters:
+W1 = 0.08;   % half width of the arrow head, normalized by length of arrow
+W2 = 0.014;  % half width of the arrow shaft
+L1 = 0.18;   % Length of the arrow head, normalized by length of arrow
+L2 = 0.13;  % Length of the arrow inset
+
+% Unpack the tail and tip of the arrow
+x0 = p0(1);
+y0 = p0(2);
+x1 = p1(1);
+y1 = p1(2);
+
+% Start by drawing an arrow from 0 to 1 on the x-axis
+P = [...
+    0, (1-L2), (1-L1), 1, (1-L1), (1-L2), 0;
+    W2,    W2,     W1, 0,    -W1,    -W2, -W2];
+
+% Scale,rotate, shift and plot:
+dx = x1-x0;
+dy = y1-y0;
+Length = sqrt(dx*dx + dy*dy);
+Angle = atan2(-dy,dx);
+POld = P;
+multFact = 400;
+P = Length*P;   %Scale
+% P(1,3) = POld(1,3)*multFact;
+% P(1,5) = POld(1,5)*multFact;
+P(2,1) = POld(2,1)*multFact;
+P(2,2) = POld(2,2)*multFact;
+P(2,3) = POld(2,3)*multFact;
+P(2,5) = POld(2,5)*multFact;
+P(2,6) = POld(2,6)*multFact;
+P(2,7) = POld(2,7)*multFact;
+P = [cos(Angle), sin(Angle); -sin(Angle), cos(Angle)]*P;  %Rotate
+P = p0(:)*ones(1,7) + P;  %Shift
+
 
 % Plot!
 hArrow = patch(P(1,:), P(2,:),color);  axis equal;
