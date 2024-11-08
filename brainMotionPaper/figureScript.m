@@ -5,10 +5,19 @@ close all;
 
 %% Process data sets
 
+combinedMovementDataBrain_221207_008 = combineMotionTracking_FS('221207_008_Layer1_',1:3);
+combinedMovementDataSkull_221207_008 = combineMotionTracking_FS('221207_008_Layer2_',1:3);
+
 combinedMovementDataBrain_221207_010 = combineMotionTracking_FS('221207_010_Layer1_',1:3);
 combinedMovementDataSkull_221207_010 = combineMotionTracking_FS('221207_010_Layer2_',1:3);
 
+combinedMovementDataBrain_221208_006 = combineMotionTracking_FS('221208_006_Layer1_',1:3);
+combinedMovementDataSkull_221208_006 = combineMotionTracking_FS('221208_006_Layer2_',1:3);
+
 combinedMovementData_210218_006 = combineMotionTracking_FS('210218_006_',1:8);
+
+combinedMovementDataBrain_211216_001 = combineMotionTracking_FS('211216_001_Layer1_',1:4);
+combinedMovementDataSkull_211216_001 = combineMotionTracking_FS('211216_001_Layer2_',1:4);
 
 combinedMovementDataBrain_211216_002 = combineMotionTracking_FS('211216_002_Layer1_',1:5);
 combinedMovementDataSkull_211216_002 = combineMotionTracking_FS('211216_002_Layer2_',1:5);
@@ -25,7 +34,14 @@ combinedMovementDataSkull_240612_002 = combineMotionTracking_FS('240612_002_Laye
 combinedMovementDataBrain_240612_020 = combineMotionTracking_FS('240612_020_Layer1_',1:3);
 combinedMovementDataSkull_240612_020 = combineMotionTracking_FS('240612_020_Layer2_',1:3);
 
+combinedMovementDataBrain_220813_003 = combineMotionTracking_FS('220813_003_Layer1_',1:3);
+combinedMovementDataSkull_220813_003 = combineMotionTracking_FS('220813_003_Layer2_',1:3);
+
 combinedMovementDataSkull_240814_006 = combineMotionTracking_FS('240814_006_',1:3);
+
+combinedMovementDataBrain_221205_004 = combineMotionTracking_FS('221205_004_Layer1_',1:3);
+combinedMovementDataDura_221205_004 = combineMotionTracking_FS('221205_004_Layer2_',1:3);
+combinedMovementDataSkull_221205_004 = combineMotionTracking_FS('221205_004_Layer3_',1:3);
 
 load('211216_002_rawData.mat');
 
@@ -79,11 +95,11 @@ plotEMGXCorr_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_2
 
 %% figure 5b
 
-plotMotionTracking2P2LPCASqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020);
+plotMotionTracking2P2LPCASqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020,'Figure 5b');
 
 %% figure 5c
 
-plotMotionTrackingBrainAndSkullSqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020);
+plotMotionTrackingBrainAndSkullSqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020,'Figure 5c');
 
 %% figure 5d
 
@@ -119,7 +135,7 @@ plotRespTriggeredAvgSkull_FS
 
 %% supplementary figure 4d
 
-plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001);
+plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001,'Supplementary Figure 4d_1');
 
 %% supplementary figure 4e
 
@@ -147,7 +163,7 @@ plotMouseStats_FS
 
 %% supplementary figure 9b
 
-plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006)
+plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006,'Supplementary Figure 9b')
 
 %% supplementary figure 10a-d
 
@@ -172,6 +188,41 @@ plotAbdominalCompressionPressure_FS
 %% supplementary figure 16a-d
 
 plotXCorrData_FS
+
+%% animation movie
+
+plotMovementBrainInSkullMovie_FS(combinedMovementDataBrain_211216_001,combinedMovementDataSkull_211216_001)
+
+%% olfactory movie
+
+plotMovementBrainInSkullOlfMovie_FS(combinedMovementDataBrain_220813_003,combinedMovementDataSkull_220813_003)
+
+%% 8 locations movie
+
+plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006,'8 Locations Movie')
+
+%% 3 layer movie
+
+plotMovementBrainInSkull3LayerMovie_FS(combinedMovementDataBrain_221205_004,combinedMovementDataDura_221205_004,combinedMovementDataSkull_221205_004)
+
+%% motion no locomotion movie
+
+plotMovementBrainInSkullNoLocoMovie_FS(combinedMovementDataBrain_221207_008,combinedMovementDataSkull_221207_008)
+plotMotionTracking2P2LPCANoLoco_FS(combinedMovementDataBrain_221207_008,combinedMovementDataSkull_221207_008)
+
+%% squeeze movie
+
+plotMotionTrackingBrainAndSkullSqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020,'Squeeze Movie 1')
+plotMotionTracking2P2LPCASqueeze_FS(combinedMovementDataBrain_240612_020,combinedMovementDataSkull_240612_020,'Squeeze Movie 2')
+
+%% respiration movie
+
+plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001,'Respiration Movie')
+
+%% hemisphere comparison movie
+
+plotMovementBrainInSkullHemisphereMovie_FS(combinedMovementDataBrain_221207_010,combinedMovementDataSkull_221207_010,combinedMovementDataBrain_221208_006,combinedMovementDataSkull_221208_006)
+plotMotionTracking2P2LPCAHemisphere_FS(combinedMovementDataBrain_221207_010,combinedMovementDataSkull_221207_010,combinedMovementDataBrain_221208_006,combinedMovementDataSkull_221208_006)
 
 %% vectorize figures for publication
 
@@ -300,13 +351,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotMotionTrackingBrainOnly_FS(movementData)
+function plotMotionTrackingBrainOnly_FS(movementData,figureTitle)
 
 subtitle = 'Figure 1e';
 yLimitMotion = [-2 15];
 yLimitLocomotion = [0 0.3];
 
-h(1) = figure('Color','White','Name','Supplementary Figure 9b','NumberTitle','off');
+h(1) = figure('Color','White','Name',figureTitle,'NumberTitle','off');
 
 x1 = subplot(3,1,1);
 plot((1:size(movementData.targetPosition,1))*movementData.secondsPerFrame,movementData.targetPosition(:,1),'r')
@@ -417,6 +468,101 @@ else
     text(-6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
     text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMotionTracking2P2LPCANoLoco_FS(movementData,stationaryData)
+targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
+motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
+h(2) = figure('Color','White','Name','Motion No Locomotion Movie 2','NumberTitle','off');
+s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
+s.MarkerFaceAlpha = .1;
+hold on
+drawArrow_FS([0;0],[motionVec(1);motionVec(2)]);
+hold off
+axis equal square
+axis([-6 6 -6 6])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
+% title(['\fontsize{20pt}\bf{Figure 2a}'])
+xlabel('\mum')
+ylabel('\mum')
+if movementData.hemisphere == 1
+    text(6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-6,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+else
+    text(6,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMotionTracking2P2LPCAHemisphere_FS(movementData_1,stationaryData_1,movementData_2,stationaryData_2)
+targetPositionInSkull = combineBrainSkullMovement_FS(movementData_1,stationaryData_1);
+motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
+h(2) = figure('Color','White','Name','Hemisphere Movie 3','NumberTitle','off');
+s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
+s.MarkerFaceAlpha = .1;
+hold on
+drawArrow_FS([0;0],[motionVec(1);motionVec(2)]);
+hold off
+axis equal square
+axis([-8 8 -8 8])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
+% title(['\fontsize{20pt}\bf{Figure 2a}'])
+xlabel('\mum')
+ylabel('\mum')
+if movementData_1.hemisphere == 1
+    text(8,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-8,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,8,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-8,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+else
+    text(8,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-8,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,8,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-8,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+end
+
+targetPositionInSkull = combineBrainSkullMovement_FS(movementData_2,stationaryData_2);
+motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
+h(2) = figure('Color','White','Name','Hemisphere Movie 4','NumberTitle','off');
+s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
+s.MarkerFaceAlpha = .1;
+hold on
+drawArrow_FS([0;0],[-1*motionVec(1);-1*motionVec(2)]);
+hold off
+axis equal square
+axis([-5 5 -5 5])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
+% title(['\fontsize{20pt}\bf{Figure 2a}'])
+xlabel('\mum')
+ylabel('\mum')
+if movementData_2.hemisphere == 1
+    text(5,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-5,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-5,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+else
+    text(5,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-5,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-5,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
 end
 end
 
@@ -1049,6 +1195,431 @@ plot(rawData(:,1),rawData(:,3),'Color',[1 0.5 0])
 axis([0 600 -1 1])
 xlabel('Time (s)')
 ylabel('EMG (mV)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMovementBrainInSkullMovie_FS(movementData,stationaryData)
+targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
+movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
+subplot(5,1,1)
+plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
+% title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+xlabel('Time (s)')
+ylabel('Brain Shift (\mum)')
+grid on
+axis([200 220 -4 6])
+if movementData.hemisphere == 1
+    text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+else
+    text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+end
+subplot(5,1,2)
+plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+xlabel('Time (s)')
+ylabel('Brain Shift (\mum)')
+grid on
+axis([200 220 -4 6])
+text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(5,1,3)
+if all(movementData.emgData(:,2) == 0)
+    title('\fontsize{20pt}\bf{No EMG Data}')
+else
+    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
+    xlabel('Time (s)')
+    ylabel('EMG Power')
+    grid on
+    xlim([200 220])
+end
+subplot(5,1,4)
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+axis([200 220 0 .25])
+xlabel('Time (s)')
+ylabel('Treadmill Velocity (m/s)')
+subplot(5,1,5)
+plot(movementData.thermoData(:,1),movementData.thermoData(:,2),'Color',[0.8549 0.1098 0.3607])
+axis([200 220 -.5 .5])
+xlabel('Time (s)')
+ylabel('Respiration Thermocouple (au)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMovementBrainInSkullOlfMovie_FS(movementData,stationaryData)
+[movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+if movementData.hemisphere == 2
+    movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
+    stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)*-1;
+end
+movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
+stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
+% movementData.targetPosition(:,1) = movementData.targetPosition(:,1)-mean(movementData.targetPosition(2480:2530,1));
+% movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movementData.targetPosition(2480:2530,2));
+% stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
+% stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
+movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Olfactory Movie','NumberTitle','off');
+subplot(3,1,1)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([100 150 -4 4])
+text(100,4,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(100,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(3,1,2)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([100 150 -4 4])
+text(100,4,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(100,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([62 272 0.5 3])
+subplot(3,1,3)
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+xlabel('Time (s)')
+ylabel('Treadmill Velocity (m/s)')
+grid on
+axis([100 150 0 0.2])
+
+% h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
+% subplot(3,1,1)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
+% % title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% if movementData.hemisphere == 1
+%     text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% else
+%     text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% end
+% subplot(3,1,2)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(3,1,3)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+% axis([100 150 0 .2])
+% xlabel('Time (s)')
+% ylabel('Treadmill Velocity (m/s)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMovementBrainInSkull3LayerMovie_FS(movementData,duraData,stationaryData)
+% [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+    movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
+    stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)*-1;
+    duraData.targetPosition(:,1) = duraData.targetPosition(:,1)*-1;
+movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
+stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
+duraData.targetPosition(:,2) = duraData.targetPosition(:,2)*-1;
+% movementData.targetPosition(:,1) = movementData.targetPosition(:,1)-mean(movementData.targetPosition(2480:2530,1));
+% movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movementData.targetPosition(2480:2530,2));
+% stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
+% stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
+% movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','3 Layer Movie','NumberTitle','off');
+subplot(3,1,1)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+plot([1:size(duraData.targetPosition,1)]*movementData.secondsPerFrame,duraData.targetPosition(:,1),'Color',[.9 .9 .9])
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([75 165 -1 5])
+text(75,5,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(75,-1,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(3,1,2)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+plot([1:size(duraData.targetPosition,1)]*movementData.secondsPerFrame,duraData.targetPosition(:,2),'Color',[.9 .9 .9])
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([75 165 -1 5])
+text(75,5,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(75,-1,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([62 272 0.5 3])
+subplot(3,1,3)
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
+xlabel('Time (s)')
+ylabel('EMG Power')
+grid on
+axis([75 165 0 4])
+
+% h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
+% subplot(3,1,1)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
+% % title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% if movementData.hemisphere == 1
+%     text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% else
+%     text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% end
+% subplot(3,1,2)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(3,1,3)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+% axis([100 150 0 .2])
+% xlabel('Time (s)')
+% ylabel('Treadmill Velocity (m/s)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMovementBrainInSkullHemisphereMovie_FS(movementData_1,stationaryData_1,movementData_2,stationaryData_2)
+% [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+%     movementData_1.targetPosition(:,1) = movementData_1.targetPosition(:,1)*-1;
+%     stationaryData_1.targetPosition(:,1) = stationaryData_1.targetPosition(:,1)*-1;
+movementData_1.targetPosition(:,2) = movementData_1.targetPosition(:,2)*-1;
+stationaryData_1.targetPosition(:,2) = stationaryData_1.targetPosition(:,2)*-1;
+% movementData_1.targetPosition(:,1) = movementData_1.targetPosition(:,1)-mean(movementData_1.targetPosition(2480:2530,1));
+% movementData_1.targetPosition(:,2) = movementData_1.targetPosition(:,2)-mean(movementData_1.targetPosition(2480:2530,2));
+% stationaryData_1.targetPosition(:,1) = stationaryData_1.targetPosition(:,1)-mean(stationaryData_1.targetPosition(2480:2530,1));
+% stationaryData_1.targetPosition(:,2) = stationaryData_1.targetPosition(:,2)-mean(stationaryData_1.targetPosition(2480:2530,2));
+% movementData_1.secondsPerFrame = movementData_1.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Hemisphere Movie 1','NumberTitle','off');
+subplot(3,1,1)
+plot([1:size(movementData_1.targetPosition,1)]*movementData_1.secondsPerFrame,movementData_1.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData_1.targetPosition,1)]*movementData_1.secondsPerFrame,stationaryData_1.targetPosition(:,1),'m')
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([150 400 -5 5])
+text(150,5,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(150,-5,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(3,1,2)
+plot([1:size(movementData_1.targetPosition,1)]*movementData_1.secondsPerFrame,movementData_1.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData_1.targetPosition,1)]*movementData_1.secondsPerFrame,stationaryData_1.targetPosition(:,2),'m')
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([150 400 -5 5])
+text(150,5,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(150,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData_1.emgData(:,1),movementData_1.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([62 272 0.5 3])
+subplot(3,1,3)
+plot(movementData_1.emgData(:,1),movementData_1.emgData(:,2),'Color',[1 0.5 0])
+xlabel('Time (s)')
+ylabel('EMG Power')
+grid on
+axis([150 400 0 4])
+
+% [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+% movementData_2.targetPosition(:,1) = movementData_2.targetPosition(:,1)*-1;
+% stationaryData_2.targetPosition(:,1) = stationaryData_2.targetPosition(:,1)*-1;
+movementData_2.targetPosition(:,2) = movementData_2.targetPosition(:,2)*-1;
+stationaryData_2.targetPosition(:,2) = stationaryData_2.targetPosition(:,2)*-1;
+% movementData_2.targetPosition(:,1) = movementData_2.targetPosition(:,1)-mean(movementData_2.targetPosition(2480:2530,1));
+% movementData_2.targetPosition(:,2) = movementData_2.targetPosition(:,2)-mean(movementData_2.targetPosition(2480:2530,2));
+% stationaryData_2.targetPosition(:,1) = stationaryData_2.targetPosition(:,1)-mean(stationaryData_2.targetPosition(2480:2530,1));
+% stationaryData_2.targetPosition(:,2) = stationaryData_2.targetPosition(:,2)-mean(stationaryData_2.targetPosition(2480:2530,2));
+% movementData_2.secondsPerFrame = movementData_2.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Hemisphere Movie 2','NumberTitle','off');
+subplot(3,1,1)
+plot([1:size(movementData_2.targetPosition,1)]*movementData_2.secondsPerFrame,movementData_2.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData_2.targetPosition,1)]*movementData_2.secondsPerFrame,stationaryData_2.targetPosition(:,1),'m')
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([90 340 -5 5])
+text(90,5,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(90,-5,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(3,1,2)
+plot([1:size(movementData_2.targetPosition,1)]*movementData_2.secondsPerFrame,movementData_2.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData_2.targetPosition,1)]*movementData_2.secondsPerFrame,stationaryData_2.targetPosition(:,2),'m')
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([90 340 -5 5])
+text(90,5,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(90,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(4,1,3)
+% plot(movementData_2.emgData(:,1),movementData_2.emgData(:,2),'k')
+% xlabel('Time (s)')
+% ylabel('Abdominal EMG (au)')
+% grid on
+% axis([62 272 0.5 3])
+subplot(3,1,3)
+plot(movementData_2.emgData(:,1),movementData_2.emgData(:,2),'Color',[1 0.5 0])
+xlabel('Time (s)')
+ylabel('EMG Power')
+grid on
+axis([90 340 0 4])
+
+% h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
+% subplot(3,1,1)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
+% % title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% if movementData.hemisphere == 1
+%     text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% else
+%     text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% end
+% subplot(3,1,2)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(3,1,3)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+% axis([100 150 0 .2])
+% xlabel('Time (s)')
+% ylabel('Treadmill Velocity (m/s)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMovementBrainInSkullNoLocoMovie_FS(movementData,stationaryData)
+[movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
+if movementData.hemisphere == 2
+    movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
+    stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)*-1;
+end
+movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
+stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
+% movementData.targetPosition(:,1) = movementData.targetPosition(:,1)-mean(movementData.targetPosition(2480:2530,1));
+% movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movementData.targetPosition(2480:2530,2));
+% stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
+% stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
+movementData.secondsPerFrame = movementData.secondsPerFrame/2;
+h(6) = figure('Color','White','Name','Motion No Locomotion Movie 1','NumberTitle','off');
+subplot(4,1,1)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+hold off
+% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+xlabel('Time (s)')
+ylabel('Medial-Lateral Shift (\mum)')
+grid on
+axis([280 350 -1 6])
+text(100,4,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(100,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(4,1,2)
+plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+hold on
+plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+hold off
+xlabel('Time (s)')
+ylabel('Rostral-Caudal Shift (\mum)')
+grid on
+axis([280 350 -1 6])
+text(100,4,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(100,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+subplot(4,1,3)
+plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
+xlabel('Time (s)')
+ylabel('Abdominal EMG (au)')
+grid on
+axis([280 350 1 3])
+subplot(4,1,4)
+plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+xlabel('Time (s)')
+ylabel('Treadmill Velocity (m/s)')
+grid on
+axis([280 350 0 .4])
+
+% h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
+% subplot(3,1,1)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
+% % title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% if movementData.hemisphere == 1
+%     text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% else
+%     text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+%     text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% end
+% subplot(3,1,2)
+% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Brain Shift (\mum)')
+% grid on
+% axis([100 150 -4 4])
+% text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+% text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+% subplot(3,1,3)
+% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
+% axis([100 150 0 .2])
+% xlabel('Time (s)')
+% ylabel('Treadmill Velocity (m/s)')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -5917,7 +6488,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotMotionTrackingBrainAndSkullResp_FS(movementData,stationaryData)
+function plotMotionTrackingBrainAndSkullResp_FS(movementData,stationaryData,figureTitle)
 [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
 if movementData.hemisphere == 2
     movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
@@ -5930,7 +6501,7 @@ movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movemen
 stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(1:50,1));
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(1:50,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Supplementary Figure 4d_1','NumberTitle','off');
+h(6) = figure('Color','White','Name',figureTitle,'NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -5967,79 +6538,81 @@ ylabel('Respiration (mean pixel intensity)')
 grid on
 axis([15 225 50 100])
 
-h(6) = figure('Color','White','Name','Supplementary Figure 4d_2','NumberTitle','off');
-subplot(4,1,1)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
-hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
-hold off
-% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
-xlabel('Time (s)')
-ylabel('Medial-Lateral Shift (\mum)')
-grid on
-axis([15 25 -3 3])
-text(15,3,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(15,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(4,1,2)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
-hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
-hold off
-xlabel('Time (s)')
-ylabel('Rostal-Caudal Shift (\mum)')
-grid on
-axis([15 25 -3 3])
-text(15,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(15,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
-xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
-grid on
-axis([15 25 0.5 2])
-subplot(4,1,4)
-plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
-xlabel('Time (s)')
-ylabel('Respiration (mean pixel intensity)')
-grid on
-axis([15 25 50 100])
-
-h(6) = figure('Color','White','Name','Supplementary Figure 4d_3','NumberTitle','off');
-subplot(4,1,1)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
-hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
-hold off
-% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
-xlabel('Time (s)')
-ylabel('Medial-Lateral Shift (\mum)')
-grid on
-axis([135 145 -3 3])
-text(135,3,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(135,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(4,1,2)
-plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
-hold on
-plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
-hold off
-xlabel('Time (s)')
-ylabel('Rostral-Caudal Shift (\mum)')
-grid on
-axis([135 145 -3 3])
-text(135,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(135,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
-xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
-grid on
-axis([135 145 0.5 2])
-subplot(4,1,4)
-plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
-xlabel('Time (s)')
-ylabel('Respiration (mean pixel intensity)')
-grid on
-axis([135 145 50 100])
+if contains(figureTitle,'Supplementary Figure')
+    h(6) = figure('Color','White','Name','Supplementary Figure 4d_2','NumberTitle','off');
+    subplot(4,1,1)
+    plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+    hold on
+    plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+    hold off
+    % title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+    xlabel('Time (s)')
+    ylabel('Medial-Lateral Shift (\mum)')
+    grid on
+    axis([15 25 -3 3])
+    text(15,3,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(15,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    subplot(4,1,2)
+    plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+    hold on
+    plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+    hold off
+    xlabel('Time (s)')
+    ylabel('Rostal-Caudal Shift (\mum)')
+    grid on
+    axis([15 25 -3 3])
+    text(15,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(15,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    subplot(4,1,3)
+    plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
+    xlabel('Time (s)')
+    ylabel('Abdominal EMG (au)')
+    grid on
+    axis([15 25 0.5 2])
+    subplot(4,1,4)
+    plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
+    xlabel('Time (s)')
+    ylabel('Respiration (mean pixel intensity)')
+    grid on
+    axis([15 25 50 100])
+    
+    h(6) = figure('Color','White','Name','Supplementary Figure 4d_3','NumberTitle','off');
+    subplot(4,1,1)
+    plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
+    hold on
+    plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,1),'m')
+    hold off
+    % title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
+    xlabel('Time (s)')
+    ylabel('Medial-Lateral Shift (\mum)')
+    grid on
+    axis([135 145 -3 3])
+    text(135,3,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(135,-3,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    subplot(4,1,2)
+    plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
+    hold on
+    plot([1:size(stationaryData.targetPosition,1)]*movementData.secondsPerFrame,stationaryData.targetPosition(:,2),'m')
+    hold off
+    xlabel('Time (s)')
+    ylabel('Rostral-Caudal Shift (\mum)')
+    grid on
+    axis([135 145 -3 3])
+    text(135,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+    text(135,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    subplot(4,1,3)
+    plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 .5 0])
+    xlabel('Time (s)')
+    ylabel('Abdominal EMG (au)')
+    grid on
+    axis([135 145 0.5 2])
+    subplot(4,1,4)
+    plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[0.8549 0.1098 0.3607])
+    xlabel('Time (s)')
+    ylabel('Respiration (mean pixel intensity)')
+    grid on
+    axis([135 145 50 100])
+end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6245,10 +6818,10 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotMotionTracking2P2LPCASqueeze_FS(movementData,stationaryData)
+function plotMotionTracking2P2LPCASqueeze_FS(movementData,stationaryData,figureTitle)
 targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
 motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
-h(2) = figure('Color','White','Name','Figure 5b','NumberTitle','off');
+h(2) = figure('Color','White','Name',figureTitle,'NumberTitle','off');
 s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
 s.MarkerFaceAlpha = .5;
 hold on
@@ -6278,7 +6851,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotMotionTrackingBrainAndSkullSqueeze_FS(movementData,stationaryData)
+function plotMotionTrackingBrainAndSkullSqueeze_FS(movementData,stationaryData,figureTitle)
 [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
 if movementData.hemisphere == 2
     movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
@@ -6291,7 +6864,7 @@ movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movemen
 stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Figure 5c','NumberTitle','off');
+h(6) = figure('Color','White','Name',figureTitle,'NumberTitle','off');
 subplot(3,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -7245,16 +7818,18 @@ dy = y1-y0;
 Length = sqrt(dx*dx + dy*dy);
 Angle = atan2(-dy,dx);
 POld = P;
-multFact = 400;
+multFact = 200;
 P = Length*P;   %Scale
 % P(1,3) = POld(1,3)*multFact;
 % P(1,5) = POld(1,5)*multFact;
-P(2,1) = POld(2,1)*multFact;
-P(2,2) = POld(2,2)*multFact;
-P(2,3) = POld(2,3)*multFact;
-P(2,5) = POld(2,5)*multFact;
-P(2,6) = POld(2,6)*multFact;
-P(2,7) = POld(2,7)*multFact;
+% P(1,2) = P(1,2)*3;
+% P(1,6) = P(1,6)*3;
+% P(2,1) = POld(2,1)*multFact;
+% P(2,2) = POld(2,2)*multFact;
+% P(2,3) = POld(2,3)*multFact;
+% P(2,5) = POld(2,5)*multFact;
+% P(2,6) = POld(2,6)*multFact;
+% P(2,7) = POld(2,7)*multFact;
 P = [cos(Angle), sin(Angle); -sin(Angle), cos(Angle)]*P;  %Rotate
 P = p0(:)*ones(1,7) + P;  %Shift
 
