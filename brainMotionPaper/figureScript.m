@@ -1566,8 +1566,8 @@ xlabel('Time (s)')
 ylabel('Medial-Lateral Shift (\mum)')
 grid on
 axis([280 350 -1 6])
-text(100,4,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(100,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+text(280,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(280,-1,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,2)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
 hold on
@@ -1577,8 +1577,8 @@ xlabel('Time (s)')
 ylabel('Rostral-Caudal Shift (\mum)')
 grid on
 axis([280 350 -1 6])
-text(100,4,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(100,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+text(280,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(280,-1,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
 plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[1 0.5 0])
 xlabel('Time (s)')
