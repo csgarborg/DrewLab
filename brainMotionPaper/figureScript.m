@@ -1184,11 +1184,12 @@ subplot(4,1,3)
 if all(movementData.emgData(:,2) == 0)
     title('\fontsize{20pt}\bf{No EMG Data}')
 else
-    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+    semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
     xlabel('Time (s)')
     ylabel('EMG Power')
     grid on
     xlim([0 600])
+    ylim([5 2000])
 end
 subplot(4,1,4)
 plot(rawData(:,1),rawData(:,3),'Color',[.85 .37 .01])
@@ -1229,7 +1230,7 @@ subplot(5,1,3)
 if all(movementData.emgData(:,2) == 0)
     title('\fontsize{20pt}\bf{No EMG Data}')
 else
-    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+    semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
     xlabel('Time (s)')
     ylabel('EMG Power')
     grid on
@@ -1377,11 +1378,11 @@ text(75,-1,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','Font
 % grid on
 % axis([62 272 0.5 3])
 subplot(3,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
 ylabel('EMG Power')
 grid on
-axis([75 165 0 4])
+axis([75 165 1 10000])
 
 % h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
 % subplot(3,1,1)
@@ -1457,11 +1458,11 @@ text(150,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','Fon
 % grid on
 % axis([62 272 0.5 3])
 subplot(3,1,3)
-plot(movementData_1.emgData(:,1),movementData_1.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData_1.emgData(:,1),10.^movementData_1.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
 ylabel('EMG Power')
 grid on
-axis([150 400 0 4])
+axis([150 400 1 10000])
 
 % [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
 % movementData_2.targetPosition(:,1) = movementData_2.targetPosition(:,1)*-1;
@@ -1504,11 +1505,11 @@ text(90,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','Font
 % grid on
 % axis([62 272 0.5 3])
 subplot(3,1,3)
-plot(movementData_2.emgData(:,1),movementData_2.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData_2.emgData(:,1),10.^movementData_2.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
 ylabel('EMG Power')
 grid on
-axis([90 340 0 4])
+axis([90 340 1 10000])
 
 % h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
 % subplot(3,1,1)
@@ -1580,11 +1581,11 @@ axis([280 350 -1 6])
 text(280,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(280,-1,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
 ylabel('Abdominal EMG (au)')
 grid on
-axis([280 350 1 3])
+axis([280 350 10 1000])
 subplot(4,1,4)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color',[.9 .67 .01])
 xlabel('Time (s)')
@@ -1670,6 +1671,7 @@ ylim([-2 6])
 xlim([0.5 3.5])
 text(.5,5.5,'Lateral','Color','w')
 text(.5,-1.5,'Medial','Color','w')
+set(gca,'XTickLabel',[10 100 1000])
 
 subplot(2,1,2)
 hh2=histogram2(movementData.emgDataInterp(1:(end-best_lag),2),movementData.targetPosition(best_lag:end-1,2), emg_bins, pixel_bins,...
@@ -1684,6 +1686,7 @@ ylim([-2 6])
 xlim([0.5 3.5])
 text(.5,5.5,'Rostral','Color','w')
 text(.5,-1.5,'Caudal','Color','w')
+set(gca,'XTickLabel',[10 100 1000])
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6526,11 +6529,11 @@ axis([15 225 -3 3])
 text(15,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(15,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
+ylabel('EMG Power (au)')
 grid on
-axis([15 225 0.5 2])
+axis([15 225 sqrt(10) 100])
 subplot(4,1,4)
 plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[.65 .46 .11])
 xlabel('Time (s)')
@@ -6564,11 +6567,11 @@ if contains(figureTitle,'Supplementary Figure')
     text(15,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(15,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     subplot(4,1,3)
-    plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+    semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
     xlabel('Time (s)')
-    ylabel('Abdominal EMG (au)')
+    ylabel('EMG Power (au)')
     grid on
-    axis([15 25 0.5 2])
+    axis([15 25 sqrt(10) 100])
     subplot(4,1,4)
     plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[.65 .46 .11])
     xlabel('Time (s)')
@@ -6601,11 +6604,11 @@ if contains(figureTitle,'Supplementary Figure')
     text(135,3,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
     text(135,-3,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     subplot(4,1,3)
-    plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+    semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
     xlabel('Time (s)')
-    ylabel('Abdominal EMG (au)')
+    ylabel('EMG Power (au)')
     grid on
-    axis([135 145 0.5 2])
+    axis([135 145 sqrt(10) 100])
     subplot(4,1,4)
     plot(movementData.videoRespiration(:,1)-1.7,movementData.videoRespiration(:,2),'Color',[.65 .46 .11])
     xlabel('Time (s)')
@@ -6655,11 +6658,11 @@ axis([62 272 -6 6])
 text(62,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(62,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
+ylabel('EMG Power (au)')
 grid on
-axis([62 272 0.5 3])
+axis([62 272 sqrt(10) 1000])
 subplot(4,1,4)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color',[.9 .67 .01])
 xlabel('Time (s)')
@@ -6692,11 +6695,11 @@ axis([66 76 -6 6])
 text(66,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(66,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
+ylabel('EMG Power (au)')
 grid on
-axis([66 76 0.5 3])
+axis([66 76 sqrt(10) 1000])
 subplot(4,1,4)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color',[.9 .67 .01])
 xlabel('Time (s)')
@@ -6729,11 +6732,11 @@ axis([150 160 -6 6])
 text(150,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
 text(150,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(4,1,3)
-plot(movementData.emgData(:,1),movementData.emgData(:,2),'Color',[.85 .37 .01])
+semilogy(movementData.emgData(:,1),10.^movementData.emgData(:,2),'Color',[.85 .37 .01])
 xlabel('Time (s)')
-ylabel('Abdominal EMG (au)')
+ylabel('EMG Power (au)')
 grid on
-axis([150 160 0.5 3])
+axis([150 160 sqrt(10) 1000])
 subplot(4,1,4)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color',[.9 .67 .01])
 xlabel('Time (s)')
