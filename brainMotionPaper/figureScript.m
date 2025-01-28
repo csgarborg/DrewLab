@@ -1,3 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FUNCTION NAME:    figureScript
+%
+% FUNCTION:         figureScript
+%
+% DESCRIPTION:      Analyzes data and generates every plot for all figures and movies in publication Garborg_2025
+%
+% INPUT:            
+%
+% VARIABLES:        
+%
+% OUTPUT:           
+%
+% FUNCTIONS USED:   Jonas (2025). plot spread points (beeswarm plot) (https://www.mathworks.com/matlabcentral/fileexchange/37105-plot-spread-points-beeswarm-plot), MATLAB Central File Exchange. Retrieved January 28, 2025.
+%
+% LIBARIES USED:    Chronux version 2.12
+%
+% NOTES:            Add this script and all data files in same folder to the path, then run script to generate plots
+%
+% WRITTEN BY:       Spencer Garborg 1/28/25
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Script to generate all figures for paper
 
 clear;
