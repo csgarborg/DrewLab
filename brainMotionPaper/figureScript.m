@@ -11,9 +11,6 @@ combinedMovementDataSkull_221207_008 = combineMotionTracking_FS('221207_008_Laye
 combinedMovementDataBrain_221207_010 = combineMotionTracking_FS('221207_010_Layer1_',1:3);
 combinedMovementDataSkull_221207_010 = combineMotionTracking_FS('221207_010_Layer2_',1:3);
 
-combinedMovementDataBrain_221208_006 = combineMotionTracking_FS('221208_006_Layer1_',1:3);
-combinedMovementDataSkull_221208_006 = combineMotionTracking_FS('221208_006_Layer2_',1:3);
-
 combinedMovementData_210218_006 = combineMotionTracking_FS('210218_006_',1:8);
 
 combinedMovementDataBrain_211216_001 = combineMotionTracking_FS('211216_001_Layer1_',1:4);
@@ -34,8 +31,8 @@ combinedMovementDataSkull_240612_002 = combineMotionTracking_FS('240612_002_Laye
 combinedMovementDataBrain_240612_020 = combineMotionTracking_FS('240612_020_Layer1_',1:3);
 combinedMovementDataSkull_240612_020 = combineMotionTracking_FS('240612_020_Layer2_',1:3);
 
-combinedMovementDataBrain_220813_003 = combineMotionTracking_FS('220813_003_Layer1_',1:3);
-combinedMovementDataSkull_220813_003 = combineMotionTracking_FS('220813_003_Layer2_',1:3);
+combinedMovementDataBrain_220816_002 = combineMotionTracking_FS('220816_002_Layer1_',1:3);
+combinedMovementDataSkull_220816_002 = combineMotionTracking_FS('220816_002_Layer2_',1:3);
 
 combinedMovementDataSkull_240814_006 = combineMotionTracking_FS('240814_006_',1:3);
 
@@ -217,22 +214,8 @@ plotMotionTracking2P2LPCASqueeze_FS(combinedMovementDataBrain_240612_020,combine
 
 %% movie 8
 
-plotMovementBrainInSkullOlfMovie_FS(combinedMovementDataBrain_220813_003,combinedMovementDataSkull_220813_003)
-
-%% hemisphere comparison movie
-
-% plotMovementBrainInSkullHemisphereMovie_FS(combinedMovementDataBrain_221207_010,combinedMovementDataSkull_221207_010,combinedMovementDataBrain_221208_006,combinedMovementDataSkull_221208_006)
-% plotMotionTracking2P2LPCAHemisphere_FS(combinedMovementDataBrain_221207_010,combinedMovementDataSkull_221207_010,combinedMovementDataBrain_221208_006,combinedMovementDataSkull_221208_006)
-
-%% vectorize figures for publication
-
-% convert all figures to render for vectorization
-% h =  findobj('type','figure');
-% i = length(h);
-% for n = 1:i
-%     figure(n)
-%     set(gcf,'renderer','Painters')
-% end
+plotMovementBrainInSkullOlfMovie_FS(combinedMovementDataBrain_220816_002,combinedMovementDataSkull_220816_002)
+plotMotionTracking2P2LPCAOlf_FS(combinedMovementDataBrain_220816_002,combinedMovementDataSkull_220816_002)
 
 %% SUBFUNCTIONS
 
@@ -501,68 +484,6 @@ else
     text(-6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
     text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
     text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function plotMotionTracking2P2LPCAHemisphere_FS(movementData_1,stationaryData_1,movementData_2,stationaryData_2)
-targetPositionInSkull = combineBrainSkullMovement_FS(movementData_1,stationaryData_1);
-motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
-h(2) = figure('Color','White','Name','Hemisphere Movie 3','NumberTitle','off');
-s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
-s.MarkerFaceAlpha = .1;
-hold on
-drawArrow_FS([0;0],[motionVec(1);motionVec(2)]);
-hold off
-axis equal square
-axis([-8 8 -8 8])
-ax = gca;
-ax.XAxisLocation = 'origin';
-ax.YAxisLocation = 'origin';
-% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
-% title(['\fontsize{20pt}\bf{Figure 2a}'])
-xlabel('\mum')
-ylabel('\mum')
-if movementData_1.hemisphere == 1
-    text(8,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(-8,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    text(0,8,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(0,-8,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-else
-    text(8,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(-8,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    text(0,8,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(0,-8,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-end
-
-targetPositionInSkull = combineBrainSkullMovement_FS(movementData_2,stationaryData_2);
-motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
-h(2) = figure('Color','White','Name','Hemisphere Movie 4','NumberTitle','off');
-s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
-s.MarkerFaceAlpha = .1;
-hold on
-drawArrow_FS([0;0],[-1*motionVec(1);-1*motionVec(2)]);
-hold off
-axis equal square
-axis([-5 5 -5 5])
-ax = gca;
-ax.XAxisLocation = 'origin';
-ax.YAxisLocation = 'origin';
-% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
-% title(['\fontsize{20pt}\bf{Figure 2a}'])
-xlabel('\mum')
-ylabel('\mum')
-if movementData_2.hemisphere == 1
-    text(5,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(-5,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    text(0,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(0,-5,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
-else
-    text(5,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(-5,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-    text(0,5,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
-    text(0,-5,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
 end
 end
 
@@ -1263,7 +1184,7 @@ stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
 % stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
 % stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Movie 8','NumberTitle','off');
+h(6) = figure('Color','White','Name','Movie 8_1','NumberTitle','off');
 subplot(3,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -1273,9 +1194,9 @@ hold off
 xlabel('Time (s)')
 ylabel('Medial-Lateral Shift (\mum)')
 grid on
-axis([100 150 -4 4])
-text(100,4,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(100,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+axis([5 185 -6 6])
+text(5,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(5,-6,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 subplot(3,1,2)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,2),'g')
 hold on
@@ -1284,9 +1205,9 @@ hold off
 xlabel('Time (s)')
 ylabel('Rostral-Caudal Shift (\mum)')
 grid on
-axis([100 150 -4 4])
-text(100,4,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(100,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+axis([5 185 -6 6])
+text(5,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
+text(5,-6,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
 % subplot(4,1,3)
 % plot(movementData.emgData(:,1),movementData.emgData(:,2),'k')
 % xlabel('Time (s)')
@@ -1298,7 +1219,7 @@ plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color'
 xlabel('Time (s)')
 ylabel('Treadmill Velocity (m/s)')
 grid on
-axis([100 150 0 0.2])
+axis([5 185 0 0.3])
 
 % h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
 % subplot(3,1,1)
@@ -1328,6 +1249,39 @@ axis([100 150 0 0.2])
 % axis([100 150 0 .2])
 % xlabel('Time (s)')
 % ylabel('Treadmill Velocity (m/s)')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function plotMotionTracking2P2LPCAOlf_FS(movementData,stationaryData)
+targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
+motionVec = pcaMotionAnalysis_FS(targetPositionInSkull);
+h(2) = figure('Color','White','Name','Movie 8_2','NumberTitle','off');
+s = scatter(targetPositionInSkull(:,1),targetPositionInSkull(:,2),10,'g','filled');
+s.MarkerFaceAlpha = .1;
+hold on
+drawArrow_FS([0;0],[motionVec(1);motionVec(2)]);
+hold off
+axis equal square
+axis([-5 5 -5 5])
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+% title(['\fontsize{20pt}\bf{Position of Brain in Skull with PCA Vector}'])
+% title(['\fontsize{20pt}\bf{Figure 2a}'])
+xlabel('\mum')
+ylabel('\mum')
+if movementData.hemisphere == 1
+    text(6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-6,0,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+else
+    text(6,0,'Medial','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(-6,0,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
+    text(0,6,'Rostral','VerticalAlignment','top','HorizontalAlignment','right','FontSize',15);
+    text(0,-6,'Caudal','VerticalAlignment','bottom','HorizontalAlignment','right','FontSize',15);
+end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1383,133 +1337,6 @@ xlabel('Time (s)')
 ylabel('EMG Power')
 grid on
 axis([75 165 1 10000])
-
-% h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
-% subplot(3,1,1)
-% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,1),'r')
-% % title(['Figure 3c' 10 '\fontsize{20pt}\bf{Position of Brain in Skull}'])
-% xlabel('Time (s)')
-% ylabel('Brain Shift (\mum)')
-% grid on
-% axis([100 150 -4 4])
-% if movementData.hemisphere == 1
-%     text(200,6,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-%     text(200,-4,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-% else
-%     text(200,6,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-%     text(200,-4,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-% end
-% subplot(3,1,2)
-% plot([1:size(targetPositionInSkull,1)]*movementData.secondsPerFrame,targetPositionInSkull(:,2),'b')
-% xlabel('Time (s)')
-% ylabel('Brain Shift (\mum)')
-% grid on
-% axis([100 150 -4 4])
-% text(200,6,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-% text(200,-4,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-% subplot(3,1,3)
-% plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'k')
-% axis([100 150 0 .2])
-% xlabel('Time (s)')
-% ylabel('Treadmill Velocity (m/s)')
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function plotMovementBrainInSkullHemisphereMovie_FS(movementData_1,stationaryData_1,movementData_2,stationaryData_2)
-% [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
-%     movementData_1.targetPosition(:,1) = movementData_1.targetPosition(:,1)*-1;
-%     stationaryData_1.targetPosition(:,1) = stationaryData_1.targetPosition(:,1)*-1;
-movementData_1.targetPosition(:,2) = movementData_1.targetPosition(:,2)*-1;
-stationaryData_1.targetPosition(:,2) = stationaryData_1.targetPosition(:,2)*-1;
-% movementData_1.targetPosition(:,1) = movementData_1.targetPosition(:,1)-mean(movementData_1.targetPosition(2480:2530,1));
-% movementData_1.targetPosition(:,2) = movementData_1.targetPosition(:,2)-mean(movementData_1.targetPosition(2480:2530,2));
-% stationaryData_1.targetPosition(:,1) = stationaryData_1.targetPosition(:,1)-mean(stationaryData_1.targetPosition(2480:2530,1));
-% stationaryData_1.targetPosition(:,2) = stationaryData_1.targetPosition(:,2)-mean(stationaryData_1.targetPosition(2480:2530,2));
-% movementData_1.secondsPerFrame = movementData_1.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Hemisphere Movie 1','NumberTitle','off');
-subplot(3,1,1)
-plot([1:size(movementData_1.targetPosition,1)]*movementData_1.secondsPerFrame,movementData_1.targetPosition(:,1),'g')
-hold on
-plot([1:size(stationaryData_1.targetPosition,1)]*movementData_1.secondsPerFrame,stationaryData_1.targetPosition(:,1),'m')
-hold off
-% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
-xlabel('Time (s)')
-ylabel('Medial-Lateral Shift (\mum)')
-grid on
-axis([150 400 -5 5])
-text(150,5,'Medial','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(150,-5,'Lateral','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(3,1,2)
-plot([1:size(movementData_1.targetPosition,1)]*movementData_1.secondsPerFrame,movementData_1.targetPosition(:,2),'g')
-hold on
-plot([1:size(stationaryData_1.targetPosition,1)]*movementData_1.secondsPerFrame,stationaryData_1.targetPosition(:,2),'m')
-hold off
-xlabel('Time (s)')
-ylabel('Rostral-Caudal Shift (\mum)')
-grid on
-axis([150 400 -5 5])
-text(150,5,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(150,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-% subplot(4,1,3)
-% plot(movementData_1.emgData(:,1),movementData_1.emgData(:,2),'k')
-% xlabel('Time (s)')
-% ylabel('Abdominal EMG (au)')
-% grid on
-% axis([62 272 0.5 3])
-subplot(3,1,3)
-semilogy(movementData_1.emgData(:,1),10.^movementData_1.emgData(:,2),'Color',[.85 .37 .01])
-xlabel('Time (s)')
-ylabel('EMG Power')
-grid on
-axis([150 400 1 10000])
-
-% [movementData.targetPosition,stationaryData.targetPosition] = interpBrainSkullMovement_FS(movementData,stationaryData);
-% movementData_2.targetPosition(:,1) = movementData_2.targetPosition(:,1)*-1;
-% stationaryData_2.targetPosition(:,1) = stationaryData_2.targetPosition(:,1)*-1;
-movementData_2.targetPosition(:,2) = movementData_2.targetPosition(:,2)*-1;
-stationaryData_2.targetPosition(:,2) = stationaryData_2.targetPosition(:,2)*-1;
-% movementData_2.targetPosition(:,1) = movementData_2.targetPosition(:,1)-mean(movementData_2.targetPosition(2480:2530,1));
-% movementData_2.targetPosition(:,2) = movementData_2.targetPosition(:,2)-mean(movementData_2.targetPosition(2480:2530,2));
-% stationaryData_2.targetPosition(:,1) = stationaryData_2.targetPosition(:,1)-mean(stationaryData_2.targetPosition(2480:2530,1));
-% stationaryData_2.targetPosition(:,2) = stationaryData_2.targetPosition(:,2)-mean(stationaryData_2.targetPosition(2480:2530,2));
-% movementData_2.secondsPerFrame = movementData_2.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Hemisphere Movie 2','NumberTitle','off');
-subplot(3,1,1)
-plot([1:size(movementData_2.targetPosition,1)]*movementData_2.secondsPerFrame,movementData_2.targetPosition(:,1),'g')
-hold on
-plot([1:size(stationaryData_2.targetPosition,1)]*movementData_2.secondsPerFrame,stationaryData_2.targetPosition(:,1),'m')
-hold off
-% title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
-xlabel('Time (s)')
-ylabel('Medial-Lateral Shift (\mum)')
-grid on
-axis([90 340 -5 5])
-text(90,5,'Lateral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(90,-5,'Medial','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-subplot(3,1,2)
-plot([1:size(movementData_2.targetPosition,1)]*movementData_2.secondsPerFrame,movementData_2.targetPosition(:,2),'g')
-hold on
-plot([1:size(stationaryData_2.targetPosition,1)]*movementData_2.secondsPerFrame,stationaryData_2.targetPosition(:,2),'m')
-hold off
-xlabel('Time (s)')
-ylabel('Rostral-Caudal Shift (\mum)')
-grid on
-axis([90 340 -5 5])
-text(90,5,'Rostral','VerticalAlignment','bottom','HorizontalAlignment','left','FontSize',15);
-text(90,-5,'Caudal','VerticalAlignment','top','HorizontalAlignment','left','FontSize',15);
-% subplot(4,1,3)
-% plot(movementData_2.emgData(:,1),movementData_2.emgData(:,2),'k')
-% xlabel('Time (s)')
-% ylabel('Abdominal EMG (au)')
-% grid on
-% axis([62 272 0.5 3])
-subplot(3,1,3)
-semilogy(movementData_2.emgData(:,1),10.^movementData_2.emgData(:,2),'Color',[.85 .37 .01])
-xlabel('Time (s)')
-ylabel('EMG Power')
-grid on
-axis([90 340 1 10000])
 
 % h(6) = figure('Color','White','Name','Animation Movie','NumberTitle','off');
 % subplot(3,1,1)
