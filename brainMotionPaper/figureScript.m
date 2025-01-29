@@ -109,7 +109,7 @@ plotEMGMovement_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkul
 
 plotEMGXCorr_FS(combinedMovementDataBrain_211216_002,combinedMovementDataSkull_211216_002)
 
-%% figure 3g
+%% figure 3g-h
 
 [ETATimeData,ETADispData] = plotEMGTriggeredAvg_FS;
 
