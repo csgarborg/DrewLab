@@ -213,11 +213,11 @@ plotMotionTrackingBrainAndSkullOlf_FS(combinedMovementDataBrain_220816_004,combi
 
 plotLocomotionTriggeredAvgOlf_FS
 
-%% supplementary figure 16b-e
+%% supplementary figure 17b-e
 
 plotCalibration2D_FS
 
-%% supplementary figure 17a-d
+%% supplementary figure 18a-d
 
 plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
 
@@ -4181,7 +4181,7 @@ end
 function plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
 timeThresh = 1.5;
 moveThresh = 0.75;
-h(10) = figure('Color','White','Name','Supplementary Figure 17a','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 18a','NumberTitle','off');
 subplot(1,2,1)
 histogram(STATimeData.timeToThreshX,STATimeData.binEdgesTime,'FaceColor',[.1 .62 .47]);
 hold on
@@ -4216,7 +4216,7 @@ plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
 hold off
 text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White','Name','Supplementary Figure 17b','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 18b','NumberTitle','off');
 subplot(1,2,1)
 histogram(STATimeData.timeToThreshY,STATimeData.binEdgesTime,'FaceColor',[.46 .44 .7]);
 hold on
@@ -4253,7 +4253,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADisp
 
 timeThresh = 0.4;
 moveThresh = 0.25;
-h(10) = figure('Color','White','Name','Supplementary Figure 17c','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 18c','NumberTitle','off');
 subplot(1,2,1)
 histogram(RTATimeData.timeToThreshX,RTATimeData.binEdgesTime,'FaceColor',[.1 .62 .47]);
 hold on
@@ -4288,7 +4288,7 @@ plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
 hold off
 text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(RTADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White','Name','Supplementary Figure 17d','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 18d','NumberTitle','off');
 subplot(1,2,1)
 histogram(RTATimeData.timeToThreshY,RTATimeData.binEdgesTime,'FaceColor',[.46 .44 .7]);
 hold on
@@ -6142,7 +6142,7 @@ micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
 W = x.imageWidthPixels;
 H = x.imageHeightPixels;
 
-h(1) = figure('Color','White','Name','Supplementary Figure 16b','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 17b','NumberTitle','off');
 subplot(1,2,1)
 scatter(widthData(:,1),widthData(:,2),50,micronLengthValWidth./widthData(:,3),'filled');
 hold on
@@ -6181,7 +6181,7 @@ xlabel('Pixels')
 ylabel('Pixels')
 
 % plot 3d surface plot of x calibration values across image
-h(3) = figure('Color','White','Name','Supplementary Figure 16c','NumberTitle','off');
+h(3) = figure('Color','White','Name','Supplementary Figure 17c','NumberTitle','off');
 subplot(1,2,1)
 % micronLengthValWidth = ones(size(widthData,1),1);
 % micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
@@ -6215,7 +6215,7 @@ ylabel('Pixels (Y)')
 zlabel('\mum/Pixel')
 
 % plot 3d surface plot of x calibration values across image
-h(4) = figure('Color','White','Name','Supplementary Figure 16d-e','NumberTitle','off');
+h(4) = figure('Color','White','Name','Supplementary Figure 17d-e','NumberTitle','off');
 subplot(2,2,1)
 % micronLengthValWidth = ones(size(widthData,1),1);
 % micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
@@ -6429,7 +6429,7 @@ end
 
 function plotFluorescenceChange_FS(movementData)
 h(1) = figure('Color','White','Name','Supplementary Figure 3b','NumberTitle','off');
-subplot(3,1,1:2)
+subplot(2,1,1)
 load('fluorescenceData.mat')
 brainValues = fluorescenceData.brain;
 microsphereValues = fluorescenceData.microsphere;
@@ -6466,11 +6466,10 @@ text(148,stationaryBrainMean+250,['\Delta ' num2str(percentChangeBrain*100) '%']
 xlabel('Time (s)')
 ylabel('ROI Mean Pixel Intensity')
 
-subplot(3,1,3)
+subplot(2,1,2)
 plot(movementData.ballData(:,1),abs(movementData.ballData(:,2)*2*pi*.06),'Color',[.9 .67 .01])
 xlabel('Time (s)')
 ylabel('Treadmill Velocity (m/s)')
-grid on
 axis([148 398 0 .3])
 
 h(2) = figure('Color','White','Name','Supplementary Figure 3c','NumberTitle','off');
