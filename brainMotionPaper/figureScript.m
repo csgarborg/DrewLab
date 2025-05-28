@@ -946,7 +946,7 @@ PowerY = downsample(PowerY,3);
 HzY = downsample(HzY,3);
 semilogx(HzY,PowerY,'Color',[.46 .44 .7])
 xlabel('Frequency (Hz)')
-ylabel('A.U.')
+ylabel('\mum^{2}/Hz')
 title(['Brain Motion (R/C)'])
 % hold on
 % f = fill([HzY flip(HzY)],[ErrorY(1,:) flip(ErrorY(2,:))],[.5 .5 .5],'Linestyle','none');
@@ -955,7 +955,7 @@ title(['Brain Motion (R/C)'])
 subplot(3,1,2)
 semilogx(HzT,PowerT*100,'Color',[.65 .46 .11])
 xlabel('Frequency (Hz)')
-ylabel('A.U.')
+ylabel('V^{2}/Hz')
 title('Thermocouple (Respiration)')
 % hold on
 % f = fill([HzT flip(HzT)],[ErrorT(1,:) flip(ErrorT(2,:))],[.5 .5 .5],'Linestyle','none');
