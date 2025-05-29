@@ -209,7 +209,7 @@ plotAbdominalCompressionPressure_FS
 
 plotMotionTrackingBrainAndSkullOlf_FS(combinedMovementDataBrain_220816_004,combinedMovementDataSkull_220816_004)
 
-%% supplementary figure 15b
+%% supplementary figure 15b-c
 
 plotLocomotionTriggeredAvgOlf_FS
 
@@ -3396,7 +3396,7 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 15b','NumberTitle','off');
+h(9) = figure('Color','White','Name','Supplementary Figure 15b-c','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
