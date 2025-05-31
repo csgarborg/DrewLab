@@ -346,6 +346,7 @@ combinedMovementData.meanCIX = meanCIX;
 combinedMovementData.meanCIY = meanCIY;
 combinedMovementData.stdCIX = stdCIX;
 combinedMovementData.stdCIY = stdCIY;
+combinedMovementData.targetPositionMeanNoFilt = [mean(targetPositionX)',mean(targetPositionY)'];
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -876,6 +877,10 @@ params.fpass = [0.01,10];   % Pass band [0, nyquist]
 params.trialave = 1;
 params.err = [2,0.05];
 % you want to make sure 'LH_restData' and 'RH_restData' have a mean of 0. You can use multiple trials just make sure the matrix is oriented properly
+
+% switch the position data to unfiltered for frequency analysis
+movementData.targetPosition = movementData.targetPositionMeanNoFilt;
+stationaryData.targetPosition = stationaryData.targetPositionMeanNoFilt;
 
 % input data as time (1st dimension, vertical) by trials (2nd dimension, horizontal)
 targetPositionInSkull = combineBrainSkullMovement_FS(movementData,stationaryData);
