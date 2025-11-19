@@ -30,54 +30,54 @@ medFiltSize = 6;
 % Generate plots
 subtitle = [num2str(1/movementData.secondsPerFrame) ' Frames/s, ' num2str(movementData.secondsPerFrame*(diff(movementData.frames)+1)) ' Seconds, ' num2str(movementData.objMag*movementData.digMag) 'x Magnification (' num2str(movementData.objMag) 'x Objective, ' num2str(movementData.digMag) 'x Digital), Turnabout = ' num2str(movementData.turnabout)];
 movementData.ballData(:,2) = abs(convertBallVoltToMPS(movementData.ballData(:,2)));
-h(1) = figure('Color','White');
-subplot(4,1,1)
-plot((1:size(movementData.moveDist,1))*movementData.secondsPerFrame,movementData.moveDist(:,1),'r')
-title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
-xlabel('Time (s)')
-ylabel('X Movement (\mum)')
-grid on
-axis([1 size(movementData.moveDist,1)*movementData.secondsPerFrame floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
-subplot(4,1,2)
-plot((1:size(movementData.moveDist,1))*movementData.secondsPerFrame,movementData.moveDist(:,2),'b')
-xlabel('Time (s)')
-ylabel('Y Movement (\mum)')
-grid on
-axis([1 size(movementData.moveDist,1)*movementData.secondsPerFrame floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
-subplot(4,1,3)
-plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
-title('\fontsize{20pt}\bf{Ball Movement}')
-xlabel('Time (s)')
-ylabel('m/s')
-grid on
-axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
-subplot(4,1,4)
-if all(movementData.emgData(:,2) == 0)
-    title('\fontsize{20pt}\bf{No EMG Data}')
-else
-    semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
-    title('\fontsize{20pt}\bf{EMG}')
-    xlabel('Time (s)')
-    ylabel('Amplitude (a.u.)')
-    grid on
-    axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
-end
-
-h(2) = figure('Color','White');
-subplot(2,1,1)
-plot((1:length(movementData.velocity))*movementData.secondsPerFrame,movementData.velocity,'r')
-title(['\fontsize{20pt}\bf{Object Velocity Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
-xlabel('Time (s)')
-ylabel('Velocity (\mum/s)')
-grid on
-axis([1 size(movementData.velocity,1)*movementData.secondsPerFrame 0 ceil(max(movementData.velocity(:,1))/10)*10])
-subplot(2,1,2)
-plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
-title('\fontsize{20pt}\bf{Ball Movement}')
-xlabel('Time (s)')
-ylabel('m/s')
-grid on
-axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
+% h(1) = figure('Color','White');
+% subplot(4,1,1)
+% plot((1:size(movementData.moveDist,1))*movementData.secondsPerFrame,movementData.moveDist(:,1),'r')
+% title(['\fontsize{20pt}\bf{Object Movement Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+% xlabel('Time (s)')
+% ylabel('X Movement (\mum)')
+% grid on
+% axis([1 size(movementData.moveDist,1)*movementData.secondsPerFrame floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
+% subplot(4,1,2)
+% plot((1:size(movementData.moveDist,1))*movementData.secondsPerFrame,movementData.moveDist(:,2),'b')
+% xlabel('Time (s)')
+% ylabel('Y Movement (\mum)')
+% grid on
+% axis([1 size(movementData.moveDist,1)*movementData.secondsPerFrame floor(min([movementData.moveDist(:,1);movementData.moveDist(:,2)])) ceil(max([movementData.moveDist(:,1);movementData.moveDist(:,2)]))])
+% subplot(4,1,3)
+% plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
+% title('\fontsize{20pt}\bf{Ball Movement}')
+% xlabel('Time (s)')
+% ylabel('m/s')
+% grid on
+% axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
+% subplot(4,1,4)
+% if all(movementData.emgData(:,2) == 0)
+%     title('\fontsize{20pt}\bf{No EMG Data}')
+% else
+%     semilogy(movementData.emgData(:,1),movementData.emgData(:,2),'k')
+%     title('\fontsize{20pt}\bf{EMG}')
+%     xlabel('Time (s)')
+%     ylabel('Amplitude (a.u.)')
+%     grid on
+%     axis([min(movementData.emgData(:,1)) max(movementData.emgData(:,1)) 0 ceil(max(movementData.emgData(:,2)))])
+% end
+% 
+% h(2) = figure('Color','White');
+% subplot(2,1,1)
+% plot((1:length(movementData.velocity))*movementData.secondsPerFrame,movementData.velocity,'r')
+% title(['\fontsize{20pt}\bf{Object Velocity Between Frames}' 10 '\fontsize{10pt}\rm{' subtitle '}' 10 '\fontsize{10pt}\rm{' movementData.commentString '}'])
+% xlabel('Time (s)')
+% ylabel('Velocity (\mum/s)')
+% grid on
+% axis([1 size(movementData.velocity,1)*movementData.secondsPerFrame 0 ceil(max(movementData.velocity(:,1))/10)*10])
+% subplot(2,1,2)
+% plot(movementData.ballData(:,1),movementData.ballData(:,2),'k')
+% title('\fontsize{20pt}\bf{Ball Movement}')
+% xlabel('Time (s)')
+% ylabel('m/s')
+% grid on
+% axis([min(movementData.ballData(:,1)) max(movementData.ballData(:,1)) 0 ceil(max(movementData.ballData(:,2))*10)/10])
 
 h(3) = figure('Color','White');
 x1 = subplot(4,1,1);

@@ -362,7 +362,7 @@ if saveOutputVideoTF
 %     close(aviObject);
     tiffFileNameOutput = [tifFileName(1:end-4) '_output.tif'];
     imwrite(imageStack{1,1},tiffFileNameOutput)
-    for n = 2:3:length(imageStack)
+    for n = 1:length(imageStack)
         if isempty(imageStack{1,n})
             continue
         end
@@ -379,6 +379,14 @@ if exist([tifFileName(1:end-4) '_processed_1.mat'],'file')
     EMGEvents = movementData.EMGEvents;
     EMGNoMotionEvents = movementData.EMGNoMotionEvents;
     clear movementData
+elseif ~exist([tifFileName(1:end-4) '.txt'],'file')
+    procBallData(:,1) = 0:1/30:(tifFrameBounds(2)-tifFrameBounds(1))*secondsPerFrame';
+    procBallData(:,2) = zeros(length(procBallData),1);
+    procEMGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
+    procEKGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
+    motionEvents = [];
+    EMGEvents = [];
+    EMGNoMotionEvents = [];
 else
     % Get binary ball and EMG data to compare to frame movement data
     secondsBounds = [tifFrameBounds(1)*secondsPerFrame tifFrameBounds(2)*secondsPerFrame];
@@ -394,8 +402,8 @@ else
         procBallData = smoothBallData(ballDataOnly,analogSampleRate);
     else
         procBallData = smoothBallData([ballData(ballDataIndex,1) ballData(ballDataIndex,2)],analogSampleRate);
-        procEMGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1),1)];
-        procEKGData = [ballData(ballDataIndex,1) zeros(size(procBallData,1),1)];
+        procEMGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
+        procEKGData = [procBallData(:,1) zeros(size(procBallData,1),1)];
     end
     
     % Detect motion and events
