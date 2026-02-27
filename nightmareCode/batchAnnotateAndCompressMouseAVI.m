@@ -23,6 +23,11 @@ function batchAnnotateAndCompressMouseAVI(hbPreset)
 
     aviFiles = dir(fullfile(folderPath, '*.avi'));
     if isempty(aviFiles)
+        finalTimeS = toc(t);
+        m = floor(finalTimeS/60);
+        s = finalTimeS - 60*m;
+        str = sprintf('%d:%05.2f', m, s); % e.g. "2:03.45"
+        sendFinishedEmail('csg178@psu.edu', 'No AVI Files Found', ['Elapsed Time; ' str])
         error('No AVI files found.');
     end
 
@@ -245,15 +250,16 @@ function sendFinishedEmail(recipient, subject, messageBody, attachments)
     % attachments - optional cell array of file paths
     
     % Configure preferences once before using (example using Gmail).
-    % setpref('Internet','SMTP_Server','smtp.gmail.com');
-    % setpref('Internet','E_mail','mousevideoconversionalert@gmail.com');      % sender
-    % setpref('Internet','SMTP_Username','mousevideoconversionalert@gmail.com');
-    % setpref('Internet','SMTP_Password','mouseIsDone2026');        % consider app password
+    setpref('Internet','SMTP_Server','smtp.gmail.com');
+    setpref('Internet','E_mail','mousevideoconversionalert@gmail.com');      % sender
+    setpref('Internet','SMTP_Username','mousevideoconversionalert@gmail.com');
+    setpref('Internet','SMTP_Password','ejsz rcbg vrpu oyup');        % consider app password
     props = java.lang.System.getProperties;
     props.setProperty('mail.smtp.auth','true');
     props.setProperty('mail.smtp.starttls.enable','true');
     props.setProperty('mail.smtp.port','587');
-    
+    props.setProperty('mail.debug','false');   % disable JavaMail debug
+
     if nargin < 3 || isempty(messageBody)
         messageBody = 'The process has finished successfully.';
     end
