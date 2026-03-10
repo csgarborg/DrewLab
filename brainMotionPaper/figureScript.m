@@ -133,91 +133,91 @@ plotSqueezeQuiver_FS
 
 plotSqueezeTriggeredAvgSkull_FS
 
-%% supplementary figure 2c
+%% extended data figure 1c
 
 plotPSF_FS
 
-%% supplementary figure 2f-g
+%% extended data figure 1f-g
 
 plotCalibrationETL_FS
 
-%% supplementary figure 3b-c
+%% extended data figure 2b-c
 
 plotFluorescenceChange_FS(combinedMovementDataBrain_221207_010)
 
-%% supplementary figure 3e
+%% extended data figure 2e
 
 plotStaticMicrospheres_FS
 
-%% supplementary figure 3g
+%% extended data figure 2g
 
 plotStaticPaper_FS
 
-%% supplementary figure 4a
+%% extended data figure 3a
 
 plotMotionTrackingSkullBregma_FS(combinedMovementDataSkull_240814_006);
 
-%% supplementary figure 4b
+%% extended data figure 3b
 
 plotSkullQuiver_FS
 
-%% supplementary figure 4c-d
+%% extended data figure 3c-d
 
 plotLocomotionTriggeredAvgSkull_FS
 
-%% supplementary figure 4e-f
+%% extended data figure 3e-f
 
 plotEMGTriggeredAvgSkull_FS
 
-%% supplementary figure 5a-d
+%% extended data figure 4b
 
-plotXCorrData_FS
+plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006,'Extended Data Figure 4b')
 
-%% supplementary figure 6b
-
-plotMotionTrackingBrainOnly_FS(combinedMovementData_210218_006,'Supplementary Figure 6b')
-
-%% supplementary figure 7a-c
-
-plotMouseStats_FS
-
-%% supplementary figure 8b
+%% extended data figure 5b
 
 [RTATimeData,RTADispData] = plotRespTriggeredAvg_FS;
 
-%% supplementary figure 8c
+%% extended data figure 5c
 
 plotRespTriggeredAvgSkull_FS
 
-%% supplementary figure 8d
+%% extended data figure 5d
 
-plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001,'Supplementary Figure 8d_1');
+plotMotionTrackingBrainAndSkullResp_FS(combinedMovementDataBrain_240611_001,combinedMovementDataSkull_240611_001,'Extended Data Figure 5d_1');
 
-%% supplementary figure 8e
+%% extended data figure 5e
 
 plotMotionTrackingBrainAndSkullRespComp_FS(combinedMovementDataBrain_240612_002,combinedMovementDataSkull_240612_002);
 
-%% supplementary figure 9a-d
+%% supplementary figure 2a-d
+
+plotXCorrData_FS
+
+%% supplementary figure 3a-c
+
+plotMouseStats_FS
+
+%% supplementary figure 4a-d
 
 plotLocoEMGHist_FS(LTATimeData,LTADispData,ETATimeData,ETADispData)
 
-%% supplementary figure 11b
+%% supplementary figure 5b
 
 plotAbdominalCompressionPressure_FS
 
-%% supplementary figure 15a
+%% supplementary figure 6a
 
 plotMotionTrackingBrainAndSkullOlf_FS(combinedMovementDataBrain_220816_004,combinedMovementDataSkull_220816_004)
 
-%% supplementary figure 15b-c
+%% supplementary figure 6b-c
 
 plotLocomotionTriggeredAvgOlf_FS
 
-%% supplementary figure 17b-e
+%% supplementary figure 8b-e
 
 plotCalibration2D_FS
 
-%% supplementary figure 18a-d
+%% supplementary figure 9a-d
 
 plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
 
@@ -713,7 +713,7 @@ brainMeanX = {[],[],[],[],[]};
 brainMeanY = {[],[],[],[],[]};
 brainStdX = {[],[],[],[],[]};
 brainStdY = {[],[],[],[],[]};
-h(3) = figure('Color','White','Name','Supplementary Figure 4b','NumberTitle','off');
+h(3) = figure('Color','White','Name','Extended Data Figure 3b','NumberTitle','off');
 hold on
 for n = 1:size(moveDataMat,1)
     if strcmp(moveDataMat{n,3},'21a')
@@ -2326,7 +2326,7 @@ end
 
 function plotLocoEMGHist_FS(LTATimeData,LTADispData,ETATimeData,ETADispData)
 
-h(10) = figure('Color','White','Name','Supplementary Figure 9a','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 4a','NumberTitle','off');
 subplot(1,2,1)
 histogram(LTATimeData.timeToThreshX,LTATimeData.binEdgesTime,'FaceColor',[.9 .67 .01],'FaceAlpha',0.5);
 hold on
@@ -2382,7 +2382,7 @@ hold off
 % ETATimeData.X_pdfXVals = pdfXVals;
 % ETATimeData.X_pdfYVals = pdfYVals*25;
 
-h(10) = figure('Color','White','Name','Supplementary Figure 9b','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 4b','NumberTitle','off');
 subplot(1,2,1)
 histogram(LTATimeData.timeToThreshY,LTATimeData.binEdgesTime,'FaceColor',[.9 .67 .01],'FaceAlpha',0.5);
 hold on
@@ -2438,7 +2438,7 @@ hold off
 % ETATimeData.X_pdfXVals = pdfXVals;
 % ETATimeData.X_pdfYVals = pdfYVals*25;
 
-h(50) = figure('Color','White','Name','Supplementary Figure 9c','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 4c','NumberTitle','off');
 subplot(1,2,1)
 histogram(LTADispData.dispTimeThreshX,LTADispData.binEdgesDisp,'FaceColor',[.9 .67 .01],'FaceAlpha',0.5);
 hold on
@@ -2485,7 +2485,7 @@ plot([mu-sig mu-sig],[0 60],'Color',[.85 .37 .01],'LineStyle','--','LineWidth',2
 text(-2,10,['displacement thresh = 0.75, n = ' num2str(length(ETADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)],'Color',[.85 .37 .01])
 hold off
 
-h(50) = figure('Color','White','Name','Supplementary Figure 9d','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 4d','NumberTitle','off');
 subplot(1,2,1)
 histogram(LTADispData.dispTimeThreshY,LTADispData.binEdgesDisp,'FaceColor',[.9 .67 .01],'FaceAlpha',0.5);
 hold on
@@ -2718,7 +2718,7 @@ timeVecY = linspace(round(locDataCell{1,2}(1,1)-locDataCell{1,2}(1,2)),round(loc
 %     end 
 % end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 4c-d','NumberTitle','off');
+h(9) = figure('Color','White','Name','Extended Data Figure 3c-d','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
@@ -3059,7 +3059,7 @@ timeVecY = linspace(round(EMGDataCell{1,2}(1,1)-EMGDataCell{1,2}(1,2)),round(EMG
 %     end 
 % end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 4e-f','NumberTitle','off');
+h(9) = figure('Color','White','Name','Extended Data Figure 3e-f','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
@@ -3401,7 +3401,7 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 15b-c','NumberTitle','off');
+h(9) = figure('Color','White','Name','Supplementary Figure 6b-c','NumberTitle','off');
 subplot(2,2,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 f = fill([3 0 0 3],[2.9 2.9 -2.9 -2.9],[.9 .9 .9],'Linestyle','none','FaceAlpha',0.5);
@@ -3703,7 +3703,7 @@ stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)*-1;
 % stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
 % stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Supplementary Figure 15a','NumberTitle','off');
+h(6) = figure('Color','White','Name','Supplementary Figure 6a','NumberTitle','off');
 subplot(3,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -4186,7 +4186,7 @@ end
 function plotSqueezeRespHist_FS(STATimeData,STADispData,RTATimeData,RTADispData)
 timeThresh = 1.5;
 moveThresh = 0.75;
-h(10) = figure('Color','White','Name','Supplementary Figure 18a','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 9a','NumberTitle','off');
 subplot(1,2,1)
 histogram(STATimeData.timeToThreshX,STATimeData.binEdgesTime,'FaceColor',[.1 .62 .47]);
 hold on
@@ -4221,7 +4221,7 @@ plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
 hold off
 text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White','Name','Supplementary Figure 18b','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 9b','NumberTitle','off');
 subplot(1,2,1)
 histogram(STATimeData.timeToThreshY,STATimeData.binEdgesTime,'FaceColor',[.46 .44 .7]);
 hold on
@@ -4258,7 +4258,7 @@ text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(STADisp
 
 timeThresh = 0.4;
 moveThresh = 0.25;
-h(10) = figure('Color','White','Name','Supplementary Figure 18c','NumberTitle','off');
+h(10) = figure('Color','White','Name','Supplementary Figure 9c','NumberTitle','off');
 subplot(1,2,1)
 histogram(RTATimeData.timeToThreshX,RTATimeData.binEdgesTime,'FaceColor',[.1 .62 .47]);
 hold on
@@ -4293,7 +4293,7 @@ plot([mu-sig mu-sig],[0 60],'k--','LineWidth',2);
 hold off
 text(-2,30,['time thresh = ' num2str(timeThresh) ', n = ' num2str(length(RTADispData.dispTimeThreshX)) 10 'mean = ' num2str(mu) ', std = ' num2str(sig)])
 
-h(50) = figure('Color','White','Name','Supplementary Figure 18d','NumberTitle','off');
+h(50) = figure('Color','White','Name','Supplementary Figure 9d','NumberTitle','off');
 subplot(1,2,1)
 histogram(RTATimeData.timeToThreshY,RTATimeData.binEdgesTime,'FaceColor',[.46 .44 .7]);
 hold on
@@ -4559,7 +4559,7 @@ for n = stdWindowSize+1:length(meanY)
     end 
 end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 8b','NumberTitle','off');
+h(9) = figure('Color','White','Name','Extended Data Figure 5b','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -4748,7 +4748,7 @@ timeVecY = linspace(round((respDataCell{1,2}(1,1)-respDataCell{1,2}(1,2))*4)/4,r
 %     end 
 % end
 
-h(9) = figure('Color','White','Name','Supplementary Figure 8c','NumberTitle','off');
+h(9) = figure('Color','White','Name','Extended Data Figure 5c','NumberTitle','off');
 subplot(2,1,1)
 maxMeanVal = max(abs([meanX meanY cIntFillPtsX cIntFillPtsY]));
 plot(timeVecX,meanX,'k')
@@ -6147,7 +6147,7 @@ micronLengthValHeight(heightData(:,6) == -1,1) = holeSize;
 W = x.imageWidthPixels;
 H = x.imageHeightPixels;
 
-h(1) = figure('Color','White','Name','Supplementary Figure 17b','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 8b','NumberTitle','off');
 subplot(1,2,1)
 scatter(widthData(:,1),widthData(:,2),50,micronLengthValWidth./widthData(:,3),'filled');
 hold on
@@ -6186,7 +6186,7 @@ xlabel('Pixels')
 ylabel('Pixels')
 
 % plot 3d surface plot of x calibration values across image
-h(3) = figure('Color','White','Name','Supplementary Figure 17c','NumberTitle','off');
+h(3) = figure('Color','White','Name','Supplementary Figure 8c','NumberTitle','off');
 subplot(1,2,1)
 % micronLengthValWidth = ones(size(widthData,1),1);
 % micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
@@ -6220,7 +6220,7 @@ ylabel('Pixels (Y)')
 zlabel('\mum/Pixel')
 
 % plot 3d surface plot of x calibration values across image
-h(4) = figure('Color','White','Name','Supplementary Figure 17d-e','NumberTitle','off');
+h(4) = figure('Color','White','Name','Supplementary Figure 8d-e','NumberTitle','off');
 subplot(2,2,1)
 % micronLengthValWidth = ones(size(widthData,1),1);
 % micronLengthValWidth(widthData(:,6) == 1,1) = barSize;
@@ -6294,7 +6294,7 @@ end
 
 function plotPSF_FS
 load('PSFData_FS.mat')
-h(1) = figure('Color','White','Name','Supplementary Figure 2c','NumberTitle','off');
+h(1) = figure('Color','White','Name','Extended Data Figure 1c','NumberTitle','off');
 subplot(1,2,1)
 plot(PSFData.X,PSFData.XIntensity,'k')
 hold on
@@ -6345,7 +6345,7 @@ for n = 1:length(uniqueX)
     stdYMinus(n) = polyval(coefficients , uniqueX(n)) - yZeroDiff - std(matchingY);
 end
 
-h(1) = figure('Color','White','Name','Supplementary Figure 2f','NumberTitle','off');
+h(1) = figure('Color','White','Name','Extended Data Figure 1f','NumberTitle','off');
 subplot(2,1,1)
 hold on
 for n = 1:numel(fn)
@@ -6407,7 +6407,7 @@ end
 widthVals = widthVals(i);
 heightVals = heightVals(i);
 
-h(2) = figure('Color','White','Name','Supplementary Figure 2g','NumberTitle','off');
+h(2) = figure('Color','White','Name','Extended Data Figure 1g','NumberTitle','off');
 subplot(3,1,1)
 plot(diopterVals,widthVals,'mo')
 xlabel('Diopter Input (m^{-1})')
@@ -6433,7 +6433,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotFluorescenceChange_FS(movementData)
-h(1) = figure('Color','White','Name','Supplementary Figure 3b','NumberTitle','off');
+h(1) = figure('Color','White','Name','Extended Data Figure 2b','NumberTitle','off');
 subplot(2,1,1)
 load('fluorescenceData.mat')
 brainValues = fluorescenceData.brain;
@@ -6477,7 +6477,7 @@ xlabel('Time (s)')
 ylabel('Treadmill Velocity (m/s)')
 axis([148 398 0 .3])
 
-h(2) = figure('Color','White','Name','Supplementary Figure 3c','NumberTitle','off');
+h(2) = figure('Color','White','Name','Extended Data Figure 2c','NumberTitle','off');
 load('PSFData_FS.mat')
 plot(PSFData.ZIntensity,PSFData.Z,'k')
 hold on
@@ -6509,7 +6509,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotStaticMicrospheres_FS
-h(1) = figure('Color','White','Name','Supplementary Figure 3e','NumberTitle','off');
+h(1) = figure('Color','White','Name','Extended Data Figure 2e','NumberTitle','off');
 load('250411_005.mat')
 subplot(2,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'Color',[.1 .62 .47])
@@ -6526,7 +6526,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotStaticPaper_FS
-h(1) = figure('Color','White','Name','Supplementary Figure 3g','NumberTitle','off');
+h(1) = figure('Color','White','Name','Extended Data Figure 2g','NumberTitle','off');
 load('191104_001.mat')
 subplot(2,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'Color',[.1 .62 .47])
@@ -6593,7 +6593,7 @@ grid on
 axis([15 225 50 100])
 
 if contains(figureTitle,'Supplementary Figure')
-    h(6) = figure('Color','White','Name','Supplementary Figure 8d_2','NumberTitle','off');
+    h(6) = figure('Color','White','Name','Extended Data Figure 5d_2','NumberTitle','off');
     subplot(4,1,1)
     plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
     hold on
@@ -6684,7 +6684,7 @@ movementData.targetPosition(:,2) = movementData.targetPosition(:,2)-mean(movemen
 stationaryData.targetPosition(:,1) = stationaryData.targetPosition(:,1)-mean(stationaryData.targetPosition(2480:2530,1));
 stationaryData.targetPosition(:,2) = stationaryData.targetPosition(:,2)-mean(stationaryData.targetPosition(2480:2530,2));
 movementData.secondsPerFrame = movementData.secondsPerFrame/2;
-h(6) = figure('Color','White','Name','Supplementary Figure 8e_1','NumberTitle','off');
+h(6) = figure('Color','White','Name','Extended Data Figure 5e_1','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -6721,7 +6721,7 @@ ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([62 272 0 0.2])
 
-h(6) = figure('Color','White','Name','Supplementary Figure 8e_2','NumberTitle','off');
+h(6) = figure('Color','White','Name','Extended Data Figure 5e_2','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -6758,7 +6758,7 @@ ylabel('Treadmill Velocity (m/s)')
 grid on
 axis([66 76 0 0.2])
 
-h(6) = figure('Color','White','Name','Supplementary Figure 8e_3','NumberTitle','off');
+h(6) = figure('Color','White','Name','Extended Data Figure 5e_3','NumberTitle','off');
 subplot(4,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'g')
 hold on
@@ -7112,7 +7112,7 @@ if movementData.hemisphere == 2
     movementData.targetPosition(:,1) = movementData.targetPosition(:,1)*-1;
 end
 movementData.targetPosition(:,2) = movementData.targetPosition(:,2)*-1;
-h(6) = figure('Color','White','Name','Supplementary Figure 4a','NumberTitle','off');
+h(6) = figure('Color','White','Name','Extended Data Figure 3a','NumberTitle','off');
 subplot(3,1,1)
 plot([1:size(movementData.targetPosition,1)]*movementData.secondsPerFrame,movementData.targetPosition(:,1),'Color',[.1 .62 .47])
 % title(['Figure 1e' 10 '\fontsize{20pt}\bf{Position of Brain and Skull}'])
@@ -7304,7 +7304,7 @@ forceCalGrams = [50;100;150;200;250;300];
 % hold on
 % plot([0;forceCalArb],[0;forceCalArb]*m)
 
-h(6) = figure('Color','White','Name','Supplementary Figure 11b','NumberTitle','off');
+h(6) = figure('Color','White','Name','Supplementary Figure 5b','NumberTitle','off');
 subplot(1,4,1:3)
 load('abdCompressPressureTrial.mat');
 abdCompressPressureTrial(:,1) = (abdCompressPressureTrial(:,1)-abdCompressPressureTrial(1,1))/1000;
@@ -7363,7 +7363,7 @@ end
 weightX = min(weight):1:max(weight);
 ageX = min(age):1:max(age);
 
-h(6) = figure('Color','White','Name','Supplementary Figure 7a','NumberTitle','off');
+h(6) = figure('Color','White','Name','Supplementary Figure 3a','NumberTitle','off');
 % subplot(2,3,1)
 s = scatter(weight(logical(sex)),moveMag(logical(sex)),50,'b','filled',"DisplayName","Male");
 s.MarkerFaceAlpha = .15;
@@ -7398,7 +7398,7 @@ xlim([25 65])
 ylim([0 15])
 legend
 
-h(6) = figure('Color','White','Name','Supplementary Figure 7b','NumberTitle','off');
+h(6) = figure('Color','White','Name','Supplementary Figure 3b','NumberTitle','off');
 % subplot(2,3,2)
 s = scatter(age(logical(sex)),moveMag(logical(sex)),50,'b','filled',"DisplayName","Male");
 s.MarkerFaceAlpha = .15;
@@ -7433,7 +7433,7 @@ xlim([0 70])
 ylim([0 15])
 legend
 
-h(6) = figure('Color','White','Name','Supplementary Figure 7c','NumberTitle','off');
+h(6) = figure('Color','White','Name','Supplementary Figure 3c','NumberTitle','off');
 % subplot(2,3,3)
 plotSpread_FS({moveMag(logical(sex)),moveMag(~logical(sex))},'categoryIdx',[zeros(length(moveMag(logical(sex))),1);ones(length(moveMag(~logical(sex))),1)],'categoryColors',{'b','r'},'categoryLabels',{'Male','Female'},'xNames',{'Male','Female'},'showMM',5);
 meanMale = mean(moveMag(logical(sex)));
@@ -7668,7 +7668,7 @@ timeVecY = 0.0253*(-maxlag:maxlag);
 % % % xlabel('<Rostral  Caudal>')
 
 
-h(1) = figure('Color','White','Name','Supplementary Figure 5a','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 2a','NumberTitle','off');
 % subplot(2,2,1)
 maxMeanVal = max(abs([meanXLoc meanYLoc cIntFillPtsXLoc cIntFillPtsYLoc]));
 plot(timeVecX,meanXLoc,'k')
@@ -7695,7 +7695,7 @@ xlabel('Lags (s)')
 ylim([-1 1])
 grid on
 
-h(1) = figure('Color','White','Name','Supplementary Figure 5b','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 2b','NumberTitle','off');
 % subplot(2,2,2)
 maxMeanVal = max(abs([meanXLoc meanYLoc cIntFillPtsXLoc cIntFillPtsYLoc]));
 plot(timeVecY,meanYLoc,'k')
@@ -7722,7 +7722,7 @@ xlabel('Lags (s)')
 ylim([-1 1])
 grid on
 
-h(1) = figure('Color','White','Name','Supplementary Figure 5c','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 2c','NumberTitle','off');
 % subplot(2,2,3)
 maxMeanVal = max(abs([meanXEMG meanYEMG cIntFillPtsXEMG cIntFillPtsYEMG]));
 plot(timeVecX,meanXEMG,'k')
@@ -7749,7 +7749,7 @@ xlabel('Lags (s)')
 ylim([-1 1])
 grid on
 
-h(1) = figure('Color','White','Name','Supplementary Figure 5d','NumberTitle','off');
+h(1) = figure('Color','White','Name','Supplementary Figure 2d','NumberTitle','off');
 % subplot(2,2,4)
 maxMeanVal = max(abs([meanYEMG meanYEMG cIntFillPtsYEMG cIntFillPtsYEMG]));
 plot(timeVecY,meanYEMG,'k')

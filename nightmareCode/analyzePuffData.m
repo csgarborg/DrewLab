@@ -1,5 +1,7 @@
 function analyzePuffData(dateList)
 
+close all;
+
 tdmsFilePaths = findTDMSFiles(dateList);
 
 % for n = 1:length(tdmsFilePaths)
@@ -87,6 +89,127 @@ for s = 1:length(secondsFields)
         title('Average Spectrogram');
         colorbar;
         colormap turbo;
+
+        % ==============================
+        % NEW FIGURE: Stacked X_dFF Traces
+        % ==============================
+        fig = figure(numel(findall(0, 'Type', 'figure')) + 1);
+        subplot(2,1,1)
+        hold on
+
+        t = puffMeanStruct.(secondsFields{s}).digitalTimescaleS;
+
+        % Match MATLAB default color order (same as your other plots)
+        colorOrder = get(gca,'ColorOrder');
+        numColors = size(colorOrder,1);
+
+        % Fixed spacing for clean stacking
+        spacing = max(abs(X_dFF(:))) * 1.5;
+
+        for k = 1:size(X_dFF,1)
+            offset = (k-1) * spacing;
+
+            % Cycle through same color order as other ΔP/P plot
+            thisColor = colorOrder(mod(k-1,numColors)+1,:);
+
+            plot(t, X_dFF(k,:) + offset, ...
+                 'Color', thisColor, ...
+                 'LineWidth', 1.2)
+        end
+
+        % ---- Percent change reference line (0% baseline for each trace) ----
+        for k = 1:size(X_dFF,1)
+            offset = (k-1) * spacing;
+            yline(offset, '--', ...
+                  'Color', [0.4 0.4 0.4], ...
+                  'LineWidth', 0.75);
+        end
+
+        % ---- Puff window shading ----
+        puffDur = str2double(strrep(secondsFields{s}, 'Sec', ''));
+        yLimits = ylim;
+        patch([0 puffDur puffDur 0], ...
+              [yLimits(1) yLimits(1) yLimits(2) yLimits(2)], ...
+              'r', ...
+              'FaceAlpha', 0.08, ...
+              'EdgeColor', 'none');
+
+        xlabel('Time (s)')
+        ylabel('\DeltaP/P (stacked)')
+        title([secondsFields(s) ' - ' strrep(fields{i}, '_', ' ') ' (Stacked ΔP/P)'])
+        xlim([t(1) t(end)])
+
+        set(gca,'YTick',[])
+
+        % ---- 50% Vertical Scale Bar ----
+        scaleValue = 0.5;  % 50% change (0.5 in ΔP/P units)
+
+        % Position scale bar near right edge
+        xPos = t(end) - 0.05*(t(end)-t(1));  % 5% from right edge
+        yTop = (size(X_dFF,1)-1)*spacing + spacing*0.5;
+        yBottom = yTop - scaleValue;
+
+        plot([xPos xPos], [yBottom yTop], ...
+             'k', 'LineWidth', 2)
+
+        text(xPos, yTop + spacing*0.05, ...
+            '50%', ...
+            'HorizontalAlignment','center', ...
+            'VerticalAlignment','bottom')
+        box off
+
+
+
+        % ===== Imagesc of X_dFF with appended std row (keep traces figure unchanged) =====
+        ax = subplot(2,1,2);
+        t = puffMeanStruct.(secondsFields{s}).digitalTimescaleS;   % 1 x T
+        X = X_dFF;                                                 % N x T
+        stdPerTime = std(X,0,1);                                   % 1 x T
+
+        % Build combined matrix: rows 1..N = traces, row N+1 = std
+        C = [X; stdPerTime];          % (N+1) x T
+        numRows = size(C,1);
+
+        % Display imagesc: y values 1..numRows map to traces + std row
+        imagesc(ax, t, 1:numRows, C);
+        set(ax,'YDir','normal');      % so row 1 is at bottom (change if you prefer)
+        colormap(ax, turbo(256));     % choose colormap you like
+        clim(ax, [min(X(:)) max(X(:))]);  % shared color limits
+        cb = colorbar(ax);
+        cb.Label.String = '\DeltaP/P (color)';
+
+        % Label axes and rows
+        xlabel(ax,'Time (s)');
+        yticks = [];
+        % keep only two labels: first/last or show nothing and custom last label
+        % here we show only the last row labeled 'Std'
+        ax.YTick = [numRows];
+        ax.YTickLabel = {'Std'};
+
+        title(ax, ['X\_dFF (imagesc) + Std row - ' secondsFields{s} ' - ' strrep(fields{i},'_',' ')]);
+
+        % Shade puff window across full image
+        puffDur = str2double(strrep(secondsFields{s}, 'Sec', ''));
+        yl = ylim(ax);
+        hold(ax,'on');
+        patch(ax, [0 puffDur puffDur 0], [yl(1) yl(1) yl(2) yl(2)], ...
+            'r', 'FaceAlpha', 0.08, 'EdgeColor','none');
+        hold(ax,'off');
+
+        xlim(ax, [t(1) t(end)]);
+
+        % Optional: draw a thin horizontal separator between traces and std row
+        sepY = numRows - 0.5;
+        hold(ax,'on');
+        plot(ax, [t(1) t(end)], [sepY sepY], 'k-', 'LineWidth', 0.75);
+        hold(ax,'off');
+
+        % Notes:
+        % - If stdPerTime values are much smaller than X_dFF range, std row color may be low-contrast.
+        %   Consider scaling stdPerTime (e.g., multiply by factor) or use a separate caxis for the last row:
+        %     C = [X; stdPerTime_scaled];
+        % - For repeated updates in a loop, create im = imagesc(...); then update with set(im,'CData',C) and call drawnow limitrate.
+
     end
 
     figure(numel(findall(0, 'Type', 'figure')) + 1)
@@ -98,13 +221,13 @@ for s = 1:length(secondsFields)
     ylabel('Mean \DeltaP/P')
     xlim([puffMeanStruct.(secondsFields{s}).digitalTimescaleS(1) puffMeanStruct.(secondsFields{s}).digitalTimescaleS(end)])
     rectangle('Position', [0, -.5, str2double(strrep(secondsFields{s}, 'Sec', '')), ylimAxisVals(2)+.5], ...
-            'EdgeColor', 'r', ...
-            'LineWidth', 1, ...
-            'FaceColor', [1 0 0], ...
-            'FaceAlpha', 0.1);
+        'EdgeColor', 'r', ...
+        'LineWidth', 1, ...
+        'FaceColor', [1 0 0], ...
+        'FaceAlpha', 0.1);
     title([secondsFields(s) ' - Mean Percent Pixel Diff Changes'])
     legend(cellfun(@(s) strtrim(regexprep(strrep(strrep(s,'mean',''),'_',' '),'\s+',' ')), ...
-            fields, 'UniformOutput', false))
+        fields, 'UniformOutput', false))
 
     fields = fieldnames(puffMeanStruct.(secondsFields{s}).analogData);
     for i = 1:length(fields)
