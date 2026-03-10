@@ -8,6 +8,9 @@ function batchAnnotateAndCompressMouseAVI(hbPreset)
 % - Compression ETA
 % - Total batch ETA
 
+    %% Start timer
+    t = tic;
+
     %% Hard-coded HandBrakeCLI path
     hbExe = '"C:\Users\csg178\handbrakeCLI\HandBrakeCLI.exe"';
 
@@ -20,6 +23,11 @@ function batchAnnotateAndCompressMouseAVI(hbPreset)
 
     aviFiles = dir(fullfile(folderPath, '*.avi'));
     if isempty(aviFiles)
+        finalTimeS = toc(t);
+        m = floor(finalTimeS/60);
+        s = finalTimeS - 60*m;
+        str = sprintf('%d:%05.2f', m, s); % e.g. "2:03.45"
+        sendFinishedEmail('csg178@psu.edu', 'No AVI Files Found', ['Elapsed Time; ' str])
         error('No AVI files found.');
     end
 
@@ -206,6 +214,13 @@ function batchAnnotateAndCompressMouseAVI(hbPreset)
     end
 
     fprintf('\nAll files processed.\n');
+
+    finalTimeS = toc(t);
+    m = floor(finalTimeS/60);
+    s = finalTimeS - 60*m;
+    str = sprintf('%d:%05.2f', m, s); % e.g. "2:03.45"
+
+    sendFinishedEmail('csg178@psu.edu', 'Mouse Video Compression Finished', ['Elapsed Time; ' str])
 end
 
 %% ---------- Helper ----------
@@ -223,5 +238,34 @@ function str = formatETA(seconds)
         str = sprintf('%dm %ds', mins, secs);
     else
         str = sprintf('%ds', secs);
+    end
+end
+
+%% ---------- Email ----------
+function sendFinishedEmail(recipient, subject, messageBody, attachments)
+    % Sends an email indicating a process has finished.
+    % recipient - string or cell array of recipient addresses
+    % subject - email subject (string)
+    % messageBody - email body text (string)
+    % attachments - optional cell array of file paths
+    
+    % Configure preferences once before using (example using Gmail).
+    setpref('Internet','SMTP_Server','smtp.gmail.com');
+    setpref('Internet','E_mail','mousevideoconversionalert@gmail.com');      % sender
+    setpref('Internet','SMTP_Username','mousevideoconversionalert@gmail.com');
+    setpref('Internet','SMTP_Password','ejsz rcbg vrpu oyup');        % consider app password
+    props = java.lang.System.getProperties;
+    props.setProperty('mail.smtp.auth','true');
+    props.setProperty('mail.smtp.starttls.enable','true');
+    props.setProperty('mail.smtp.port','587');
+    props.setProperty('mail.debug','false');   % disable JavaMail debug
+
+    if nargin < 3 || isempty(messageBody)
+        messageBody = 'The process has finished successfully.';
+    end
+    if nargin < 4
+        sendmail(recipient, subject, messageBody);
+    else
+        sendmail(recipient, subject, messageBody, attachments);
     end
 end
