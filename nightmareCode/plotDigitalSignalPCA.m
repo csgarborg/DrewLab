@@ -19,16 +19,16 @@ nSignals = length(signalNames);
 durationSec = 15*60;
 samplesToUse = round(durationSec * Fs);
 
-X = zeros(samplesToUse,nSignals);
+signals = zeros(samplesToUse,nSignals);
 
 for i = 1:nSignals
     data = signalsStruct.(signalNames{i});
     data = data(:);
-    X(:,i) = data(1:min(samplesToUse,length(data)));
+    signals(:,i) = data(1:min(samplesToUse,length(data)));
 end
 
 %% PCA
-[coeff,score,latent,~,explained] = pca(X);
+[coeff,score,latent,~,explained] = pca(signals);
 
 %% Variance explained
 

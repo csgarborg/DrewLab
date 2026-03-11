@@ -42,5 +42,21 @@ plotDigitalSignalClusteredCorrelation(tdmsPath)
 fprintf('Generating signal similarity network...\n')
 plotDigitalSignalNetwork(tdmsPath)
 
+%% Signal overlay
+fprintf('Generating z-scored signal overlay...\n')
+plotDigitalSignalOverlay(tdmsPath)
+
+%% Lag matrix
+fprintf('Generating lag matrix...\n')
+plotDigitalSignalLagMatrix(tdmsPath)
+
+%% Motion triggered average
+fprintf('Generating motion triggered averages...\n')
+plotDigitalMotionTriggeredAverage(tdmsPath)
+
+%% Power spectrum comparison
+fprintf('Generating power spectrum comparison...\n')
+plotDigitalSignalPowerSpectra(tdmsPath)
+
 fprintf('\nAll analyses complete.\n')
 end

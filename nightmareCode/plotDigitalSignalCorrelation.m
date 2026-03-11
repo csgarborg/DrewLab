@@ -48,7 +48,7 @@ for i = 1:nSignals
 end
 axis square
 colorbar
-clim([-1 1])
+clim([0 1])
 
 ax = gca;
 ax.XTick = 1:nSignals;
