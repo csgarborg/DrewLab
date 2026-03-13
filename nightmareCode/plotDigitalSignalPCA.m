@@ -1,4 +1,4 @@
-function plotDigitalSignalPCA(tdmsPath)
+function [coeff,score,latent,explained] = plotDigitalSignalPCA(tdmsPath,outputPlotTF)
 
 if exist('tdmsPath','var')
     tdmsDataStruct = openTDMS(tdmsPath);
@@ -11,7 +11,7 @@ Fs = str2double(tdmsDataStruct.CameraFrameratePerSecond);
 signalsStruct = tdmsDataStruct.Digital_Data;
 signalNames = fieldnames(signalsStruct);
 
-removeFields = {'Puff','Respiration_Sum'};
+removeFields = {'Puff','Respiration_Sum','Respiration'};
 signalNames = setdiff(signalNames, removeFields, 'stable');
 
 nSignals = length(signalNames);
@@ -30,30 +30,33 @@ end
 %% PCA
 [coeff,score,latent,~,explained] = pca(signals);
 
-%% Variance explained
+if ~exist('outputPlotTF','var') || outputPlotTF
+    %% Variance explained
 
-figure
-plot(explained,'o-')
-xlabel('Principal Component')
-ylabel('Variance Explained (%)')
-title('PCA Variance Explained')
+    figure
+    plot(explained,'o-')
+    xlabel('Principal Component')
+    ylabel('Variance Explained (%)')
+    title('PCA Variance Explained')
 
-%% Component weights
+    %% Component weights
 
-figure
-bar(coeff(:,1))
-xticks(1:nSignals)
-xticklabels(signalNames)
-set(gca,'TickLabelInterpreter','none')
-ylabel('Weight')
-title('PC1 Loadings')
+    figure
+    bar(coeff(:,1))
+    xticks(1:nSignals)
+    xticklabels(signalNames)
+    set(gca,'TickLabelInterpreter','none')
+    ylabel('Weight')
+    title('PC1 Loadings')
 
-%% PC time series
+    %% PC time series
 
-figure
-plot(score(:,1))
-xlabel('Time (samples)')
-ylabel('PC1 Activity')
-title('Principal Component 1 Timecourse')
+    figure
+    plot(score(:,1))
+    xlabel('Time (samples)')
+    ylabel('PC1 Activity')
+    title('Principal Component 1 Timecourse')
+
+end
 
 end

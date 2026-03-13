@@ -11,7 +11,7 @@ Fs = str2double(tdmsDataStruct.CameraFrameratePerSecond);
 signalsStruct = tdmsDataStruct.Digital_Data;
 signalNames = fieldnames(signalsStruct);
 
-removeFields = {'Puff','Respiration_Sum'};
+removeFields = {'Puff','Respiration_Sum','Respiration'};
 signalNames = setdiff(signalNames, removeFields, 'stable');
 
 nSignals = length(signalNames);

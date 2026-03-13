@@ -1,4 +1,4 @@
-function plotDigitalSignalCorrelation(tdmsPath)
+function [corrMatrix,signals,nSignals,Fs,signalNames] = plotDigitalSignalCorrelation(tdmsPath,outputPlotTF)
 
 if exist('tdmsPath','var')
     tdmsDataStruct = openTDMS(tdmsPath);
@@ -11,7 +11,7 @@ Fs = str2double(tdmsDataStruct.CameraFrameratePerSecond);
 signalsStruct = tdmsDataStruct.Digital_Data;
 signalNames = fieldnames(signalsStruct);
 
-removeFields = {'Puff','Respiration_Sum'};
+removeFields = {'Puff','Respiration_Sum','Respiration'};
 signalNames = setdiff(signalNames, removeFields, 'stable');
 
 nSignals = length(signalNames);
@@ -36,61 +36,69 @@ end
 
 %% Correlation matrix
 corrMatrix = corrcoef(X);
-
-figure
-imagesc(corrMatrix)
-for i = 1:nSignals
-    for j = 1:nSignals
-        text(j,i,sprintf('%.2f',corrMatrix(i,j)), ...
-            'HorizontalAlignment','center', ...
-            'Color','k');
+if ~exist('outputPlotTF','var') || outputPlotTF
+    figure
+    imagesc(corrMatrix)
+    for i = 1:nSignals
+        for j = 1:nSignals
+            text(j,i,sprintf('%.2f',corrMatrix(i,j)), ...
+                'HorizontalAlignment','center', ...
+                'Color','k');
+        end
     end
+    axis square
+    colorbar
+    clim([0 1])
+
+    ax = gca;
+    ax.XTick = 1:nSignals;
+    ax.YTick = 1:nSignals;
+    ax.XTickLabel = signalNames;
+    ax.YTickLabel = signalNames;
+    ax.TickLabelInterpreter = 'none';
+
+    title('Signal Correlation Matrix')
 end
-axis square
-colorbar
-clim([0 1])
-
-ax = gca;
-ax.XTick = 1:nSignals;
-ax.YTick = 1:nSignals;
-ax.XTickLabel = signalNames;
-ax.YTickLabel = signalNames;
-ax.TickLabelInterpreter = 'none';
-
-title('Signal Correlation Matrix')
 
 %% Cross correlation checkerboard
 
-figure
-tiledlayout(nSignals,nSignals,'TileSpacing','compact')
+if ~exist('outputPlotTF','var') || outputPlotTF
+    figure
+    tiledlayout(nSignals,nSignals,'TileSpacing','compact')
+end
 
 for i = 1:nSignals
     for j = 1:nSignals
-        
-        nexttile
+        if ~exist('outputPlotTF','var') || outputPlotTF
+            nexttile
+        end
         
         [r,lags] = xcorr(signals{i},signals{j},Fs*5,'coeff'); % ±5 seconds
         lags = lags/Fs;
         
-        plot(lags,r,'w')
-        xlim([-5 5])
-        ylim([0 1])
-        
-        if i == nSignals
-            xlabel('Lag (s)')
+        if ~exist('outputPlotTF','var') || outputPlotTF
+            plot(lags,r,'w')
+            xlim([-5 5])
+            ylim([0 1])
+
+            if i == nSignals
+                xlabel('Lag (s)')
+            end
+
+            if j == 1
+                ylabel(signalNames{i},'Interpreter','none')
+            end
+
+            if i == 1
+                title(signalNames{j},'Interpreter','none')
+            end
         end
-        
-        if j == 1
-            ylabel(signalNames{i},'Interpreter','none')
-        end
-        
-        if i == 1
-            title(signalNames{j},'Interpreter','none')
-        end
-        
+
     end
 end
 
-sgtitle('Pairwise Cross Correlation')
+if ~exist('outputPlotTF','var') || outputPlotTF
+    sgtitle('Pairwise Cross Correlation')
+end
 
 end

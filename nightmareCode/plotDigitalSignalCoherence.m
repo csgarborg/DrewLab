@@ -18,7 +18,7 @@ signalsStruct = tdmsDataStruct.Digital_Data;
 signalNames = fieldnames(signalsStruct);
 
 % Remove unwanted signals
-removeFields = {'Puff','Respiration_Sum'};
+removeFields = {'Puff','Respiration_Sum','Respiration'};
 signalNames = setdiff(signalNames, removeFields, 'stable');
 
 nSignals = length(signalNames);
