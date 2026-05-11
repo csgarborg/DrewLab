@@ -1,14 +1,17 @@
-function compareREMvsAwake(awakeExcelPath, remExcelPath, tdmsTF, roiPath)
+function compareREMvsAwake(awakeExcelPath, remExcelPath, mefRemExcelPath, tdmsTF, roiPath)
 
 %% Load data
 
 if ~exist("tdmsTF","var") || tdmsTF
-    awake = processExcelSegmentsTDMS_SF(awakeExcelPath);
-    rem   = processExcelSegmentsTDMS_SF(remExcelPath);
+    awake  = processExcelSegmentsTDMS_SF(awakeExcelPath);
+    rem    = processExcelSegmentsTDMS_SF(remExcelPath);
+    mefRem = processExcelSegmentsTDMS_SF(mefRemExcelPath);
 else
-    awake = processExcelSegmentsROISelect_SF(awakeExcelPath,roiPath);
-    rem   = processExcelSegmentsROISelect_SF(remExcelPath,roiPath);
+    awake  = processExcelSegmentsROISelect_SF(awakeExcelPath,roiPath);
+    rem    = processExcelSegmentsROISelect_SF(remExcelPath,roiPath);
+    mefRem = processExcelSegmentsROISelect_SF(mefRemExcelPath,roiPath);
 
+    % show ROI locations once
     plotFirstFrameWithROIs(remExcelPath, roiPath);
 end
 
@@ -17,6 +20,7 @@ end
 
 nA = length(awake);
 nR = length(rem);
+nM = length(mefRem);
 
 signalNames = awake(1).signalNames;
 nSignals = awake(1).nSignals;
@@ -34,6 +38,7 @@ hold on
 
 hA = plot(nan,nan,'-o','Color',[0.3 0.5 1],'DisplayName','Awake');
 hR = plot(nan,nan,'--o','Color',[1 0.4 0.4],'DisplayName','REM');
+hM = plot(nan,nan,':o','Color',[0.2 0.7 0.2],'DisplayName','MefREM');
 
 for r = 1:nA
     plot(1:nSignals, awake(r).explained(1:nSignals),'-o','Color',[0.3 0.5 1])
@@ -41,8 +46,11 @@ end
 for r = 1:nR
     plot(1:nSignals, rem(r).explained(1:nSignals),'--o','Color',[1 0.4 0.4])
 end
+for r = 1:nM
+    plot(1:nSignals, mefRem(r).explained(1:nSignals),':o','Color',[0.2 0.7 0.2])
+end
 
-legend([hA hR])
+legend([hA hR hM])
 
 title('Individual Recordings')
 xlabel('PC')
@@ -57,12 +65,15 @@ hold on
 
 A = reshape([awake.explained],[],nA)';
 R = reshape([rem.explained],[],nR)';
+M = reshape([mefRem.explained],[],nM)';
 
 meanA = mean(A(:,1:nSignals));
 meanR = mean(R(:,1:nSignals));
+meanM = mean(M(:,1:nSignals));
 
 ciA = 1.96*std(A(:,1:nSignals))/sqrt(nA);
 ciR = 1.96*std(R(:,1:nSignals))/sqrt(nR);
+ciM = 1.96*std(M(:,1:nSignals))/sqrt(nM);
 
 x = 1:nSignals;
 
@@ -82,7 +93,15 @@ fill([x fliplr(x)], ...
 
 plot(x,meanR,'--o','Color',[1 0.4 0.4],'LineWidth',2)
 
-legend({'Awake CI','Awake','REM CI','REM'})
+% MefREM CI
+fill([x fliplr(x)], ...
+     [meanM-ciM fliplr(meanM+ciM)], ...
+     [0.2 0.7 0.2], ...
+     'FaceAlpha',0.15,'EdgeColor','none');
+
+plot(x,meanM,':o','Color',[0.2 0.7 0.2],'LineWidth',2)
+
+legend({'Awake CI','Awake','REM CI','REM','MefREM CI','MefREM'})
 
 title('Mean ± 95% CI')
 xlabel('PC')
@@ -99,28 +118,32 @@ sgtitle('PCA Variance Comparison')
 
 pc1A = arrayfun(@(x)x.explained(1),awake);
 pc1R = arrayfun(@(x)x.explained(1),rem);
+pc1M = arrayfun(@(x)x.explained(1),mefRem);
 
 pc2A = arrayfun(@(x)x.explained(2),awake);
 pc2R = arrayfun(@(x)x.explained(2),rem);
+pc2M = arrayfun(@(x)x.explained(2),mefRem);
 
 figure
 
 subplot(1,2,1)
-bar([mean(pc1A),mean(pc1R)])
+bar([mean(pc1A), mean(pc1R), mean(pc1M)])
 hold on
-errorbar([1 2],[mean(pc1A) mean(pc1R)], ...
-    [std(pc1A) std(pc1R)],'.w','LineWidth',1.5)
-set(gca,'XTickLabel',{'Awake','REM'})
+errorbar([1 2 3], ...
+    [mean(pc1A) mean(pc1R) mean(pc1M)], ...
+    [std(pc1A) std(pc1R) std(pc1M)], ...
+    '.w','LineWidth',1.5)
+set(gca,'XTickLabel',{'Awake','REM','MefREM'})
 title('PC1 Strength')
 ylabel('% Variance')
 ylim([0 100])
 
 subplot(1,2,2)
-bar([mean(pc2A),mean(pc2R)])
+bar([mean(pc2A),mean(pc2R),mean(pc2M)])
 hold on
-errorbar([1 2],[mean(pc2A) mean(pc2R)], ...
-    [std(pc2A) std(pc2R)],'.w','LineWidth',1.5)
-set(gca,'XTickLabel',{'Awake','REM'})
+errorbar([1 2 3],[mean(pc2A) mean(pc2R) mean(pc2M)], ...
+    [std(pc2A) std(pc2R) std(pc2M)],'.w','LineWidth',1.5)
+set(gca,'XTickLabel',{'Awake','REM','MefREM'})
 title('PC2 Strength')
 ylabel('% Variance')
 ylim([0 100])
@@ -131,14 +154,14 @@ ylim([0 100])
 
 meanCorrA = arrayfun(@(x)mean(x.corrMatrix(~eye(size(x.corrMatrix)))),awake);
 meanCorrR = arrayfun(@(x)mean(x.corrMatrix(~eye(size(x.corrMatrix)))),rem);
+meanCorrM = arrayfun(@(x)mean(x.corrMatrix(~eye(size(x.corrMatrix)))),mefRem);
 
 figure
-bar([mean(meanCorrA),mean(meanCorrR)])
+bar([mean(meanCorrA),mean(meanCorrR),mean(meanCorrM)])
 hold on
-errorbar([1 2],[mean(meanCorrA) mean(meanCorrR)], ...
-    [std(meanCorrA) std(meanCorrR)],'.w','LineWidth',1.5)
-
-set(gca,'XTickLabel',{'Awake','REM'})
+errorbar([1 2 3],[mean(meanCorrA) mean(meanCorrR) mean(meanCorrM)], ...
+    [std(meanCorrA) std(meanCorrR) std(meanCorrR)],'.w','LineWidth',1.5)
+set(gca,'XTickLabel',{'Awake','REM','MefREM'})
 ylabel('Mean Correlation')
 title('Average Correlation ± SD')
 ylim([0 1])
@@ -149,12 +172,14 @@ ylim([0 1])
 
 corrA = cat(3,awake.corrMatrix);
 corrR = cat(3,rem.corrMatrix);
+corrM = cat(3,mefRem.corrMatrix);
 
 meanA = mean(corrA,3);
 meanR = mean(corrR,3);
+meanM = mean(corrM,3);
 
 figure
-tiledlayout(1,2)
+tiledlayout(1,3)
 
 nexttile
 imagesc(meanA)
@@ -180,6 +205,18 @@ xticklabels(strrep(signalNames,'_',' '))
 yticklabels(strrep(signalNames,'_',' '))
 xtickangle(45)
 
+nexttile
+imagesc(meanM)
+title('MefREM')
+axis square
+clim([0 1])
+colorbar
+xticks(1:nSignals)
+yticks(1:nSignals)
+xticklabels(strrep(signalNames,'_',' '))
+yticklabels(strrep(signalNames,'_',' '))
+xtickangle(45)
+
 sgtitle('Mean Correlation Matrices')
 
 %% ==============================
@@ -195,15 +232,18 @@ hold on
 
 hA = plot(nan,nan,'-o','Color',[0.3 0.5 1],'DisplayName','Awake');
 hR = plot(nan,nan,'--o','Color',[1 0.4 0.4],'DisplayName','REM');
+hM = plot(nan,nan,':o','Color',[0.2 0.7 0.2],'DisplayName','MefREM');
 
 for r=1:nA, plot(awake(r).coeff(:,1),'-o','Color',[0.3 0.5 1]); end
 for r=1:nR, plot(rem(r).coeff(:,1),'--o','Color',[1 0.4 0.4]); end
+for r=1:nM, plot(mefRem(r).coeff(:,1),':o','Color',[0.2 0.7 0.2]); end
+
 title('Individual')
 xticks(1:nSignals)
 xticklabels(strrep(signalNames,'_',' '))
 xtickangle(45)
 
-legend([hA hR])
+legend([hA hR hM])
 ylim([-1 1])
 
 % mean + CI
@@ -212,15 +252,19 @@ hold on
 
 A = reshape([awake.coeff],nSignals,[],nA);
 R = reshape([rem.coeff],nSignals,[],nR);
+M = reshape([mefRem.coeff],nSignals,[],nM);
 
 pc1A = squeeze(A(:,1,:))';
 pc1R = squeeze(R(:,1,:))';
+pc1M = squeeze(M(:,1,:))';
 
 meanA = mean(pc1A);
 meanR = mean(pc1R);
+meanM = mean(pc1M);
 
 ciA = 1.96*std(pc1A)/sqrt(nA);
 ciR = 1.96*std(pc1R)/sqrt(nR);
+ciM = 1.96*std(pc1M)/sqrt(nM);
 
 x = 1:nSignals;
 
@@ -240,7 +284,15 @@ fill([x fliplr(x)], ...
 
 plot(x,meanR,'--o','Color',[1 0.4 0.4],'LineWidth',2)
 
-legend({'Awake CI','Awake','REM CI','REM'})
+% MefREM CI
+fill([x fliplr(x)], ...
+     [meanM-ciM fliplr(meanM+ciM)], ...
+     [0.2 0.7 0.2], ...
+     'FaceAlpha',0.15,'EdgeColor','none');
+
+plot(x,meanM,':o','Color',[0.2 0.7 0.2],'LineWidth',2)
+
+legend({'Awake CI','Awake','REM CI','REM','MefREM CI','MefREM'})
 
 title('Mean ± 95% CI')
 xticks(1:nSignals)
@@ -262,11 +314,14 @@ hold on
 
 hA = plot(nan,nan,'-o','Color',[0.3 0.5 1],'DisplayName','Awake');
 hR = plot(nan,nan,'--o','Color',[1 0.4 0.4],'DisplayName','REM');
+hM = plot(nan,nan,':o','Color',[0.2 0.7 0.2],'DisplayName','REM');
 
 for r=1:nA, plot(awake(r).coeff(:,2),'-o','Color',[0.3 0.5 1]); end
 for r=1:nR, plot(rem(r).coeff(:,2),'--o','Color',[1 0.4 0.4]); end
+for r=1:nM, plot(mefRem(r).coeff(:,2),':o','Color',[0.2 0.7 0.2]); end
+
 title('Individual')
-legend([hA hR])
+legend([hA hR hM])
 ylim([-1 1])
 
 xticks(1:nSignals)
@@ -278,12 +333,15 @@ hold on
 
 pc2A = squeeze(A(:,2,:))';
 pc2R = squeeze(R(:,2,:))';
+pc2M = squeeze(M(:,2,:))';
 
 meanA = mean(pc2A);
 meanR = mean(pc2R);
+meanM = mean(pc2M);
 
 ciA = 1.96*std(pc2A)/sqrt(nA);
 ciR = 1.96*std(pc2R)/sqrt(nR);
+ciM = 1.96*std(pc2M)/sqrt(nM);
 
 x = 1:nSignals;
 
@@ -303,7 +361,15 @@ fill([x fliplr(x)], ...
 
 plot(x,meanR,'--o','Color',[1 0.4 0.4],'LineWidth',2)
 
-legend({'Awake CI','Awake','REM CI','REM'})
+% MefREM CI
+fill([x fliplr(x)], ...
+     [meanM-ciM fliplr(meanM+ciM)], ...
+     [0.2 0.7 0.2], ...
+     'FaceAlpha',0.15,'EdgeColor','none');
+
+plot(x,meanM,':o','Color',[0.2 0.7 0.2],'LineWidth',2)
+
+legend({'Awake CI','Awake','REM CI','REM','MefREM CI','MefREM'})
 
 title('Mean ± 95% CI')
 xticks(1:nSignals)
@@ -389,8 +455,12 @@ localA  = mean(A(:,2:5,:),2);
 globalR = pc1R;
 localR  = mean(R(:,2:5,:),2);
 
+globalM = pc1M;
+localM  = mean(M(:,2:5,:),2);
+
 GL_A = zeros(nA,1);
 GL_R = zeros(nR,1);
+GL_M = zeros(nM,1);
 
 for r = 1:nA
     e = awake(r).explained;
@@ -402,9 +472,14 @@ for r = 1:nR
     GL_R(r) = e(1) / mean(e(2:min(5,end)));
 end
 
+for r = 1:nM
+    e = mefRem(r).explained;
+    GL_M(r) = e(1) / mean(e(2:min(5,end)));
+end
+
 figure
-bar([mean(GL_A), mean(GL_R)])
-set(gca,'XTickLabel',{'Awake','REM'})
+bar([mean(GL_A), mean(GL_R), mean(GL_M)])
+set(gca,'XTickLabel',{'Awake','REM','MefREM'})
 ylabel('Global / Local Ratio')
 title('Global vs Local Motion Index')
 
