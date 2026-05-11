@@ -5,7 +5,7 @@ close all
 fprintf('\nLoading TDMS file...\n')
 
 if ~exist('tdmsPath','var')
-    [file, loc] = uigetfile('H:\SGNMData\*.tdms', 'Select a File');
+    [file, loc] = uigetfile('D:\SGNMData\*.tdms', 'Select a File');
     tdmsPath = fullfile(loc,file);
 end
 

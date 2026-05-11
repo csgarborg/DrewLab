@@ -94,7 +94,8 @@ for s = 1:length(secondsFields)
         % NEW FIGURE: Stacked X_dFF Traces
         % ==============================
         fig = figure(numel(findall(0, 'Type', 'figure')) + 1);
-        subplot(2,1,1)
+        tiledlayout(2,1)
+        ax1 = nexttile;
         hold on
 
         t = puffMeanStruct.(secondsFields{s}).digitalTimescaleS;
@@ -150,7 +151,7 @@ for s = 1:length(secondsFields)
         yBottom = yTop - scaleValue;
 
         plot([xPos xPos], [yBottom yTop], ...
-             'k', 'LineWidth', 2)
+             'w', 'LineWidth', 2)
 
         text(xPos, yTop + spacing*0.05, ...
             '50%', ...
@@ -161,7 +162,8 @@ for s = 1:length(secondsFields)
 
 
         % ===== Imagesc of X_dFF with appended std row (keep traces figure unchanged) =====
-        ax = subplot(2,1,2);
+        ax = nexttile;
+        cb = colorbar(ax);
         t = puffMeanStruct.(secondsFields{s}).digitalTimescaleS;   % 1 x T
         X = X_dFF;                                                 % N x T
         stdPerTime = std(X,0,1);                                   % 1 x T

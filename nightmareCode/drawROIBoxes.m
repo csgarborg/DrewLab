@@ -1,7 +1,7 @@
 function drawROIBoxes(txtFile,imageFile)
 
 if ~exist('imageFile','var')
-    txtFile   = 'H:\SGNMData\260114\260114_SGNM005_ROI.txt';     % your text file
+    txtFile   = 'D:\SGNMData\260114\260114_SGNM005_ROI.txt';     % your text file
     imageFile = 'C:\Users\csg178\Pictures\vlcsnap-2026-01-21-21h39m45s621.png';     % image to draw on
 end
 

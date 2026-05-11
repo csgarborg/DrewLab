@@ -4,7 +4,7 @@ if ~exist('dateList','var')
     % dateList = {'251201','251202','251203','251204'};
     dateList = {'251201'};
 end
-dataDir = 'H:\SGNMData\';
+dataDir = 'E:\SGNMData\';
 tdmsFilePaths = {};
 for n = 1:length(dateList)
     files = dir([dataDir dateList{n} '\*.tdms']);

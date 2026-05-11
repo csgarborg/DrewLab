@@ -1,7 +1,7 @@
 function [tdmsDataStruct] = openTDMS(tdmsPath)
 
 if ~exist('tdmsPath', 'var')
-    [file, loc] = uigetfile('H:\SGNMData\*.tdms', 'Select a File');
+    [file, loc] = uigetfile('D:\SGNMData\*.tdms', 'Select a File');
     tdmsPath = fullfile(loc,file);
 end
 
