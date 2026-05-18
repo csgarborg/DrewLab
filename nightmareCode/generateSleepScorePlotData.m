@@ -237,60 +237,62 @@ f1 = filtfilt(sos, g, forceRaw - mean(forceRaw));
 forceDS = resample(f1, dsFs, Fs);
 
 % ----- threshold GUI -----
-t = (0:numel(forceRaw)-1)/Fs;
+% t = (0:numel(forceRaw)-1)/Fs;
 
 done   = false;
 binRaw = [];
 thresh = [];
 
-figH = [];   % store figure handle
+% figH = [];   % store figure handle
 
 while ~done
     % Create figure if not already created
-    figH = figure('Color','w','Name','Force Threshold');
+    % figH = figure('Color','w','Name','Force Threshold');
 
-    subplot(2,1,1); 
-    plot(t, forceRaw); 
-    title('Raw Force'); grid on;
-    if ~isempty(thresh), yline(thresh,'r--'); end
+    % subplot(2,1,1); 
+    % plot(t, forceRaw); 
+    % title('Raw Force'); grid on;
+    % if ~isempty(thresh), yline(thresh,'r--'); end
 
-    if ~isempty(binRaw)
-        subplot(2,1,2); 
-        plot(t, binRaw); 
-        ylim([-0.1 1.1]); 
-        grid on;
-    end
+    % if ~isempty(binRaw)
+    %     subplot(2,1,2); 
+    %     plot(t, binRaw); 
+    %     ylim([-0.1 1.1]); 
+    %     grid on;
+    % end
 
-    answ = inputdlg('Force threshold:','Threshold',1,{'0.05'});
-    if isempty(answ), error('Cancelled'); end
-    thresh = str2double(answ{1});
+    % answ = inputdlg('Force threshold:','Threshold',1,{'0.05'});
+    % if isempty(answ), error('Cancelled'); end
+    % thresh = str2double(answ{1});
+    thresh = 0.05;
 
     binRaw = forceRaw > thresh;
 
-    clf(figH);   % clear figure but keep same window
+    % clf(figH);   % clear figure but keep same window
 
-    subplot(2,1,1);
-    plot(t, forceRaw); 
-    yline(thresh,'r--');
-    title('Raw Force with threshold'); 
-    grid on;
-
-    subplot(2,1,2);
-    plot(t, binRaw); 
-    ylim([-0.1 1.1]); 
-    title('Binary force'); 
-    grid on;
-
-    resp = questdlg('Accept threshold?','Confirm','Yes','No','Yes');
-    if strcmp(resp,'Yes')
+    % subplot(2,1,1);
+    % plot(t, forceRaw); 
+    % yline(thresh,'r--');
+    % title('Raw Force with threshold'); 
+    % grid on;
+    % 
+    % subplot(2,1,2);
+    % plot(t, binRaw); 
+    % ylim([-0.1 1.1]); 
+    % title('Binary force'); 
+    % grid on;
+    % 
+    % resp = questdlg('Accept threshold?','Confirm','Yes','No','Yes');
+    % if strcmp(resp,'Yes')
+    if true
         done = true;
     end
 end
 
-% Close the figure after threshold is accepted
-if ishghandle(figH)
-    close(figH);
-end
+% % Close the figure after threshold is accepted
+% if ishghandle(figH)
+%     close(figH);
+% end
 
 
 binDS = resample(double(binRaw), dsFs, Fs) > 0.5;
