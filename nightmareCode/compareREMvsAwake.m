@@ -1,4 +1,4 @@
-function compareREMvsAwake(awakeExcelPath, remExcelPath, mefRemExcelPath, remWakeExcelPath, mefRemWakeExcelPath, tdmsTF, saveResultsStructTF, roiPath, saveResultsStructPath)
+function compareREMvsAwake(awakeExcelPath, remExcelPath, mefRemExcelPath, tdmsTF, saveResultsStructTF, roiPath, saveResultsStructPath)
 
 %% Load data
 if exist('saveResultsStructPath','var') && ~saveResultsStructTF
@@ -14,11 +14,11 @@ else
         rem    = processExcelSegmentsTDMS_SF(remExcelPath);
         mefRem = processExcelSegmentsTDMS_SF(mefRemExcelPath);
     else
-        awake  = processExcelSegmentsROISelect_SF(awakeExcelPath,roiPath);
-        rem    = processExcelSegmentsROISelect_SF(remExcelPath,roiPath);
-        mefRem = processExcelSegmentsROISelect_SF(mefRemExcelPath,roiPath);
-        remWake = processExcelSegmentsROISelectStopEvents_SF(remWakeExcelPath,roiPath);
-        mefRemWake = processExcelSegmentsROISelectStopEvents_SF(mefRemWakeExcelPath,roiPath);
+        awake  = processExcelSegmentsROISelect_SF(awakeExcelPath,roiPath,false);
+        rem    = processExcelSegmentsROISelect_SF(remExcelPath,roiPath,false);
+        mefRem = processExcelSegmentsROISelect_SF(mefRemExcelPath,roiPath,false);
+        remWake = processExcelSegmentsROISelect_SF(remExcelPath,roiPath,true);
+        mefRemWake = processExcelSegmentsROISelect_SF(mefRemExcelPath,roiPath,true);
 
         % show ROI locations once
         plotFirstFrameWithROIs(remExcelPath, roiPath);
@@ -3558,7 +3558,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function results = processExcelSegmentsROISelect_SF(excelPath, roiPath)
+function results = processExcelSegmentsROISelect_SF(excelPath, roiPath, wakeTF)
 
 T = readtable(excelPath,'Sheet',2,'ReadVariableNames',false);
 if strcmp(T{1,1}{1},'file name')
@@ -3572,7 +3572,11 @@ for r = 1:nRec
     segments = table2array(T(r,2:end));
     segments = segments(~isnan(segments));
     segments = reshape(segments,2,[])';
-    
+
+    if wakeTF 
+        segments = [segments segments(:,2)+30];
+    end
+
     % ==============================
     % 1) Convert TDMS path → video path
     % ==============================
@@ -3585,45 +3589,67 @@ for r = 1:nRec
     % 2) Extract / Load ROI motion
     % ==============================
     roiMotion = extractROIMotionFromVideo_fast(videoPath, excelPath, roiPath, segments);
+    roiMotionBaseline = extractROIMotionFromVideo_baseline(videoPath, excelPath, roiPath, segments);
+
+    if wakeTF 
+        segments = segments(:,[2 3]);
+    end
     
     % Remove time field if present
     if isfield(roiMotion,'time')
         timeVec = roiMotion.time;
         roiMotion = rmfield(roiMotion,'time');
     end
+    if isfield(roiMotionBaseline,'time')
+        timeVecBaseline = roiMotionBaseline.time;
+        roiMotionBaseline = rmfield(roiMotionBaseline,'time');
+    end
     
     % Enforce consistent ordering across recordings
     signalNames = sort(fieldnames(roiMotion));
+    signalNamesBaseline = sort(fieldnames(roiMotionBaseline));
 
     % % Remove whisker fields
     % idx = cellfun(@(s) contains(s,'whisker','IgnoreCase',true), signalNames);
     % signalNames(idx) = [];
+    % idx = cellfun(@(s) contains(s,'whisker','IgnoreCase',true), signalNamesBaseline);
+    % signalNamesBaseline(idx) = [];
 
     nSignals = numel(signalNames);
+    nSignalsBaseline = numel(signalNamesBaseline);
     
     % ==============================
     % 3) Build matrix (UNCHANGED LOGIC)
     % ==============================
     L = min(structfun(@length, roiMotion));
     X = zeros(L,nSignals);
+    M = min(structfun(@length, roiMotionBaseline));
+    Y = zeros(M,nSignalsBaseline);
     
     for i = 1:nSignals
         X(:,i) = roiMotion.(signalNames{i})(1:L);
+    end
+    for i = 1:nSignalsBaseline
+        Y(:,i) = roiMotionBaseline.(signalNamesBaseline{i})(1:M);
     end
 
     % ====== Preprocessing (IMPORTANT) ======
     X = fillmissing(X,'linear');
     X = zscore(X);   % <<< critical for ROI comparisons
+    Y = fillmissing(Y,'linear');
+    Y = zscore(Y);   % <<< critical for ROI comparisons
     
     % ==============================
     % 4) PCA (UNCHANGED)
     % ==============================
     [coeff,score,latent,~,explained] = pca(X);
+    [coeffB,scoreB,latentB,~,explainedB] = pca(Y);
     
     % ==============================
     % 5) Correlation (UNCHANGED)
     % ==============================
     corrMatrix = corrcoef(X);
+    corrMatrixBaseline = corrcoef(Y);
 
     % ==============================
     % 6) Segment lengths
@@ -3644,16 +3670,24 @@ for r = 1:nRec
     % end
     segmentIdx = find(diff(timeVec)>1);
     segmentIdx = [0 segmentIdx length(timeVec)];
+    segmentIdxBaseline = find(diff(timeVecBaseline)>1);
+    segmentIdxBaseline = [0 segmentIdxBaseline length(timeVecBaseline)];
     emgTrigAvgLength = 20;
     [p, n, ~] = fileparts(tdmsPath);
     procDataPath = fullfile(p,[n '_ProcData.mat']);
     for n = 1:length(segmentIdx)-1
         currSegIdx = segmentIdx(n)+1:segmentIdx(n+1);
+        currSegIdxBaseline = segmentIdxBaseline(n)+1:segmentIdxBaseline(n+1);
         SegX = X(currSegIdx,:);
+        SegY = Y(currSegIdxBaseline,:);
         percentAbove3(n,:) = 100 * (sum(SegX > 3, 1) ./ size(SegX, 1));
         percentAbove2(n,:) = 100 * (sum(SegX > 2, 1) ./ size(SegX, 1));
         percentAbove1point5(n,:) = 100 * (sum(SegX > 1.5, 1) ./ size(SegX, 1));
+        percentAbove3B(n,:) = 100 * (sum(SegY > 3, 1) ./ size(SegY, 1));
+        percentAbove2B(n,:) = 100 * (sum(SegY > 2, 1) ./ size(SegY, 1));
+        percentAbove1point5B(n,:) = 100 * (sum(SegY > 1.5, 1) ./ size(SegY, 1));
         meanROIMotion{n} = [linspace(0,100,size(SegX,1))' , mean(SegX,2)];
+        meanROIMotionB{n} = [linspace(0,100,size(SegY,1))' , mean(SegY,2)];
         [emgPowerVec,emgPowerStartVec,emgPowerEndVec] = loadProcData(procDataPath,segments(n,1),segments(n,2),emgTrigAvgLength);
         emgPower{n} = [linspace(0,100,length(emgPowerVec))' , emgPowerVec];
         emgPowerStart{n} = [linspace(-emgTrigAvgLength/2,emgTrigAvgLength/2,length(emgPowerStartVec))' , emgPowerStartVec];
@@ -3675,13 +3709,24 @@ for r = 1:nRec
     results(r).explained = explained;
     results(r).corrMatrix = corrMatrix;
     results(r).score = score;
+    results(r).zScoreB = Y;
+    results(r).coeffB = coeffB;
+    results(r).explainedB = explainedB;
+    results(r).corrMatrixB = corrMatrixBaseline;
+    results(r).scoreB = scoreB;
     results(r).signalNames = signalNames;
+    results(r).signalNamesB = signalNamesBaseline;
     results(r).nSignals = nSignals;
+    results(r).nSignalsB = nSignalsBaseline;
     results(r).segmentLengths = segmentLengths;
     results(r).percentAbove3 = percentAbove3;
     results(r).percentAbove2 = percentAbove2;
     results(r).percentAbove1point5 = percentAbove1point5;
     results(r).meanROIMotion = meanROIMotion;
+    results(r).percentAbove3B = percentAbove3B;
+    results(r).percentAbove2B = percentAbove2B;
+    results(r).percentAbove1point5B = percentAbove1point5B;
+    results(r).meanROIMotionB = meanROIMotionB;
     results(r).emgPower = emgPower;
     results(r).emgPowerStart = emgPowerStart;
     results(r).emgPowerEnd = emgPowerEnd;
@@ -3694,139 +3739,144 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function results = processExcelSegmentsROISelectStopEvents_SF(excelPath, roiPath)
-
-T = readtable(excelPath,'Sheet',2,'ReadVariableNames',false);
-if strcmp(T{1,1}{1},'file name')
-    T = T(2:end,:);
-end
-nRec = height(T);
-
-for r = 1:nRec
-    
-    tdmsPath = T{r,1}{1};
-    segments = table2array(T(r,2:end));
-    segments = segments(~isnan(segments));
-    segments = reshape(segments,2,[])';
-    
-    % ==============================
-    % 1) Convert TDMS path → video path
-    % ==============================
-    [folder, name, ~] = fileparts(tdmsPath);
-    
-    % Change extension as needed (.avi, .mp4, etc.)
-    videoPath = fullfile(folder, [name '.mp4']);  % <-- adjust if needed
-    
-    % ==============================
-    % 2) Extract / Load ROI motion
-    % ==============================
-    roiMotion = extractROIMotionFromVideo_fast(videoPath, excelPath, roiPath, segments);
-    
-    % Remove time field if present
-    if isfield(roiMotion,'time')
-        timeVec = roiMotion.time;
-        roiMotion = rmfield(roiMotion,'time');
-    end
-    
-    % Enforce consistent ordering across recordings
-    signalNames = sort(fieldnames(roiMotion));
-
-    % % Remove whisker fields
-    % idx = cellfun(@(s) contains(s,'whisker','IgnoreCase',true), signalNames);
-    % signalNames(idx) = [];
-
-    nSignals = numel(signalNames);
-    
-    % ==============================
-    % 3) Build matrix (UNCHANGED LOGIC)
-    % ==============================
-    L = min(structfun(@length, roiMotion));
-    X = zeros(L,nSignals);
-    
-    for i = 1:nSignals
-        X(:,i) = roiMotion.(signalNames{i})(1:L);
-    end
-
-    % ====== Preprocessing (IMPORTANT) ======
-    X = fillmissing(X,'linear');
-    X = zscore(X);   % <<< critical for ROI comparisons
-    
-    % ==============================
-    % 4) PCA (UNCHANGED)
-    % ==============================
-    [coeff,score,latent,~,explained] = pca(X);
-    
-    % ==============================
-    % 5) Correlation (UNCHANGED)
-    % ==============================
-    corrMatrix = corrcoef(X);
-
-    % ==============================
-    % 6) Segment lengths
-    % ==============================
-    segmentLengths = [];
-    for n = 1:size(segments,1)
-        segmentLengths(end+1) = segments(n,2) - segments(n,1);
-    end
-    
-    % ==============================
-    % 7) Section segments and process
-    % ==============================
-    % if ~isfield(roiMotion, 'time')
-    %     roiMotion.time = [];
-    %     for j = 1:size(segments,1)
-    %         roiMotion.time = [roiMotion.time segments(j,1):0.0167:segments(j,2)];
-    %     end
-    % end
-    segmentIdx = find(diff(timeVec)>1);
-    segmentIdx = [0 segmentIdx length(timeVec)];
-    emgTrigAvgLength = 20;
-    [p, n, ~] = fileparts(tdmsPath);
-    procDataPath = fullfile(p,[n '_ProcData.mat']);
-    for n = 1:length(segmentIdx)-1
-        currSegIdx = segmentIdx(n)+1:segmentIdx(n+1);
-        SegX = X(currSegIdx,:);
-        percentAbove3(n,:) = 100 * (sum(SegX > 3, 1) ./ size(SegX, 1));
-        percentAbove2(n,:) = 100 * (sum(SegX > 2, 1) ./ size(SegX, 1));
-        percentAbove1point5(n,:) = 100 * (sum(SegX > 1.5, 1) ./ size(SegX, 1));
-        meanROIMotion{n} = [linspace(0,100,size(SegX,1))' , mean(SegX,2)];
-        [emgPowerVec,emgPowerStartVec,emgPowerEndVec] = loadProcData(procDataPath,segments(n,1),segments(n,2),emgTrigAvgLength);
-        emgPower{n} = [linspace(0,100,length(emgPowerVec))' , emgPowerVec];
-        emgPowerStart{n} = [linspace(-emgTrigAvgLength/2,emgTrigAvgLength/2,length(emgPowerStartVec))' , emgPowerStartVec];
-        emgPowerEnd{n} = [linspace(-emgTrigAvgLength/2,emgTrigAvgLength/2,length(emgPowerEndVec))' , emgPowerEndVec];
-        [respFreqCentroidVec,meanTempVal] = respirationSpectrogramPlot_SF(tdmsPath,segments(n,1),segments(n,2));
-        respFreqCentroid{n} = [linspace(0,100,length(respFreqCentroidVec))' , respFreqCentroidVec'];
-        meanTemp{n} = meanTempVal;
-    end
-    
-
-
-
-
-    % ==============================
-    % 8) Store (UNCHANGED)
-    % ==============================
-    results(r).zScore = X;
-    results(r).coeff = coeff;
-    results(r).explained = explained;
-    results(r).corrMatrix = corrMatrix;
-    results(r).score = score;
-    results(r).signalNames = signalNames;
-    results(r).nSignals = nSignals;
-    results(r).segmentLengths = segmentLengths;
-    results(r).percentAbove3 = percentAbove3;
-    results(r).percentAbove2 = percentAbove2;
-    results(r).percentAbove1point5 = percentAbove1point5;
-    results(r).meanROIMotion = meanROIMotion;
-    results(r).emgPower = emgPower;
-    results(r).emgPowerStart = emgPowerStart;
-    results(r).emgPowerEnd = emgPowerEnd;
-    results(r).respFreqCentroid = respFreqCentroid;
-    results(r).meanTemp = meanTemp;
-    
-end
-
-end
+% function results = processExcelSegmentsROISelectStopEvents_SF(excelPath, roiPath)
+% 
+% T = readtable(excelPath,'Sheet',2,'ReadVariableNames',false);
+% if strcmp(T{1,1}{1},'file name')
+%     T = T(2:end,:);
+% end
+% nRec = height(T);
+% 
+% for r = 1:nRec
+% 
+%     tdmsPath = T{r,1}{1};
+%     segments = table2array(T(r,2:end));
+%     segments = segments(~isnan(segments));
+%     segments = reshape(segments,2,[])';
+% 
+%     % ==============================
+%     % 1) Convert TDMS path → video path
+%     % ==============================
+%     [folder, name, ~] = fileparts(tdmsPath);
+% 
+%     % Change extension as needed (.avi, .mp4, etc.)
+%     videoPath = fullfile(folder, [name '.mp4']);  % <-- adjust if needed
+% 
+%     % ==============================
+%     % 2) Extract / Load ROI motion
+%     % ==============================
+%     roiMotion = extractROIMotionFromVideo_fast(videoPath, excelPath, roiPath, segments, true);
+%     roiMotionBaseline = extractROIMotionFromVideo_baseline(videoPath, excelPath, roiPath, segments, true);
+% 
+%     % Remove time field if present
+%     if isfield(roiMotion,'time')
+%         timeVec = roiMotion.time;
+%         roiMotion = rmfield(roiMotion,'time');
+%     end
+%     if isfield(roiMotionBaseline,'time')
+%         timeVecBaseline = roiMotionBaseline.time;
+%         roiMotionBaseline = rmfield(roiMotionBaseline,'time');
+%     end
+% 
+%     % Enforce consistent ordering across recordings
+%     signalNames = sort(fieldnames(roiMotion));
+% 
+%     % % Remove whisker fields
+%     % idx = cellfun(@(s) contains(s,'whisker','IgnoreCase',true), signalNames);
+%     % signalNames(idx) = [];
+% 
+%     nSignals = numel(signalNames);
+% 
+%     % ==============================
+%     % 3) Build matrix (UNCHANGED LOGIC)
+%     % ==============================
+%     L = min(structfun(@length, roiMotion));
+%     X = zeros(L,nSignals);
+% 
+%     for i = 1:nSignals
+%         X(:,i) = roiMotion.(signalNames{i})(1:L);
+%     end
+% 
+%     % ====== Preprocessing (IMPORTANT) ======
+%     X = fillmissing(X,'linear');
+%     X = zscore(X);   % <<< critical for ROI comparisons
+% 
+%     % ==============================
+%     % 4) PCA (UNCHANGED)
+%     % ==============================
+%     [coeff,score,latent,~,explained] = pca(X);
+% 
+%     % ==============================
+%     % 5) Correlation (UNCHANGED)
+%     % ==============================
+%     corrMatrix = corrcoef(X);
+% 
+%     % ==============================
+%     % 6) Segment lengths
+%     % ==============================
+%     segmentLengths = [];
+%     for n = 1:size(segments,1)
+%         segmentLengths(end+1) = segments(n,2) - segments(n,1);
+%     end
+% 
+%     % ==============================
+%     % 7) Section segments and process
+%     % ==============================
+%     % if ~isfield(roiMotion, 'time')
+%     %     roiMotion.time = [];
+%     %     for j = 1:size(segments,1)
+%     %         roiMotion.time = [roiMotion.time segments(j,1):0.0167:segments(j,2)];
+%     %     end
+%     % end
+%     segmentIdx = find(diff(timeVec)>1);
+%     segmentIdx = [0 segmentIdx length(timeVec)];
+%     emgTrigAvgLength = 20;
+%     [p, n, ~] = fileparts(tdmsPath);
+%     procDataPath = fullfile(p,[n '_ProcData.mat']);
+%     for n = 1:length(segmentIdx)-1
+%         currSegIdx = segmentIdx(n)+1:segmentIdx(n+1);
+%         SegX = X(currSegIdx,:);
+%         percentAbove3(n,:) = 100 * (sum(SegX > 3, 1) ./ size(SegX, 1));
+%         percentAbove2(n,:) = 100 * (sum(SegX > 2, 1) ./ size(SegX, 1));
+%         percentAbove1point5(n,:) = 100 * (sum(SegX > 1.5, 1) ./ size(SegX, 1));
+%         meanROIMotion{n} = [linspace(0,100,size(SegX,1))' , mean(SegX,2)];
+%         [emgPowerVec,emgPowerStartVec,emgPowerEndVec] = loadProcData(procDataPath,segments(n,1),segments(n,2),emgTrigAvgLength);
+%         emgPower{n} = [linspace(0,100,length(emgPowerVec))' , emgPowerVec];
+%         emgPowerStart{n} = [linspace(-emgTrigAvgLength/2,emgTrigAvgLength/2,length(emgPowerStartVec))' , emgPowerStartVec];
+%         emgPowerEnd{n} = [linspace(-emgTrigAvgLength/2,emgTrigAvgLength/2,length(emgPowerEndVec))' , emgPowerEndVec];
+%         [respFreqCentroidVec,meanTempVal] = respirationSpectrogramPlot_SF(tdmsPath,segments(n,1),segments(n,2));
+%         respFreqCentroid{n} = [linspace(0,100,length(respFreqCentroidVec))' , respFreqCentroidVec'];
+%         meanTemp{n} = meanTempVal;
+%     end
+% 
+% 
+% 
+% 
+% 
+%     % ==============================
+%     % 8) Store (UNCHANGED)
+%     % ==============================
+%     results(r).zScore = X;
+%     results(r).coeff = coeff;
+%     results(r).explained = explained;
+%     results(r).corrMatrix = corrMatrix;
+%     results(r).score = score;
+%     results(r).signalNames = signalNames;
+%     results(r).nSignals = nSignals;
+%     results(r).segmentLengths = segmentLengths;
+%     results(r).percentAbove3 = percentAbove3;
+%     results(r).percentAbove2 = percentAbove2;
+%     results(r).percentAbove1point5 = percentAbove1point5;
+%     results(r).meanROIMotion = meanROIMotion;
+%     results(r).emgPower = emgPower;
+%     results(r).emgPowerStart = emgPowerStart;
+%     results(r).emgPowerEnd = emgPowerEnd;
+%     results(r).respFreqCentroid = respFreqCentroid;
+%     results(r).meanTemp = meanTemp;
+% 
+% end
+% 
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [coeff,score,latent,explained,corrMatrix,signalNames,nSignals] = ...

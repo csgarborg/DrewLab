@@ -6,7 +6,14 @@ function roiMotion = extractROIMotionFromVideo_fast(videoFile,excelPath,roiPath,
 [vidPath, name, ~] = fileparts(videoFile);
 [~, roiName, ~] = fileparts(roiPath);
 [~, excelName, ~] = fileparts(excelPath);
-saveFile = fullfile(vidPath, [name '_' excelName '_' roiName '_roiMotion.mat']);
+
+if size(segments,2) == 3
+    % wake event
+    saveFile = fullfile(vidPath, [name '_' excelName '_wakeEvents_' roiName '_roiMotion.mat']);
+    segments = segments(:,[2 3]);
+else
+    saveFile = fullfile(vidPath, [name '_' excelName '_' roiName '_roiMotion.mat']);
+end
 
 if exist(saveFile,'file')
     load(saveFile,'roiMotion')
