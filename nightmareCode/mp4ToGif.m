@@ -1,4 +1,4 @@
-function mp4ToGif(tStart, tEnd, inputVideoFile, outputGifFile)
+function mp4ToGif(tStart, tEnd, inputVideoFile, outputGifFile) 
 % mp4ToGif  Convert MP4 segment to a compressed grayscale GIF
 
 % Settings (unchanged)

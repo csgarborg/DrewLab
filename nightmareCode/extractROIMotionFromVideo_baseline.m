@@ -14,6 +14,8 @@ if size(segments,2) == 3
     segments = segments(:,[2 3]);
 else
     saveFile = fullfile(vidPath, [name '_' excelName '_' roiName '_roiMotion_baseline.mat']);
+    baselineSegmentStart = segments(:,1);
+    segments = segments(:,[1 2]);
 end
 
 if exist(saveFile,'file')

@@ -30,7 +30,7 @@ function computePixelDiffVideo(inputPath)
         diffFrame = abs(currFrame - prevFrame);
 
         % Optional: enhance contrast so subtle changes are visible
-        diffFrame = imadjust(diffFrame, [0, 0.1], [0, 1]);
+        % diffFrame = imadjust(diffFrame, [0, 0.1], [0, 1]);
 
         writeVideo(vWriter, im2uint8(diffFrame));
 

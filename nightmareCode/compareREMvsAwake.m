@@ -1,4 +1,4 @@
-function compareREMvsAwake(awakeExcelPath, remExcelPath, mefRemExcelPath, tdmsTF, saveResultsStructTF, roiPath, saveResultsStructPath)
+function compareREMvsAwake(awakeExcelPath, remExcelPath, mefRemExcelPath, tdmsTF, saveResultsStructTF, roiPath, saveResultsStructPath, baselineROITF)
 
 %% Load data
 if exist('saveResultsStructPath','var') && ~saveResultsStructTF
@@ -31,6 +31,47 @@ if saveResultsStructTF
     resultsStruct.remWake = remWake;
     resultsStruct.mefRemWake = mefRemWake;
     save(saveResultsStructPath, 'resultsStruct');
+end
+
+if baselineROITF
+    % Structs to process
+    structNames = {'awake','rem','mefRem','remWake','mefRemWake'};
+
+    for s = 1:length(structNames)
+
+        % Get struct variable
+        S = eval(structNames{s});
+
+        % Loop through struct elements
+        for i = 1:numel(S)
+
+            fn = fieldnames(S(i));
+
+            for f = 1:length(fn)
+
+                currentField = fn{f};
+
+                % Check if field ends with B
+                if endsWith(currentField,'B')
+
+                    % Remove trailing B
+                    baseField = extractBefore(currentField, ...
+                        strlength(currentField));
+
+                    % Replace original field with B version
+                    S(i).(baseField) = S(i).(currentField);
+
+                    % fprintf('Replaced %s with %s in %s(%d)\n', ...
+                        % baseField, currentField, ...
+                        % structNames{s}, i);
+                end
+            end
+        end
+
+        % Put modified struct back
+        eval([structNames{s} ' = S;']);
+
+    end
 end
 
 % awake = processMatFiles_SF(awakeExcelPath);
@@ -236,6 +277,63 @@ yticklabels(strrep(signalNames,'_',' '))
 xtickangle(45)
 
 sgtitle('Mean Correlation Matrices')
+
+%% Correlation distribution comparison
+
+mask = triu(true(nSignals),1);
+
+awakeCorr = meanA(mask);
+remCorr   = meanR(mask);
+
+figure
+hold on
+
+awakeColor = [0 0.4470 0.7410];
+remColor   = [0.8500 0.3250 0.0980];
+
+nBins = 20;   % increase as desired
+
+histogram(awakeCorr,...
+    nBins,...
+    'Normalization','pdf',...
+    'FaceColor',awakeColor,...
+    'FaceAlpha',0.4,...
+    'EdgeColor','none',...
+    'DisplayName','Awake');
+
+histogram(remCorr,...
+    nBins,...
+    'Normalization','pdf',...
+    'FaceColor',remColor,...
+    'FaceAlpha',0.4,...
+    'EdgeColor','none',...
+    'DisplayName','REM');
+
+% Normal fits
+pdA = fitdist(awakeCorr,'Normal');
+pdR = fitdist(remCorr,'Normal');
+
+x = linspace( ...
+    min([awakeCorr; remCorr]), ...
+    max([awakeCorr; remCorr]), ...
+    1000);
+
+plot(x,pdf(pdA,x),...
+    'Color',awakeColor,...
+    'LineWidth',3,...
+    'DisplayName',sprintf('Awake fit (\\mu=%.2f)',pdA.mu));
+
+plot(x,pdf(pdR,x),...
+    'Color',remColor,...
+    'LineWidth',3,...
+    'DisplayName',sprintf('REM fit (\\mu=%.2f)',pdR.mu));
+
+xlabel('Mean Pairwise Correlation')
+ylabel('Probability Density')
+title('Distribution of ROI Correlations')
+
+legend('Location','best')
+box off
 
 %% ==============================
 %% 5) PC1 loadings (with CI)
@@ -1801,6 +1899,115 @@ for v = 1:length(varsToPlot)
 end
 
 %% ============================================================
+%% PERCENT OF EMG POWER ABOVE THRESHOLD
+%%
+%% Threshold definition:
+%% threshold = mean(lowest 10% of EMG values) + 0.5
+%%
+%% Calculates:
+%% percent of EMG points above threshold
+%%
+%% Uses:
+%% rem(r).emgPower
+%% mefRem(r).emgPower
+%%
+%% Each emgPower cell:
+%% col 1 = time
+%% col 2 = EMG power
+%%
+%% Output:
+%% plotSpread plot for REM vs MefREM
+%% each event plotted as its own point
+%% ============================================================
+
+groups = {rem, mefRem};
+groupNames = {'REM','MefREM'};
+
+allPercents = cell(1,2);
+
+for g = 1:2
+
+    dataStruct = groups{g};
+
+    percentVals = [];
+
+    for r = 1:length(dataStruct)
+
+        if isfield(dataStruct(r),'emgPower') && ...
+                ~isempty(dataStruct(r).emgPower)
+
+            for k = 1:length(dataStruct(r).emgPower)
+
+                thisData = dataStruct(r).emgPower{k};
+
+                if isempty(thisData) || size(thisData,2) < 2
+                    continue
+                end
+
+                emg = thisData(:,2);
+
+                emg = emg(~isnan(emg));
+
+                if isempty(emg)
+                    continue
+                end
+
+                %% --------------------------------
+                %% Calculate threshold
+                %% --------------------------------
+
+                sortedVals = sort(emg);
+
+                nLow = max(round(length(sortedVals)*0.10),1);
+
+                lowVals = sortedVals(1:nLow);
+
+                threshold = mean(lowVals) + 1;
+
+                %% --------------------------------
+                %% Percent above threshold
+                %% --------------------------------
+
+                percentAbove = ...
+                    sum(emg > threshold) / length(emg) * 100;
+
+                percentVals(end+1,1) = percentAbove; %#ok<AGROW>
+
+            end
+        end
+    end
+
+    allPercents{g} = percentVals;
+
+end
+
+
+%% ============================================================
+%% PLOT
+%% ============================================================
+
+figure
+hold on
+
+plotSpread(allPercents, ...
+    'xNames',groupNames, ...
+    'showMM',5, ...
+    'distributionMarkers','o')
+
+ylabel('% EMG Power Above Threshold')
+title('Percent of EMG Activity Above Baseline Threshold')
+
+grid on
+set(gca,'FontSize',12)
+
+%% Optional:
+%% make mean/error bars white
+
+h = findobj(gca,'Color','r');
+set(h,'Color','w')
+
+
+%% ============================================================
 %% REM STOP vs MefREM STOP ("Wake Events")
 %%
 %% Creates versions of:
@@ -1860,11 +2067,7 @@ for v = 1:length(varsToPlot)
                 thisVal = remWake(r).(varName);
 
                 if ~isempty(thisVal)
-                    if isvector(thisVal)
-                        allR = [allR; thisVal(:,roi)];
-                    else
-                        allR = [allR; thisVal(:,roi)];
-                    end
+                    allR = [allR; thisVal(:,roi)];
                 end
             end
         end
@@ -1877,11 +2080,7 @@ for v = 1:length(varsToPlot)
                 thisVal = mefRemWake(r).(varName);
 
                 if ~isempty(thisVal)
-                    if isvector(thisVal)
-                        allM = [allM; thisVal(:,roi)];
-                    else
-                        allM = [allM; thisVal(:,roi)];
-                    end
+                    allM = [allM; thisVal(:,roi)];
                 end
             end
         end
