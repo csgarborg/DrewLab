@@ -278,6 +278,37 @@ xtickangle(45)
 
 sgtitle('Mean Correlation Matrices')
 
+%% Correlation matrix stats test
+
+n1 = length(cat(2,awake.segmentLengths));
+n2 = length(cat(2,rem.segmentLengths));
+
+[chi2, p]=JennrichTest_2Matrix(meanA, meanR, n1, n2);
+
+% Format p-value compactly
+if p < 0.001
+    pstr = 'p < 0.001';
+else
+    pstr = sprintf('p = %.3f', p);
+end
+
+% Create title with chi-squared and p-value (LaTeX interpreter)
+tstr = sprintf('$\\chi^2 = %.3f,\\; %s$', chi2, pstr);
+% title(tstr, 'Interpreter', 'latex', 'FontSize', 12);
+
+figure
+imagesc(meanA-meanR)
+title(['Mean Awake - Mean REM Correlation Matricies, ' tstr], 'Interpreter', 'latex')
+axis square
+clim([-.5 .5])
+colorbar
+xticks(1:nSignals)
+yticks(1:nSignals)
+xticklabels(strrep(signalNames,'_',' '))
+yticklabels(strrep(signalNames,'_',' '))
+xtickangle(45)
+
+
 %% Correlation distribution comparison
 
 mask = triu(true(nSignals),1);
@@ -334,6 +365,275 @@ title('Distribution of ROI Correlations')
 
 legend('Location','best')
 box off
+
+%% ============================================================
+%% HIERARCHICAL CLUSTERING OF ROI NETWORKS
+%% ============================================================
+
+corrA = cat(3,awake.corrMatrix);
+corrR = cat(3,rem.corrMatrix);
+
+meanCorrA = mean(corrA,3,'omitnan');
+meanCorrR = mean(corrR,3,'omitnan');
+
+% Distance matrices
+DA = 1 - meanCorrA;
+DR = 1 - meanCorrR;
+
+DA(1:size(DA,1)+1:end) = 0;
+DR(1:size(DR,1)+1:end) = 0;
+
+% linkage
+ZA = linkage(squareform(DA),'average');
+ZR = linkage(squareform(DR),'average');
+
+% Optimal ordering
+orderA = optimalleaforder(ZA,DA);
+orderR = optimalleaforder(ZR,DR);
+
+figure
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subplot(2,2,1)
+
+dendrogram(ZA,0,'Reorder',orderA,'Labels',strrep(signalNames(orderA),'_',' '),'Orientation','top');
+
+title('Awake Hierarchical Clustering','Color','w')
+
+set(gca,...
+    'Color','k',...
+    'XColor','w',...
+    'YColor','w',...
+    'LineWidth',1.5)
+ax = gca;
+ax.XTickLabelRotation = 45;
+ylim([0 .8])
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subplot(2,2,2)
+
+dendrogram(ZR,0,'Reorder',orderR,'Labels',strrep(signalNames(orderR),'_',' '),'Orientation','top');
+
+title('REM Hierarchical Clustering','Color','w')
+
+set(gca,...
+    'Color','k',...
+    'XColor','w',...
+    'YColor','w',...
+    'LineWidth',1.5)
+ax = gca;
+ax.XTickLabelRotation = 45;
+ylim([0 .8])
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subplot(2,2,3)
+
+imagesc(meanCorrA(orderA,orderA),[0 1])
+axis square
+colorbar
+xticks(1:nSignals)
+yticks(1:nSignals)
+xticklabels(strrep(signalNames(orderA),'_',' '))
+yticklabels(strrep(signalNames(orderA),'_',' '))
+xtickangle(45)
+
+title('Awake Reordered Correlation Matrix','Color','w')
+
+set(gca,...
+    'Color','k',...
+    'XColor','w',...
+    'YColor','w')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subplot(2,2,4)
+
+imagesc(meanCorrR(orderR,orderR),[0 1])
+axis square
+colorbar
+xticks(1:nSignals)
+yticks(1:nSignals)
+xticklabels(strrep(signalNames(orderR),'_',' '))
+yticklabels(strrep(signalNames(orderR),'_',' '))
+xtickangle(45)
+
+title('REM Reordered Correlation Matrix','Color','w')
+
+set(gca,...
+    'Color','k',...
+    'XColor','w',...
+    'YColor','w')
+
+%% Cophenetic correlation
+
+cophenA = cophenet(ZA,squareform(DA));
+cophenR = cophenet(ZR,squareform(DR));
+
+figure('Color','k')
+
+bar([1 2],[cophenA cophenR],0.6)
+
+set(gca,...
+    'Color','k',...
+    'XTick',[1 2],...
+    'XTickLabel',{'Awake','REM'},...
+    'XColor','w',...
+    'YColor','w')
+
+ylabel('Cophenetic Correlation')
+
+title('Hierarchical Structure','Color','w')
+
+% %% clustered correlation matrices
+% 
+% figure
+% 
+nRec = numel(awake);
+nRecREM = numel(rem);
+% 
+% for r=1:nRec
+% 
+%     subplot(2,nRec,r)
+% 
+%     C = awake(r).corrMatrix;
+% 
+%     D = 1-C;
+%     D(1:size(D,1)+1:end)=0;
+% 
+%     Z = linkage(squareform(D),'average');
+%     ord = optimalleaforder(Z,D);
+% 
+%     imagesc(C(ord,ord),[-1 1])
+%     axis square
+% 
+%     title(sprintf('Awake %d',r),'Color','w')
+% 
+%     set(gca,'Color','k','XColor','w','YColor','w')
+% 
+%     subplot(2,nRec,nRec+r)
+% 
+%     C = rem(r).corrMatrix;
+% 
+%     D = 1-C;
+%     D(1:size(D,1)+1:end)=0;
+% 
+%     Z = linkage(squareform(D),'average');
+%     ord = optimalleaforder(Z,D);
+% 
+%     imagesc(C(ord,ord),[-1 1])
+%     axis square
+% 
+%     title(sprintf('REM %d',r),'Color','w')
+% 
+%     set(gca,'Color','k','XColor','w','YColor','w')
+% 
+% end
+% 
+% colormap(parula)
+
+%% number of large clusters
+
+clusterCutoff = 0.55;
+clusterAwake = zeros(nRec,1);
+clusterREM = zeros(nRecREM,1);
+
+for r=1:nRec
+
+    D = 1-awake(r).corrMatrix;
+    D(1:size(D,1)+1:end)=0;
+
+    Z = linkage(squareform(D),'average');
+
+    idx = cluster(Z,'cutoff',clusterCutoff,'Criterion','distance');
+
+    clusterAwake(r)=numel(unique(idx));
+end
+for r = 1:nRecREM
+
+    D = 1-rem(r).corrMatrix;
+    D(1:size(D,1)+1:end)=0;
+
+    Z = linkage(squareform(D),'average');
+
+    idx = cluster(Z,'cutoff',clusterCutoff,'Criterion','distance');
+
+    clusterREM(r)=numel(unique(idx));
+
+end
+figure
+
+subplot(121)
+
+bar([mean(clusterAwake) mean(clusterREM)])
+
+hold on
+
+errorbar([1 2],...
+    [mean(clusterAwake) mean(clusterREM)],...
+    [std(clusterAwake)/sqrt(nRec) std(clusterREM)/sqrt(nRecREM)],...
+    'w','LineStyle','none')
+
+set(gca,...
+    'Color','k',...
+    'XTick',[1 2],...
+    'XTickLabel',{'Awake','REM'},...
+    'XColor','w',...
+    'YColor','w')
+
+ylabel('Number of Clusters')
+
+subplot(122)
+
+plotSpread({clusterAwake(:),clusterREM(:)});
+
+set(gca,...
+    'XTick',1:2,...
+    'XTickLabel',{'Awake','REM'},...
+    'Color','k',...
+    'XColor','w',...
+    'YColor','w');
+
+ylabel('Number of Clusters')
+
+%% Number of clusters as a function of cutoff (0 to 1, step 0.1)
+cutoffRange = 0.01:0.01:1;
+nCutoffs = numel(cutoffRange);
+
+clusterAwakeByCutoff = zeros(nRec,nCutoffs);
+clusterREMByCutoff = zeros(nRecREM,nCutoffs);
+
+for c = 1:nCutoffs
+    cutoff = cutoffRange(c);
+    for r = 1:nRec
+        D = 1-awake(r).corrMatrix;
+        D(1:size(D,1)+1:end)=0;
+        Z = linkage(squareform(D),'average');
+        idx = cluster(Z,'cutoff',cutoff,'Criterion','distance');
+        clusterAwakeByCutoff(r,c) = numel(unique(idx));
+    end
+    for r = 1:nRecREM
+        D = 1-rem(r).corrMatrix;
+        D(1:size(D,1)+1:end)=0;
+        Z = linkage(squareform(D),'average');
+        idx = cluster(Z,'cutoff',cutoff,'Criterion','distance');
+        clusterREMByCutoff(r,c) = numel(unique(idx));
+    end
+end
+
+figure
+hold on
+errorbar(cutoffRange, mean(clusterAwakeByCutoff,1), ...
+    std(clusterAwakeByCutoff,[],1)/sqrt(nRec), ...
+    '-o','Color',awakeColor,'MarkerFaceColor',awakeColor,'LineWidth',1.5)
+errorbar(cutoffRange, mean(clusterREMByCutoff,1), ...
+    std(clusterREMByCutoff,[],1)/sqrt(nRecREM), ...
+    '-o','Color',remColor,'MarkerFaceColor',remColor,'LineWidth',1.5)
+
+set(gca,'Color','k','XColor','w','YColor','w')
+xlabel('Cluster cutoff')
+ylabel('Number of Clusters')
+legend({'Awake','REM'},'TextColor','w','Location','best')
+title('Cluster Count Sensitivity to Cutoff: Awake vs. REM','Color','w')
+xlim([0 1])
 
 %% ==============================
 %% 5) PC1 loadings (with CI)

@@ -17,7 +17,6 @@ fprintf('Video loaded: %s\n', videoFile);
 %% ==============================
 frame = readFrame(v);
 figure; imshow(frame);
-title('Draw ROIs. Double-click inside ROI when done. Press Enter when finished');
 
 roiList = {};
 roiMasks = {};
@@ -25,7 +24,13 @@ roiLabels = {};
 
 roiCount = 0;
 
+roiLabels = {'Eye top', 'Eye bottom', 'Nose', 'Right ear bottom', 'Right ear top', 'Left ear bottom', 'Left ear top', 'Right lip bottom front', 'Right lip top front', 'Left lip bottom front', 'Left lip top front', 'Lower jaw bottom', 'Right whisker rear', 'Right whisker front', 'Left whisker rear', 'Left whisker front'};
 while true
+    if roiCount < length(roiLabels)
+        title(['Draw ' roiLabels{roiCount+1} ' ROI. Double-click inside ROI when done. Press Enter when finished.']);
+    else
+        title('Draw next ROI. Double-click inside ROI when done. Press Enter when finished.');
+    end
     roi = drawrectangle('Color','r');
     if isempty(roi)
         break;
@@ -34,7 +39,11 @@ while true
     roiCount = roiCount + 1;
 
     % Label input
-    label = input(sprintf('Enter label for ROI %d: ', roiCount), 's');
+    if roiCount <= length(roiLabels)
+        label = roiLabels{roiCount};
+    else
+        label = input(sprintf('Enter label for ROI %d: ', roiCount), 's');
+    end
 
     % Create mask
     mask = createMask(roi);

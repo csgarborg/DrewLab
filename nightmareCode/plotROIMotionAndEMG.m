@@ -151,15 +151,16 @@ for r = 1:nROIs
 
     x = motionMat(r,:);
 
-    x = log10(x + 1);
-    
-    x = x - median(x);
-
-    sd = std(x);
-
-    if sd > 0
-        x = x ./ sd;
-    end
+    x = zscore(x);
+    % x = log10(x + 1);
+    % 
+    % x = x - median(x);
+    % 
+    % sd = std(x);
+    % 
+    % if sd > 0
+    %     x = x ./ sd;
+    % end
 
     motionMat(r,:) = traceScale*x;
 

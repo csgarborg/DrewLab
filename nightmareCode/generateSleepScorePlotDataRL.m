@@ -131,13 +131,13 @@ ProcData.ECoG_DS   = resample(ecogProc, dsFs, Fs);
 % =========================================================================
 fprintf('  Processing Right EMG...\n');
 
-[rightPowerDS, rightSignalDS] = processEmg_withEdgeFix_SF( ...
+[rightPowerDS, rightSignalDS, rightPowerDSNoLog] = processEmg_withEdgeFix_SF( ...
     emgRightRaw, Fs, dsFs, emgPowerBand, emgSignalBand, ...
     emgFilterOrder, emgPowerKernelWidth);
 
 fprintf('  Processing Left EMG...\n');
 
-[leftPowerDS, leftSignalDS] = processEmg_withEdgeFix_SF( ...
+[leftPowerDS, leftSignalDS, leftPowerDSNoLog] = processEmg_withEdgeFix_SF( ...
     emgLeftRaw, Fs, dsFs, emgPowerBand, emgSignalBand, ...
     emgFilterOrder, emgPowerKernelWidth);
 
@@ -145,6 +145,8 @@ ProcData.EMG.RightPower  = rightPowerDS;
 ProcData.EMG.LeftPower   = leftPowerDS;
 ProcData.EMG.RightSignal = rightSignalDS;
 ProcData.EMG.LeftSignal  = leftSignalDS;
+ProcData.EMG.RightPowerNoLog = rightPowerDSNoLog;
+ProcData.EMG.LeftPowerNoLog = leftPowerDSNoLog;
 
 % =========================================================================
 % 3) --- FORCE SENSOR PROCESSING
@@ -207,7 +209,7 @@ end
 
 %% -------------------------- EMG PROCESSING ------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [emgPowerDS, emgSignalDS] = processEmg_withEdgeFix_SF( ...
+function [emgPowerDS, emgSignalDS, emgPowerDSNoLog] = processEmg_withEdgeFix_SF( ...
     emgRaw, Fs, dsFs, bandPower, bandSignal, ord, kernelWidth)
 
 nyq = Fs/2;
@@ -226,7 +228,9 @@ e1 = filtfilt(sos,g, emgRaw - mean(emgRaw));
 kernel = gausswin(max(3,round(kernelWidth*Fs)));
 kernel = kernel/sum(kernel);
 ePow = log10(conv(e1.^2, kernel, 'same'));
+ePowNoLog = conv(e1.^2, kernel, 'same');
 emgPowerDS = resample(ePow, dsFs, Fs);
+emgPowerDSNoLog = resample(ePowNoLog, dsFs, Fs);
 
 %% EMG SIGNAL FILTER (10–100 Hz)
 bs = bandSignal;

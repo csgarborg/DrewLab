@@ -1,4 +1,4 @@
-function videoImages = readMP4Video(saveVideoTF,startTime,stopTime,videoPath)
+function videoImages = readMP4Video(saveVideoTF,startTime,stopTime,videoPath,videoOutPath)
 
 % Time range (seconds)
 if ~exist('stopTime','var')
@@ -22,10 +22,14 @@ v = VideoReader(videoFile);
 
 if saveVideoTF
     % Output folder for frames
-    if ~exist(fullfile(loc,'extractedFrames'),'dir')
-        mkdir(fullfile(loc,'extractedFrames'))
+    % if ~exist(fullfile(loc,'extractedFrames'),'dir')
+    %     mkdir(fullfile(loc,'extractedFrames'))
+    % end
+    if ~exist('videoOutPath','var')
+        outputVideo = fullfile(loc,'extractedFrames',[file(1:end-4) '_trimmed.mp4']);
+    else
+        outputVideo = videoOutPath;  % Use provided output path
     end
-    outputVideo = fullfile(loc,'extractedFrames',[file(1:end-4) '_trimmed.mp4']);
 
     % Create VideoWriter object
     vw = VideoWriter(outputVideo, 'MPEG-4');
