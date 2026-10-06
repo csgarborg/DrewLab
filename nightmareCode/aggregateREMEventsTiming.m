@@ -318,7 +318,7 @@ for d = 1:nDays
             row(binStart:binEnd) = 1;
         end
     end
-
+comp
     for e = 1:height(dayEvents)
         s = dayEvents.abs_start_s(e);
         p = dayEvents.abs_stop_s(e);
@@ -330,7 +330,7 @@ for d = 1:nDays
     end
 
     rows(d,:) = row;
-    labels{d} = sprintf('%s: %s', mouseID, string(days(d), 'yyyy-MM-dd'));
+    labels{d} = sprintf('%s: %s', strrep(mouseID, '_', '\_'), string(days(d), 'yyyy-MM-dd'));
 end
 
 rows = num2cell(rows, 2);
